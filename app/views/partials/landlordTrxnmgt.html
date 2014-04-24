@@ -1,0 +1,57 @@
+<div class="panel panel-primary">
+					<div class="panel-heading">
+					  <h3 class="panel-title">Transaction Management <label class="pull-right">Bal c/f {{crit.balance-Transaction.amount}}</label></h3>
+					 
+					  </div>
+					   <div class="panel-body">
+					     <div class="col-md-4">
+                            <label for="tenant">Tenant Name</label>
+							       <select class="form-control"  ng-model="crit" id="tenant" ng-options="c.name for c in Tenants" ng-disabled=disableComponents>  
+			                       </select>
+                              <label for="hsename">House Name</label>
+							   <input type="text" class="form-control" placeholder="House name" id="hsename" ng-model="crit.housename" disabled>
+
+							    <label for="balamt">Balance Amt</label>
+							   <input type="text" class="form-control" placeholder="Balance Amount" id="balamt" ng-model="crit.balance" disabled>
+                            
+							 <label for="paymethod">Payment Method</label>
+							       <select class="form-control"  ng-model="Transaction.paymentmethod" id="paymethod" ng-options="c.name for c in paymentmethod" ng-disabled=disableComponents>  
+			                       </select>
+
+                            <label for="amt">Amount</label>
+							   <input type="text" class="form-control" placeholder="Amount" id="amt" ng-model="Transaction.amount" ng-disabled=disableComponents>
+
+						 </div>
+
+						 <div class="col-md-4">
+                              <label for="date">Date</label>
+							   <input type="text" class="form-control" placeholder="Date" id="date" ng-model="Transaction.date" disabled>
+                              							 
+
+							   <label for="trantype">Transaction Type</label>
+							       <select class="form-control"  ng-model="Transaction.transactiontype" id="trantype" ng-options="c.name for c in transactiontype" ng-disabled=disableComponents>  
+			                       </select>
+                              <label for="desc">comments</label>
+								 <textarea class="form-control" rows="3" id="desc" ng-model="Transaction.comments" ng-disabled=disableComponents></textarea>
+
+						 </div>
+                            
+					   </div>  
+                      <div class="panel-footer">
+					   <button type="button" class="btn btn-info" ng-click="AddPayment()">Add</button>
+					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents ng-click="ClearPayment()">Clear</button>
+					    <button type="button" class="btn btn-success" ng-click="postPayment()" ng-disabled=disableComponents >Save</button>
+					   </div>
+
+</div>
+
+
+
+
+ <div ng-show="paymentposted" class="alert alert-success"><strong>{{msg}} !!!</strong> Payment Successfully Posted</div>
+			<div ng-show="paymenterror" class="alert alert-danger"><strong>Error Occurred !!!</strong> {{msg}}</div>
+
+
+
+
+		

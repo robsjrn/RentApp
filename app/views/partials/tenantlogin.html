@@ -1,0 +1,38 @@
+ <div class="col-md-6 col-md-offset-3" >
+		  <br>
+             <div class="well">
+			      <form class="form-horizontal" role="form" novalidate >
+					  <div class="form-group">
+						<label for="tid" class="col-sm-2 control-label">House Number</label>
+						<div class="col-sm-10">
+						  <input type="text" class="form-control" id="tid" ng-model="tenant.housenumber" placeholder="Tenant House Number">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="inputPassword" class="col-sm-2 control-label">Password</label>
+						<div class="col-sm-10">
+						  <input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="tenant.password">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+						  <div class="checkbox">
+							<label>
+							  <input type="checkbox"> Remember me
+							</label>
+						  </div>
+						</div>
+					  </div>
+					  <div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+						  <button   ng-click="Tenantlogin()"  class="btn btn-primary">Sign in</button >
+						</div>
+					  </div>
+					</form>
+			  </div>
+
+         
+                                                <div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid House Name or Password !!!</strong> </div>                                 
+
+
+         </div>

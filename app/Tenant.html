@@ -1,0 +1,154 @@
+
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <title>Tenant Management</title>
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="public/bootstrap/dist/css/bootstrap.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css({.tmp,app}) styles/main.css -->
+    <link rel="stylesheet" href="styles/Tenant.css">
+    <!-- endbuild -->
+  </head>
+
+<body data-ng-app="TenantmngtApp">
+
+  <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+
+
+<div data-ng-controller="MainTenantsctrl">
+<div class="container-fluid" >
+             <header class="navbar navbar-inverse navbar-fixed-top" role="banner">
+		      
+				  <div class="navbar-header">
+					   <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					 <a href="#" class="navbar-brand">Rent Management System</a>
+				 </div>
+					<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+					  <ul class="nav navbar-nav navbar-right">
+					    <li ><a href="#!/help"><i class="fa fa-question fa-fw"></i> Help</a></li>
+						<li ><a href="#!/help"><i class="fa fa-question fa-fw"></i>Terms/Condition</a></li>
+						<li ><a href="#!/about">About</a></li>
+						<li ><a href="#!/settings"><i class="fa fa-cogs fa-fw"></i> Settings</a></li>
+						<li class="divider"></li>
+						<li><a type="button"  ng-click="Logout()">Logout</a></li>
+					 </ul>
+	                  </nav>      
+        </header>
+</div>
+
+<div class="container">
+      <div class="row">
+  	        
+			<div class="col-md-4">
+			
+					<div class="panel panel-default">
+					 <div class="panel-heading">
+						  Tenant Details
+						   </div>
+					<div class="panel-body">
+                          <p> <h5>Names :{{TenantData.name}} </h5>  </p>
+                            <p> <h5>ID NO. {{TenantData._id}} </h5>  </p>
+							  <p> <h5>Occupation :{{TenantData.occupation}}</h5>  </p>
+							   <p> <h5>Place of Work :{{TenantData.location}}</h5>  </p>										
+					 </div>
+					</div>  
+			
+			</div>
+			
+			<div class="col-md-4 col-md-offset-4">
+			 
+                          <div class="panel panel-default">
+						   <div class="panel-heading">
+						  Tenant Housing Details
+						   </div>
+							<div class="panel-body">
+
+                              <p>Plot No. {{TenantData.plot.name}} </p>
+                              <p> <h5>House Number  : {{TenantData.housename}}</h5>  </p>
+							  <p> <h5>Rental Balance :{{TenantData.balance}}</h5>  </p>
+							  
+
+								         
+							 </div>
+							</div>  
+
+            </div>
+		
+       </div>
+	
+
+		<div class="row">  
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li><a href="#!/statements">Statement </a></li>
+						<li><a href="#!/inbox">Inbox </a></li>
+                    </ul>     
+		</div>
+		
+      <div data-ng-view >
+      </div>
+
+
+          
+</div>
+  
+
+
+<div class="navbar navbar-default navbar-fixed-bottom">
+		         <div class="container" >
+			       <p>copyrights @SoftSol 2014 </p>				    	
+               </div>
+  </div>
+</div>
+  <!--[if lt IE 9]>
+    <script src="public/es5-shim/es5-shim.js"></script>
+    <script src="public/json3/lib/json3.min.js"></script>
+    <![endif]-->
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="public/jquery/jquery.js"></script>
+    <script src="public/angular/angular.js"></script>
+    <script src="public/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="public/angular-resource/angular-resource.js"></script>
+    <script src="public/angular-cookies/angular-cookies.js"></script>
+    <script src="public/angular-sanitize/angular-sanitize.js"></script>
+    <script src="public/angular-route/angular-route.js"></script>
+    <script src="public/angular-animate/angular-animate.js"></script>
+    <script src="public/angular-touch/angular-touch.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/controllers/TenantMngt.js"></script>
+        <!-- endbuild -->
+			
+			
+  </body>
+</html>
+
+
+
+                    
+
+
+

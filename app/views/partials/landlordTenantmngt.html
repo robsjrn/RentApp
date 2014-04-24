@@ -1,0 +1,68 @@
+
+   <div class="panel panel-primary">
+  <div class="panel-heading">Tenant Management  : </div>
+  <div class="panel-body">
+  <tabset>
+  <tab heading="Add">
+
+                <br>
+					<div class="panel panel-primary">
+					 <div class="panel-body">
+							   <div class="col-md-4">
+								 
+								   <label for="tenantnames">Tenant Names</label>
+								   <input type="text" class="form-control" placeholder="Tenant Names" id="tenantnames" ng-model="Tenant.name" ng-disabled=disableComponents>
+								   <label for="idno" >Id Number</label>
+								   <input type="text" class="form-control" placeholder="Id Number" id ="idno" ng-model="Tenant._id" ng-disabled=disableComponents>
+								   <label for="occp">Occupation</label>
+								   <textarea class="form-control" rows="3" id="desc" ng-model="Tenant.occupation" ng-disabled=disableComponents></textarea>
+								</div>
+							  <div class="col-md-4">
+							      <label for="plw">Location of Work</label>
+								   <input type="text" class="form-control" placeholder="Place of Work" id ="plw" ng-model="Tenant.location" ng-disabled=disableComponents>
+							    <label for="plot">Plot Name</label>
+							       <select class="form-control"  ng-model="Tenant.plot" id="plot" ng-options="c.name for c in plots" ng-disabled=disableComponents>    
+			                       </select>  
+                                 
+								   
+							   </div>
+                  </div>
+              <div class="panel-footer">
+			           <button type="button" class="btn btn-info" ng-click="addTenant()" ng-disabled=!disableComponents>Add</button>
+					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents ng-click="clearTenant()">Clear</button>
+					    <button type="button" class="btn btn-success" ng-click="saveTenant()" ng-disabled=disableComponents >Save</button>
+						<button type="button" class="btn btn-danger">Delete</button>
+              </div>
+
+               </div>
+            <div ng-show="tenantcreated" class="alert alert-success"><strong>{{msg}} !!!</strong> Tenant Successfully Saved</div>
+			<div ng-show="tenanterror" class="alert alert-warning"><strong>Error Occurred !!!</strong> {{msg}}</div>
+
+  </tab>
+  <tab heading="View">
+  <input type="text" class="form-control input-sm col-xs-3" placeholder="Search" ng-model="query">
+   <br>
+   <table class="table table-striped table-hover">  
+        <thead>  
+          <tr>  
+            <th>Tenant Name</th>  
+            <th>ID Number</th>
+			<th>Occupation</th>
+			<th>House Name</th>  
+            <th>Plot Name</th>  			
+          </tr>  
+        </thead> 
+
+          <tr data-ng-repeat="tenant in tenantdata  | filter:query">
+             <td><a ng-click="open(tenant)">{{tenant.name}}</a></td>
+			 <td>{{tenant._id}}</td>
+			 <td>{{tenant.occupation}}</td>
+			 <td>{{tenant.housename}}</td>
+			 <td>{{tenant.plot.name}}</td>
+		</tr>
+
+		
+      </tab>
+    <tabset>
+  </div>
+</div>

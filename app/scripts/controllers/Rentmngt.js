@@ -1,0 +1,1 @@
+var Rentmngt= angular.module('RentmngtApp', ['ngResource','ngRoute'] ); 

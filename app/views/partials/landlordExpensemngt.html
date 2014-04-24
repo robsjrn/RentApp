@@ -1,0 +1,42 @@
+<div class="panel panel-primary">
+					<div class="panel-heading">
+					  <h3 class="panel-title">Expense Management</h3>
+				     </div>
+					   <div class="panel-body">
+					     <div class="col-md-4">
+                            <label for="exptype">Expense Type</label>
+							       <select class="form-control"  ng-model="Expense.type" id="exptype" ng-options="c.name for c in expensetype" ng-disabled=disableComponents>  
+			                       </select>
+                             
+                            <label for="amt">Amount</label>
+							   <input type="text" class="form-control" placeholder="Amount" id="amt" ng-model="Expense.amount" ng-disabled=disableComponents>
+
+
+							    <label for="tenant">House Name</label>
+							       <select class="form-control"  ng-model="crit" id="tenant" ng-options="c.housename for c in Tenants" ng-disabled=disableComponents >  
+			                       </select>
+
+							    <label for="hsename">Tenant Name</label>
+							   <input type="text" class="form-control" placeholder="Tenant name" id="hsename" ng-model="crit.name" disabled>
+
+						 </div>
+
+						 <div class="col-md-4">
+                              <label for="date">Date</label>
+							   <input type="text" class="form-control" placeholder="Date" id="date" ng-model="Expense.date" disabled>                           
+                              <label for="desc">Description</label>
+								 <textarea class="form-control" rows="3" id="desc" ng-model="Expense.description" ng-disabled=disableComponents></textarea>
+
+						 </div>
+                            
+					   </div>  
+                      <div class="panel-footer">
+					   <button type="button" class="btn btn-info" ng-click="AddExpense()">Add</button>
+					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents ng-click="ClearExpense()">Clear</button>
+					    <button type="button" class="btn btn-success" ng-click="PostExpense()" ng-disabled=disableComponents>Save</button>
+					   </div>
+
+</div>
+
+ <div ng-show="paymentposted" class="alert alert-success"><strong>{{msg}} !!!</strong> Expense Successfully Posted</div>
+			<div ng-show="paymenterror" class="alert alert-danger"><strong>Error Occurred !!!</strong> {{msg}}</div>
