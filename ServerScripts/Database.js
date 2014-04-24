@@ -228,7 +228,8 @@ exports.loginTenant = function(req, res) {
  collection.findOne({'housename':req.body.housenumber}, function(err, item){
   if(item){
 			 if (item._id==req.body.pwd)
-	         {
+	         {   
+				 req.session.user=item.username;
 				 res.json(200,{sucess:"successfull" });
 	         }
 	         else { res.json(403,{error: true});}
@@ -238,3 +239,17 @@ exports.loginTenant = function(req, res) {
 });
 });
 };
+
+
+
+
+exports.getCredentials=function(userid,fn){
+ db.collection('Credential', function(err, collection) {
+  collection.findOne({'username':userid}, function(err, user) {
+	    console.log("Finding user" + user );
+	  if(user){ return fn(null, user); }
+	  else{  return fn(null, null); }
+});
+});
+};
+

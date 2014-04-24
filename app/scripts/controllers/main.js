@@ -31,6 +31,7 @@ $locationProvider.hashPrefix("!");
     $scope.awesomeThings = ['HTML5 Boilerplate','AngularJS','Karma' ];
   });
 
+
  Rentmngt.controller('Tenantsctrl', function($scope,$http,$window) {
    $scope.tenant={}
    $scope.Tenantlogin=function(){
@@ -41,7 +42,7 @@ $locationProvider.hashPrefix("!");
    $http.post('/tenantlogin',$scope.Logindata)
 				 		 .success(function(data) {
 								    $scope.invalidcredential=false;
-                                     $window.location='/tenantRedirect';							   
+                                     $window.location.href='/tenantRedirect';							   
 							 }) 
 						 .error(function(data) {
 							   $scope.invalidcredential=true;
