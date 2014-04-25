@@ -33,7 +33,7 @@ passport.use(new LocalStrategy(
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.send(401);
+  res.redirect('/Error.html');
 }
 
 
@@ -51,19 +51,12 @@ app.configure(function() {
 });
 
 var pageNotFound= function(res){
-   res.redirect('/404.html');
+   res.redirect('/Error.html');
 }
 try
  {
-		
-		app.post('/login',   passport.authenticate('local', {     successRedirect: '/Tenant.html',     failureRedirect: '/404.html'  }) );  
-		
-		
-		
-		
-		app.get('/', function(req, res){
-			res.redirect('/index.html');
-		});
+			
+		app.get('/', function(req, res){res.redirect('/index.html');});
 
      
 
@@ -78,30 +71,30 @@ try
 		
 
         app.get('/404', function(req, res){
-			res.redirect('/404.html');
+			res.redirect('/Error.html');
 		});
 
 	
 
 
-		app.post('/createTenant',DatabaseConn.CreateTenant);
-		app.post('/createHouse',DatabaseConn.CreateHouse);
+		app.post('/createTenant',ensureAuthenticated,DatabaseConn.CreateTenant);
+		app.post('/createHouse',ensureAuthenticated,DatabaseConn.CreateHouse);
 
-		app.get('/tenantList/:param',DatabaseConn.listoftenant);
-		app.get('/houseList/:param',DatabaseConn.listofHouse);
-
-
-		app.get('/UnbookedtenantList/:param',DatabaseConn.listofUnbookedtenant);
-		app.get('/VacanthouseList/:param',DatabaseConn.listofVacantHouse);
-
-		app.get('/bookedtenantList/:param',DatabaseConn.listofbookedtenant);
-
-		app.post('/Rent',DatabaseConn.Rent);
-		app.post('/vacate',DatabaseConn.vacate);
+		app.get('/tenantList/:param',ensureAuthenticated,DatabaseConn.listoftenant);
+		app.get('/houseList/:param',ensureAuthenticated,DatabaseConn.listofHouse);
 
 
+		app.get('/UnbookedtenantList/:param',ensureAuthenticated,DatabaseConn.listofUnbookedtenant);
+		app.get('/VacanthouseList/:param',ensureAuthenticated,DatabaseConn.listofVacantHouse);
 
-		app.post('/RentalPayment',DatabaseConn.postTransaction);
+		app.get('/bookedtenantList/:param',ensureAuthenticated,DatabaseConn.listofbookedtenant);
+
+		app.post('/Rent',ensureAuthenticated,DatabaseConn.Rent);
+		app.post('/vacate',ensureAuthenticated,DatabaseConn.vacate);
+
+
+
+		app.post('/RentalPayment',ensureAuthenticated,DatabaseConn.postTransaction);
 		app.get('/tenantStatement',ensureAuthenticated,DatabaseConn.tenantStatement);
 		app.get('/tenantDetails',ensureAuthenticated,DatabaseConn.tenantDetails); 
  }
