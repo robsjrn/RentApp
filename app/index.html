@@ -12,6 +12,7 @@
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="public/bootstrap/dist/css/bootstrap.css" />
+	<link rel="stylesheet" href="public/font-awesome/css/font-awesome.min.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
@@ -25,21 +26,38 @@
 
     <!-- Add your site or application content here -->
 
-   <div class="container-fluid">
-   <h3>Property Management</h3>
-   <div class="row">
-       
-		 <div class="col-md-4 col-md-offset-4">
-             <ul class="nav nav-pills nav-justified">
-				<li><a href="#!/tenants">Tenant</a></li>
-				<li><a href="#!/landlords">Landlords</a></li>
-				<li><a href="#!/agents">Agents</a></li>
-              </ul>
-         </div>
+   <div class="container">
+      <h3>Property Management</h3>
+        <div class="row">
+       		
+             <div class="pull-right">
+				<a href="#!/tenants" class="btn btn-default"><span class="fa fa-user"></span>Tenant</a></li>
+				<a href="#!/landlords" class="btn btn-default"><span class="fa fa-user"></span>Landlords</a></li>
+				<a href="#!/agents" class="btn btn-default"><span class="fa fa-user"></span>Agents</a></li>
+             </div>     
 		    
-  </div>
-    <br>
-    <div class="row" ng-view=""></div>
+      </div>
+ <br>
+	<div class="row">
+               
+			       <div class="col-xs-6 col-sm-6 col-md-6">
+					   <div class="jumbotron text-center"> 
+					        For Advertisement
+					   </div>
+			         </div>
+			   
+			         <div class="col-xs-6 col-sm-6 col-md-6">
+					
+					       <div class="well"> 
+						    <h3><span class="fa fa-lock"> Authentication</h3>
+					           <div  ng-view=""></div>
+					   </div>
+			         </div>
+			   
+	  </div>
+   
+</div>
+
 
          <div class="navbar navbar-default navbar-fixed-bottom">
 		         <div class="container" >

@@ -1,38 +1,32 @@
- <div class="col-md-6 col-md-offset-3" >
-		  <br>
-             <div class="well">
-			      <form class="form-horizontal" role="form" novalidate >
-					  <div class="form-group">
-						<label for="tid" class="col-sm-2 control-label">House Number</label>
-						<div class="col-sm-10">
-						  <input type="text" class="form-control" id="tid" ng-model="tenant.housenumber" placeholder="Tenant House Number">
-						</div>
-					  </div>
-					  <div class="form-group">
-						<label for="inputPassword" class="col-sm-2 control-label">Password</label>
-						<div class="col-sm-10">
-						  <input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="tenant.password">
-						</div>
-					  </div>
-					  <div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-						  <div class="checkbox">
-							<label>
-							  <input type="checkbox"> Remember me
-							</label>
-						  </div>
-						</div>
-					  </div>
-					  <div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-						  <button   ng-click="Tenantlogin()"  class="btn btn-primary">Sign in</button >
-						</div>
-					  </div>
-					</form>
-			  </div>
 
-         
-                                                <div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid House Name or Password !!!</strong> </div>                                 
+	 <h3><span class="fa fa-sign-in">Login</h3>
+	 <form id="login" name="login" class="form-horizontal" role="form" novalidate>  
+	  
+	   <div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid Credential !!!</strong> </div>  
 
+	   <div class="form-group">
+		 <label for="username" class="col-sm-2 control-label">Username</label>
+	
+		 <input type="text" class="form-control" name="username" id="username" placeholder="House Name" ng-model="user.username" required /> 
+		 <span ng-show="login.username.$dirty &amp;&amp; login.username.$error.required" class="help-block"> House Name is Required</span>
+	
+	   <div>     
+	   
+	   <div >
+		<label for="password" class="col-sm-2 control-label">Password</label>  
+	
+		<input type="password" class="form-control" name="password" id="password" placeholder="Password" ng-model="user.password" required />
+		 <span ng-show="login.password.$dirty &amp;&amp; login.password.$error.required" class="help-block"> Password is Required</span>
 
-         </div>
+	   <div> 
+	   
+	   <br>
+		 <button  ng-disabled="login.$invalid" ng-click="Tenantlogin()" class="btn btn-warning" > Login</button>      
+	 </div>    
+	 </form> 
+	 <br>
+	<div class="btn-group">
+	 <a href="#" class="btn btn-sm btn-primary"><span class="fa fa-facebook"></span>Facebook</a></li>
+	 <a href="#" class="btn btn-sm btn-info"><span class="fa fa-twitter"></span>Twitter</a></li>
+	 <a href="#" class="btn btn-sm btn-danger"><span class="fa fa-google-plus"></span>Google+</a></li>
+	</div>

@@ -1,33 +1,26 @@
- <div class="col-md-6 col-md-offset-3">
-		  <br>
-             <div class="well">
-			      <form class="form-horizontal" role="form">
-					  <div class="form-group">
-						<label for="tid" class="col-sm-2 control-label"> Id</label>
-						<div class="col-sm-10">
-						  <input type="text" class="form-control" id="tid" placeholder="Landlord Identification">
-						</div>
-					  </div>
-					  <div class="form-group">
-						<label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-						<div class="col-sm-10">
-						  <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-						</div>
-					  </div>
-					  <div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-						  <div class="checkbox">
-							<label>
-							  <input type="checkbox"> Remember me
-							</label>
-						  </div>
-						</div>
-					  </div>
-					  <div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-						  <a  href="/landlordlogin"  class="btn btn-primary">Sign in</a>
-						</div>
-					  </div>
-					</form>
-			  </div>
-         </div>
+
+	 <h3><span class="fa fa-sign-in">Login</h3>
+	 <form id="login" name="login" class="form-horizontal" role="form" novalidate>  
+	  
+	   <div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid Credential !!!</strong> </div>  
+
+	   <div class="form-group">
+		 <label for="username" class="col-sm-2 control-label">Appid</label>
+	
+<input type="text" class="form-control" name="username" id="username" placeholder="Application ID" ng-model="landlord.username" required /> 
+<span ng-show="login.username.$dirty &amp;&amp; login.username.$error.required" class="help-block"> Application ID is Required</span>
+	
+	   <div>     
+	   
+	   <div >
+		<label for="password" class="col-sm-2 control-label">Password</label>  
+	
+	<input type="password" class="form-control" name="password" id="password" placeholder="Password" ng-model="landlord.password" required />
+		 <span ng-show="login.password.$dirty &amp;&amp; login.password.$error.required" class="help-block"> Password is Required</span>
+
+	   <div> 
+	   
+	   <br>
+		 <button  ng-disabled="login.$invalid" ng-click="Landlordlogin()" class="btn btn-warning" > Login</button>      
+	 </div>    
+	 </form> 

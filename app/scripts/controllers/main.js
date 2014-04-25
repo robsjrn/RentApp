@@ -33,13 +33,10 @@ $locationProvider.hashPrefix("!");
 
 
  Rentmngt.controller('Tenantsctrl', function($scope,$http,$window) {
-   $scope.tenant={}
+
    $scope.Tenantlogin=function(){
-		$scope.Logindata={
-		             "housenumber":$scope.tenant.housenumber,
-					  "pwd":$scope.tenant.password
-		};
-   $http.post('/tenantlogin',$scope.Logindata)
+
+   $http.post('/tenantlogin',$scope.user)
 				 		 .success(function(data) {
 								    $scope.invalidcredential=false;
                                      $window.location.href='/tenantRedirect';							   
@@ -51,13 +48,40 @@ $locationProvider.hashPrefix("!");
   
 });
 
- Rentmngt.controller('landlordsctrl', function($scope) {
+ Rentmngt.controller('landlordsctrl', function($scope,$http,$window) {
    
+   $scope.Landlordlogin=function(){
+
+                  $http.post('/landlordlogin',$scope.landlord)
+				 		 .success(function(data) {
+								    $scope.invalidcredential=false;
+                                     $window.location.href='/landlordRedirect';							   
+							 }) 
+						 .error(function(data) {
+							   $scope.invalidcredential=true;
+							 });	
+   };
+
+
   
 });
 
- Rentmngt.controller('Agentsctrl', function($scope) {
+ Rentmngt.controller('Agentsctrl', function($scope,$http,$window) {
    
+
+   $scope.Agentlogin=function(){
+
+                  $http.post('/Agentlogin',$scope.agent)
+				 		 .success(function(data) {
+								    $scope.invalidcredential=false;
+                                     $window.location.href='/agentRedirect';							   
+							 }) 
+						 .error(function(data) {
+							   $scope.invalidcredential=true;
+							 });	
+   };
+
+
   
 });
 

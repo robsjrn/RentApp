@@ -11,13 +11,19 @@ Tenantmngt.controller('MainTenantsctrl', function($scope,$http) {
 });
 
 
-Tenantmngt.controller('statementsctrl', function($scope,$http) {
+Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
  
   $http.get('/tenantStatement')
-	  .success(function (data){$scope.statement=data; });
-      .error(function(data) {   $window.location.href='/404';);
+	   
+                      .success(function(data) {
+							   $scope.statement=data;
+							 }) 
+						 .error(function(data) {
+					           alert("Errorrrrs..");
+							 });	
 
-  
+
+
 });
 
 Tenantmngt.controller('inboxsctrl', function($scope) {

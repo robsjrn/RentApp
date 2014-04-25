@@ -184,9 +184,8 @@ collection.insert(req.body, function(err, item) {
 
 
 exports.tenantStatement = function(req, res) {
- console.log("Statement "+ req.params.param);
  db.collection('Transaction', function(err, collection) {
- collection.find({"tenantid":"22829756"}).toArray( function(err, item){
+ collection.find({"tenantid":req.user._id}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -198,9 +197,9 @@ exports.tenantStatement = function(req, res) {
 
 exports.tenantDetails = function(req, res) {
     db.collection('Tenant', function(err, collection) {
-     collection.findOne({"_id":"22829756"},function(err, item) {
+     collection.findOne({"_id":req.user._id},function(err, item) {
 	   if(item){res.send(item);
-	   }else{res.send("Error "+err);}
+	   }else{res.send(401);}
 });
 });
 
@@ -223,30 +222,14 @@ updateHouse(houseupdate,details.number,function(ok,status){
 };
 
 
-exports.loginTenant = function(req, res) {
- db.collection('Tenant', function(err, collection) {
- collection.findOne({'housename':req.body.housenumber}, function(err, item){
-  if(item){
-			 if (item._id==req.body.pwd)
-	         {   
-				 req.session.user=item.username;
-				 res.json(200,{sucess:"successfull" });
-	         }
-	         else { res.json(403,{error: true});}
-	  }
-  if (err) {res.json(500,{error: "database Error"});}
-
-});
-});
-};
 
 
 
 
 exports.getCredentials=function(userid,fn){
- db.collection('Credential', function(err, collection) {
-  collection.findOne({'username':userid}, function(err, user) {
-	    console.log("Finding user" + user );
+ db.collection('Tenant', function(err, collection) {
+  collection.findOne({'housename':userid}, function(err, user) {
+	 console.log("Getting User Credentials.." + userid);
 	  if(user){ return fn(null, user); }
 	  else{  return fn(null, null); }
 });
