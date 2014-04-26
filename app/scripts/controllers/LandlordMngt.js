@@ -7,6 +7,17 @@ landlordtmngt.run(function ($rootScope) {
  
 });
 
+landlordtmngt.controller('MainLandlordctrl', function($scope,$http) {
+ $scope.landlordDetails={"names":"Peter Njihia Muthama","id":"22829756 ","occupation":"Farmer",
+	                     "Home":"Runda","contact":"0725-566-522","noplots":"2","nohse":"3","expcMonthlyIncome":"5000"};
+
+ $http.get('/LandLordDetails').success(function (data){console.log(data);$scope.landlordDetails=data; });
+
+  
+});
+
+
+
 landlordtmngt.controller('editTenantCtrl', function modalController ($scope, $modalInstance, Tenant) {
     $scope.Tenant = Tenant;
     $scope.ok = function () {
@@ -481,6 +492,9 @@ landlordtmngt.directive("clickToEdit", function() {
         }
     };
 });
+
+
+
 
 
 //Services

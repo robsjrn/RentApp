@@ -58,19 +58,20 @@
 
 
 <div class="container">
-      <div class="row">
+      <div class="row" data-ng-controller="MainLandlordctrl">
   	        
 			<div class="col-xs-3 col-sm-2 col-md-2">
 			
 					<div class="panel panel-primary">
 					<div class="panel-heading">
-					  <h3 class="panel-title">LandLord Details</h3>
+					  <h5 class="panel-title">LandLord Details</h5>
 				   </div>
 					  <div class="panel-body">
-                          <p> <h5>Peter Njihia Muthama </h5>  </p>
-                          <p> <h5>22829756 </h5>  </p>
-						  <p> <h5>Farmer </h5>  </p>
-						  <p> <h5>Runda</h5>  </p>
+                          <p> <h5>{{landlordDetails.names}}</h5>  </p>
+                          <p> <h5>{{landlordDetails.id}}</h5>  </p>
+						  <p> <h5>{{landlordDetails.occupation}}</h5>  </p>
+						  <p> <h5>{{landlordDetails.Home}}</h5>  </p>
+						  <p> <h5>{{landlordDetails.contact}}</h5>  </p>
 						</div>
 					</div>  
 			
@@ -79,9 +80,9 @@
 					  <h3 class="panel-title">Summary</h3>
 				   </div>
 					  <div class="panel-body">
-                            <p>Number of Plots <span class="badge badge-success">2</span></p>   
-							<p>Number of Houses <span class="badge badge-success">2</span></p>  
-							<p>Expected Monthly Income <span class="badge badge-success">15000</span></p>  
+                            <p>Number of Plots <span class="badge badge-success">{{landlordDetails.noplots}}</span></p>   
+							<p>Number of Houses <span class="badge badge-success">{{landlordDetails.nohse}}</span></p>  
+							<p>Expected Monthly Income <span class="badge badge-success">{{landlordDetails.expcMonthlyIncome}}</span></p>  
 						
 					   </div>
 					</div>  
@@ -95,12 +96,12 @@
 			
 		
       
-	<div class="col-xs-6 col-sm-7 col-md-8">
+	<div class="col-xs-5 col-sm-6 col-md-7">
           <div data-ng-view >
           </div>
 	</div>
 
-            <div class="col-xs-3 col-sm-3 col-md-2">
+            <div class="col-xs-4 col-sm-4 col-md-3">
 	               <div class="panel panel-primary">
 					<div class="panel-heading">
 					  <h3 class="panel-title">Navigation</h3>
@@ -130,7 +131,9 @@
 
 <div class="navbar navbar-default navbar-fixed-bottom">
 		         <div class="container" >
-			       <p>copyrights @Softsol 2014 </p>				    	
+			       <p>copyrights @Softsol 2014 </p>	
+				   
+				   </div>
                </div>
   </div>
 

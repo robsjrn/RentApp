@@ -36,10 +36,10 @@ $locationProvider.hashPrefix("!");
 
    $scope.Tenantlogin=function(){
 
-   $http.post('/tenantlogin',$scope.user)
+   $http.post('/login',$scope.user)
 				 		 .success(function(data) {
 								    $scope.invalidcredential=false;
-                                     $window.location.href='/tenantRedirect';							   
+                                     $window.location.href='/LoginRedirect';							   
 							 }) 
 						 .error(function(data) {
 							   $scope.invalidcredential=true;
@@ -52,10 +52,10 @@ $locationProvider.hashPrefix("!");
    
    $scope.Landlordlogin=function(){
 
-                  $http.post('/landlordlogin',$scope.landlord)
+                  $http.post('/login',$scope.landlord)
 				 		 .success(function(data) {
 								    $scope.invalidcredential=false;
-                                     $window.location.href='/landlordRedirect';							   
+                                     $window.location.href='/LoginRedirect';							   
 							 }) 
 						 .error(function(data) {
 							   $scope.invalidcredential=true;
@@ -71,10 +71,10 @@ $locationProvider.hashPrefix("!");
 
    $scope.Agentlogin=function(){
 
-                  $http.post('/Agentlogin',$scope.agent)
+                  $http.post('/login',$scope.agent)
 				 		 .success(function(data) {
 								    $scope.invalidcredential=false;
-                                     $window.location.href='/agentRedirect';							   
+                                     $window.location.href='/LoginRedirect';							   
 							 }) 
 						 .error(function(data) {
 							   $scope.invalidcredential=true;

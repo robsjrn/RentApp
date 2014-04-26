@@ -2,10 +2,6 @@ var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute'] );
 
 Tenantmngt.controller('MainTenantsctrl', function($scope,$http) {
 
-
-   $scope.names="Robert Njoroge Muthumbi";
-  //  $scope.TenantData={"_id":"1000","tenant":{"names":"Robert Njoroge Muthumbi","ID":"22829756","occupation":{"name":"Banking","location":"Upperhill"},"balance":"20000","plot":{"name":"lrt25","housenumber":"5000"}}};
-
   $http.get('/tenantDetails').success(function (data){console.log(data);$scope.TenantData=data; });
 
 });

@@ -1,3 +1,25 @@
 Security
 
 
+Create Admin Panel  for :-
+
+    1. Add  User for them to Access the System
+    2.Add Hse Types eg [{"name":"One Bedroom"},{"name":"Two Bedroom"},{"name":"BedSitter"},	{"name":"Three Bedroom"}];
+    3.Payment Method e.g [{"_id":"1","name":"Cash"},
+		{"_id":"2","name":"Mpesa"},
+		{"_id":"3","name":"Bank Deposit"}
+		];
+
+    4.Transaction Types :[{"_id":"1","name":"Rent Payment"},
+		{"_id":"2","name":"Deposit Payment"},
+		{"_id":"3","name":"Arrears Payment"},
+	    {"_id":"3","name":"Damage Payment"}
+		];
+
+    5. Expense Type : [{"_id":"1","name":"Deposit Refund"},
+		{"_id":"2","name":"Damages"},
+		{"_id":"3","name":"Materials"},
+		{"_id":"4","name":"Others"}];
+
+
+

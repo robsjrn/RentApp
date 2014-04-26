@@ -9,7 +9,7 @@ var passport = require('passport'),LocalStrategy = require('passport-local').Str
 
 
 passport.serializeUser(function(user, done) {
-  done(null, user.housename);
+  done(null, user._id);
 });
 
 passport.deserializeUser(function(_id, done) {
@@ -24,7 +24,7 @@ passport.use(new LocalStrategy(
     DatabaseConn.getCredentials(username, function(err, user) {
       if (err) {console.log("error" + err); return done(err); }
       if (!user) {console.log("Incorrect username" );return done(null, false); }
-      if (user._id != password) { console.log("Incorrect password." ); return done(null, false); }
+      if (user.password != password) { console.log("Incorrect password." ); return done(null, false); }
       return done(null, user);
     });
   }
@@ -60,15 +60,29 @@ try
 
      
 
-		app.post('/tenantlogin', passport.authenticate('local'),  function(req, res) { res.send(200);});
-        app.post('/landlordlogin', passport.authenticate('local'),  function(req, res) { res.send(200);});
-		app.post('/agentlogin', passport.authenticate('local'),  function(req, res) { res.send(200);});	
+		app.post('/login', passport.authenticate('local'),  function(req, res) { res.send(200);});
+      
+		
 
-		
-		app.get('/tenantRedirect', function(req, res){res.redirect('/Tenant.html');	});
-        app.get('/landlordRedirect', function(req, res){res.redirect('/Landlord.html');	});
-       	app.get('/agentRedirect', function(req, res){res.redirect('/Agent.html');});
-		
+        app.get('/LoginRedirect', function(req, res){
+			console.log("The User Role is." +req.user.role );
+           
+			if(req.user.role=="tenant"){
+			    res.redirect('/Tenant.html');
+			 }
+
+            else if(req.user.role=="landlord"){
+			    res.redirect('/Landlord.html');
+			 }
+         
+             else if(req.user.role=="agent"){
+			    res.redirect('/Agent.html');
+			 }
+				
+			
+			});
+
+
 
         app.get('/404', function(req, res){
 			res.redirect('/Error.html');
@@ -97,6 +111,10 @@ try
 		app.post('/RentalPayment',ensureAuthenticated,DatabaseConn.postTransaction);
 		app.get('/tenantStatement',ensureAuthenticated,DatabaseConn.tenantStatement);
 		app.get('/tenantDetails',ensureAuthenticated,DatabaseConn.tenantDetails); 
+
+        app.get('/LandLordDetails',ensureAuthenticated,DatabaseConn.LandLordDetails); 
+
+		
  }
  
  catch (e)
