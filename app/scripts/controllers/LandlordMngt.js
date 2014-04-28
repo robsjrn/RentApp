@@ -3,17 +3,23 @@ var landlordtmngt= angular.module('LandlordmngtApp', ['ngResource','ngRoute','ui
 
 landlordtmngt.run(function ($rootScope) {
 	$rootScope.plot = [{"name":"kahawa_1"},{"name":"kahawa_2"}];
-	$rootScope.hsetype=[{"name":"One Bedroom"},{"name":"Two Bedroom"},{"name":"BedSitter"},	{"name":"Three Bedroom"}];
  
 });
 
-landlordtmngt.controller('MainLandlordctrl', function($scope,$http) {
- $scope.landlordDetails={"names":"Peter Njihia Muthama","id":"22829756 ","occupation":"Farmer",
-	                     "Home":"Runda","contact":"0725-566-522","noplots":"2","nohse":"3","expcMonthlyIncome":"5000"};
+landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope) {
 
+ 
  $http.get('/LandLordDetails').success(function (data){console.log(data);$scope.landlordDetails=data; });
-
+  $http.get('/LandLordConfiguration').success(function (data)
+	  {
+	  console.log(data);$scope.config=data;
+	  $rootScope.expenseType=$scope.config.expenseType;
+      $rootScope.paymentMethod=$scope.config.paymentmethod;
+	  $rootScope.TransactionType=$scope.config.transactiontype;
+	  $rootScope.hsetype=$scope.config.hsetype;
   
+  });
+	  
 });
 
 
@@ -148,7 +154,7 @@ landlordtmngt.controller('plotmngtctrl', function($scope) {
 });
 
 
-landlordtmngt.controller('trxnmngtctrl', function($scope,$http) {
+landlordtmngt.controller('trxnmngtctrl', function($scope,$http,$rootScope) {
 
 $scope.paymentposted=false;
 $scope.paymenterror=false;
@@ -161,17 +167,10 @@ $scope.crit={};
 
 $scope.Transaction={};
 $scope.Transaction.date=new Date();
-$scope.paymentmethod=[{"_id":"1","name":"Cash"},
-		{"_id":"2","name":"Mpesa"},
-		{"_id":"3","name":"Bank Deposit"}
-		];
+$scope.paymentmethod=$rootScope.paymentMethod;
 $scope.Transaction.paymentmethod=$scope.paymentmethod[0];
 
-$scope.transactiontype=[{"_id":"1","name":"Rent Payment"},
-		{"_id":"2","name":"Deposit Payment"},
-		{"_id":"3","name":"Arrears Payment"},
-	    {"_id":"3","name":"Damage Payment"}
-		];
+$scope.transactiontype=$rootScope.TransactionType;
 $scope.Transaction.transactiontype=$scope.transactiontype[0];
 
  $scope.AddPayment=function(){
@@ -225,7 +224,7 @@ $scope.postPayment=function(){
 
 
 
-landlordtmngt.controller('expensemngtctrl', function($scope,$http) {
+landlordtmngt.controller('expensemngtctrl', function($scope,$http,$rootScope) {
 
 $scope.paymentposted=false;
 $scope.paymenterror=false;
@@ -235,10 +234,9 @@ $scope.disableComponents=true;
 
 $scope.Expense=[];
 $scope.crit={};
-$scope.expensetype=[{"_id":"1","name":"Deposit Refund"},
-		{"_id":"2","name":"Damages"},
-		{"_id":"3","name":"Materials"},
-		{"_id":"4","name":"Others"}];
+
+
+$scope.expensetype=$rootScope.expenseType;
 
  $scope.Expense.type=$scope.expensetype[0];
  $scope.Expense.date=new Date();
@@ -418,7 +416,7 @@ $http.get('/VacanthouseList/'+{"plot.name":"kahawa_2"}).success(function (data){
 
 
 	  data={"update":{
-		 "tenantupdate":{"hsestatus":1,"housename":$scope.House.housename.number,"balance":($scope.House.housename.amount * 2)},
+		 "tenantupdate":{"AccessStatus":0,"hsestatus":1,"housename":$scope.House.housename.number,"balance":($scope.House.housename.amount * 2)},
 		 "houseUpdate":{"status":"rented","tenantid":$scope.Tenant.name._id},
          "Trxn":{"tenantid":$scope.Tenant.name._id, "housenumber":$scope.House.housename.number,
 	             "plotnumber":$scope.House.housename.plot.name,"transactiondate":new Date(),

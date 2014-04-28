@@ -160,6 +160,18 @@ var updateTenantBal=function (tenantbal,tenantid ,callback){
 };
 
 
+var updateAccessStatus=function (tenantid ,callback){
+	  console.log("Acess Status for  " + req.body._id);
+
+   db.collection('Tenant', function(err, collection) {
+    collection.update({"_id" : tenantid},{$set:{"AccessStatus" : 1}},{safe:true}, function(err, item) {
+     if(err){return callback(false,err);}
+	  else{ return callback(true,null);}
+      });
+   });
+};
+
+
 var CreateTrxn=function (Trxn,callback){
 db.collection('Transaction', function(err, collection) {
 collection.insert(Trxn, function(err, item) {
@@ -247,3 +259,77 @@ exports.LandLordDetails = function(req, res) {
 });
 
 };
+
+
+
+
+exports.Accessrequest = function(req, res) {
+ db.collection('Tenant', function(err, collection) {
+ collection.find({"AccessStatus":0}).toArray( function(err, item){
+  if(item){res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+exports.GrantAccess = function(req, res) {
+ db.collection('Credential', function(err, collection) {
+  collection.insert(req.body, function(err, item) {
+   if (err) {res.json(500,{error: "database Error"});}
+   else{updateAccessStatus(req.body._id,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
+   });}
+});
+});
+};
+
+
+exports.LandLordConfiguration = function(req, res) {
+ db.collection('Configuration', function(err, collection) {
+ collection.findOne({"_id":"RentalConfiguration"},function(err, item) {
+  if(item){console.log("Items ..." + item);res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+exports.HseTypeConfiguration = function(req, res) {
+ db.collection('Configuration', function(err, collection) {
+ collection.update({"_id":"RentalConfiguration"},{$addToSet:{hsetype : req.body}},{safe:true}, function(err, item) {
+   if (err) {res.json(500,{error: "database Error"});}
+   else{res.json(200);}
+});
+});
+};
+
+exports.PaymentmethodConfiguration = function(req, res) {
+ db.collection('Configuration', function(err, collection) {
+ collection.update({"_id":"RentalConfiguration"},{$addToSet:{paymentmethod : req.body}},{safe:true}, function(err, item) {
+   if (err) {res.json(500,{error: "database Error"});}
+   else{res.json(200);}
+});
+});
+};
+
+
+exports.TransactiontypeConfiguration = function(req, res) {
+ db.collection('Configuration', function(err, collection) {
+ collection.update({"_id":"RentalConfiguration"},{$addToSet:{transactiontype : req.body}},{safe:true}, function(err, item) {
+   if (err) {res.json(500,{error: "database Error"});}
+   else{res.json(200);}
+});
+});
+};
+
+
+exports.ExpenseTypeConfiguration = function(req, res) {
+ db.collection('Configuration', function(err, collection) {
+ collection.update({"_id":"RentalConfiguration"},{$addToSet:{expenseType : req.body}},{safe:true}, function(err, item) {
+   if (err) {res.json(500,{error: "database Error"});}
+   else{res.json(200);}
+});
+});
+};
+
+

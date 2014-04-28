@@ -57,7 +57,7 @@ try
  {
 			
 		app.get('/', function(req, res){res.redirect('/index.html');});
-
+        app.get('/Admin', function(req, res){res.redirect('/Admin.html');});
      
 
 		app.post('/login', passport.authenticate('local'),  function(req, res) { res.send(200);});
@@ -77,6 +77,9 @@ try
          
              else if(req.user.role=="agent"){
 			    res.redirect('/Agent.html');
+			 }
+			  else if(req.user.role=="admin"){
+			    res.redirect('/Admin.html');
 			 }
 				
 			
@@ -111,9 +114,20 @@ try
 		app.post('/RentalPayment',ensureAuthenticated,DatabaseConn.postTransaction);
 		app.get('/tenantStatement',ensureAuthenticated,DatabaseConn.tenantStatement);
 		app.get('/tenantDetails',ensureAuthenticated,DatabaseConn.tenantDetails); 
-
         app.get('/LandLordDetails',ensureAuthenticated,DatabaseConn.LandLordDetails); 
+		app.get('/LandLordConfiguration',ensureAuthenticated,DatabaseConn.LandLordConfiguration);
+		
+        
+		app.get('/AccessRequest',DatabaseConn.Accessrequest);
+		app.post('/GrantAccess',DatabaseConn.GrantAccess);
 
+
+        app.post('/HseTypeConfiguration',DatabaseConn.HseTypeConfiguration);
+		app.post('/PaymentmethodConfiguration',DatabaseConn.PaymentmethodConfiguration);
+		app.post('/TransactiontypeConfiguration',DatabaseConn.TransactiontypeConfiguration);
+		app.post('/ExpenseTypeConfiguration',DatabaseConn.ExpenseTypeConfiguration);
+		
+          
 		
  }
  

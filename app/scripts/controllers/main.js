@@ -36,7 +36,7 @@ $locationProvider.hashPrefix("!");
 
    $scope.Tenantlogin=function(){
 
-   $http.post('/login',$scope.user)
+        $http.post('/login',$scope.user)
 				 		 .success(function(data) {
 								    $scope.invalidcredential=false;
                                      $window.location.href='/LoginRedirect';							   
