@@ -35,10 +35,14 @@ collection.insert(req.body, function(err, item) {
 
 
 exports.CreateHouse = function(req, res) {
+ console.log("The Hse Amount is .."+req.body.amount);
+
 db.collection('House', function(err, collection) {
 collection.insert(req.body, function(err, item) {
    if (err) {res.json(500,{error: "database Error"});}
-   else{res.json(200,{success: "Succesfull"});	}
+   else{updatenohse(req.user.identifier,1,req.body.amount,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
+   });}
+
 });
 });
 };
@@ -161,7 +165,7 @@ var updateTenantBal=function (tenantbal,tenantid ,callback){
 
 
 var updateAccessStatus=function (tenantid ,callback){
-	  console.log("Acess Status for  " + req.body._id);
+	  console.log("Acess Status for  " +tenantid );
 
    db.collection('Tenant', function(err, collection) {
     collection.update({"_id" : tenantid},{$set:{"AccessStatus" : 1}},{safe:true}, function(err, item) {
@@ -274,10 +278,11 @@ exports.Accessrequest = function(req, res) {
 };
 
 exports.GrantAccess = function(req, res) {
+	console.log("Giving Acces to Sytem to .." + req.body.identifier);
  db.collection('Credential', function(err, collection) {
   collection.insert(req.body, function(err, item) {
    if (err) {res.json(500,{error: "database Error"});}
-   else{updateAccessStatus(req.body._id,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
+   else{updateAccessStatus(req.body.identifier,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
    });}
 });
 });
@@ -332,4 +337,55 @@ exports.ExpenseTypeConfiguration = function(req, res) {
 });
 };
 
+
+exports.LandlordAddPlots = function(req, res) {
+ db.collection('Landlord', function(err, collection) {
+ collection.update({"_id":req.user.identifier},{$addToSet:{plots : req.body},  $inc:{noplots:1}},{safe:true}, function(err, item) {
+   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+   else{res.json(200);}
+});
+});
+};
+
+
+
+
+
+exports.CreateLandlord = function(req, res) {
+    var update=req.body.update;
+	var LandlordDet=update.LandlordDet;
+	var CredentialDet= update.CredentialDet;
+
+ db.collection('Landlord', function(err, collection) {
+ collection.insert(LandlordDet,{safe:true}, function(err, item) {
+   if (err) {res.json(500,{error: "database Error"});}
+   else{GrantLandlordAccess(CredentialDet,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
+   });}
+
+});
+});
+};
+
+
+var GrantLandlordAccess=function (CredentialDet ,callback){
+   db.collection('Credential', function(err, collection) {
+    collection.insert(CredentialDet,{safe:true}, function(err, item) {
+     if(err){return callback(false,err);}
+	  else{ return callback(true,null);}
+      });
+   });
+};
+
+
+
+var updatenohse=function (landlordid,no,Amount ,callback){
+    console.log("Updating the hse Details" +landlordid + ".."+ no+".."+ Amount );
+
+   db.collection('Landlord', function(err, collection) {
+    collection.update({"_id" : landlordid},{ $inc:{expcMonthlyIncome:Amount,nohse:no}},{safe:true}, function(err, item) {
+     if(err){console.log(err);return callback(false,err);}
+	  else{ return callback(true,null);}
+      });
+   });
+};
 

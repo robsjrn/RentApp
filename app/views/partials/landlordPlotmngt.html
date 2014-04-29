@@ -5,27 +5,29 @@
 					   <div class="panel-body">
                              <div class="col-md-4">
                                    <label for="plotname">Plot Name</label>
-								   <input type="text" class="form-control" placeholder="Plot Name" id="plotname" ng-model="plot.name">
+								   <input type="text" class="form-control" placeholder="Plot Name" id="plotname" ng-model="LandlordPlot.name">
 								   <label for="contact">Contact Name</label>
-								   <input type="text" class="form-control" placeholder="Contact Name" id="contact" ng-model="plot.contact.name">
+								   <input type="text" class="form-control" placeholder="Contact Name" id="contact" ng-model="LandlordPlot.contact.name">
 								   <label for="contactphone">Contact Phone</label>
-								   <input type="text" class="form-control" placeholder="Contact Phone" id="contactphone" ng-model="plot.contact.phone">
+								   <input type="text" class="form-control" placeholder="Contact Phone" id="contactphone" ng-model="LandlordPlot.contact.phone">
 							 </div>
 
 
 							  <div class="col-md-4">
 							         <label for="location">Location</label>
-								     <input type="text" class="form-control" placeholder="Location" id="location" ng-model="plot.location">
+								     <input type="text" class="form-control" placeholder="Location" id="location" ng-model="LandlordPlot.location">
                                       <label for="plotdesc">Description</label>
-									  <textarea class="form-control" rows="3" id="plotdesc" ng-model="plot.description"></textarea>
+									  <textarea class="form-control" rows="3" id="plotdesc" ng-model="LandlordPlot.description"></textarea>
 							 </div>
 
 					   </div>  
                       <div class="panel-footer">
 					   <button type="button" class="btn btn-info">Add</button>
 					    <button type="button" class="btn btn-warning">Clear</button>
-					    <button type="button" class="btn btn-success">Save</button>
+					    <button type="button" class="btn btn-success" ng-click="Addplot()">Save</button>
 					   </div>
 
 </div>
-                
+               
+<div ng-show="plotSuccess" class="alert alert-success"><strong>{{msg}} !!!</strong> Plot Added Successfully </div>
+<div ng-show="ploterror" class="alert alert-warning"><strong>Error Occurred !!!</strong> {{msg}}</div>

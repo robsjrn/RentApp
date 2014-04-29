@@ -1,15 +1,15 @@
 var landlordtmngt= angular.module('LandlordmngtApp', ['ngResource','ngRoute','ui.bootstrap','angularCharts'] ); 
 
 
-landlordtmngt.run(function ($rootScope) {
-	$rootScope.plot = [{"name":"kahawa_1"},{"name":"kahawa_2"}];
- 
-});
-
 landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope) {
 
  
- $http.get('/LandLordDetails').success(function (data){console.log(data);$scope.landlordDetails=data; });
+ $http.get('/LandLordDetails').success(function (data){
+	 console.log(data);$
+	 $rootScope.landlordDetails=data;
+	 $rootScope.plot=data.plots;
+		 
+	 });
   $http.get('/LandLordConfiguration').success(function (data)
 	  {
 	  console.log(data);$scope.config=data;
@@ -17,7 +17,7 @@ landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope) {
       $rootScope.paymentMethod=$scope.config.paymentmethod;
 	  $rootScope.TransactionType=$scope.config.transactiontype;
 	  $rootScope.hsetype=$scope.config.hsetype;
-  
+     
   });
 	  
 });
@@ -68,6 +68,7 @@ tenantlist.query=function(data){
 						 .success(function(data) {
 							    $scope.tenantcreated=true;
 								$scope.msg=data.success;
+								$scope.tenantdata.push($scope.Tenant)
 							 }) 
 						 .error(function(data) {
 							 $scope.tenanterror=true;
@@ -135,6 +136,8 @@ landlordtmngt.controller('housemngtctrl', function($scope,$rootScope,$http) {
 						 .success(function(data) {
 							    $scope.housecreated=true;
 								$scope.msg=data.success;
+								$rootScope.landlordDetails.nohse =$rootScope.landlordDetails.nohse + 1;
+                                $rootScope.landlordDetails.expcMonthlyIncome=$rootScope.landlordDetails.expcMonthlyIncome+ $scope.House.amount;
 							 }) 
 						 .error(function(data) {
 							 $scope.houseterror=true;
@@ -148,8 +151,21 @@ landlordtmngt.controller('housemngtctrl', function($scope,$rootScope,$http) {
 
   
 });
-landlordtmngt.controller('plotmngtctrl', function($scope) {
+landlordtmngt.controller('plotmngtctrl', function($scope,$http,$rootScope) {
 
+   $scope.Addplot=function(){  
+
+		  $http.post('/LandlordAddPlots', $scope.LandlordPlot)
+						 .success(function(data) {
+							   $scope.plotSuccess=true; 
+							    // push this plot into the $rootscope.plot array.. Instead of Doing a Refresh
+								$rootScope.landlordDetails.noplots =$rootScope.landlordDetails.noplots+ 1;
+							 }) 
+						 .error(function(data) {
+
+							  $scope.ploterror=true;
+							 });
+}
   
 });
 

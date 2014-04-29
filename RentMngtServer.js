@@ -126,7 +126,11 @@ try
 		app.post('/PaymentmethodConfiguration',DatabaseConn.PaymentmethodConfiguration);
 		app.post('/TransactiontypeConfiguration',DatabaseConn.TransactiontypeConfiguration);
 		app.post('/ExpenseTypeConfiguration',DatabaseConn.ExpenseTypeConfiguration);
-		
+        app.post('/CreateLandlord',DatabaseConn.CreateLandlord);
+
+
+		app.post('/LandlordAddPlots',DatabaseConn.LandlordAddPlots);
+		 
           
 		
  }

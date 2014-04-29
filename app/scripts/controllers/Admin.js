@@ -25,6 +25,10 @@ $locationProvider.hashPrefix("!");
        templateUrl: 'views/partials/AdminSystemSettings.html',   
        controller: 'SystemSettingsctrl'
         })
+     .when('/CreateLandlord', {
+       templateUrl: 'views/partials/CreateLandlord.html',   
+       controller: 'CreateLandlordctrl'
+        })
 
 		.otherwise({
          redirectTo: '/Dashboard'
@@ -124,4 +128,28 @@ $scope.SaveExpenseType=function(){
 
 
 
+	});
+
+
+Adminmngt.controller('CreateLandlordctrl', function ($scope,$http) {
+
+	$scope.SaveLandlord=function(){
+      $scope.landlord._id= $scope.landlord.id
+var data={"update":{ "LandlordDet":$scope.landlord, "CredentialDet":{"_id":$scope.landlord.id,"password":$scope.landlord.id,"role":"landlord","identifier" : $scope.landlord.id} }};
+
+		
+
+			
+             	$http.post('/CreateLandlord',data)
+				 		 .success(function(data) {
+								   $scope.SuccessStatus=true;							   
+							 }) 
+						 .error(function(data) {
+							   $scope.ErrorStatus=true;
+							 });	
+
+
+
+	}
+	
 	});
