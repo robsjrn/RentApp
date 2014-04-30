@@ -3,7 +3,21 @@
 					  <h3 class="panel-title">Expense Management</h3>
 				     </div>
 					   <div class="panel-body">
-					     <div class="col-md-4">
+								<div class="col-lg-6">
+									<div class="input-group">
+									  <span class="input-group-addon">Plot</span>
+									  <select class="form-control"  ng-model="Tenant.plot"  ng-options="c.name for c in landlordplots"	ng-disabled=disableComponents>  
+											   </select>
+									  <span class="input-group-btn">
+										<button class="btn btn-danger" type="button" ng-click="GetDetails()" ng-disabled=disableComponents >Get!</button>
+									  </span>
+									</div><!-- /input-group -->
+								  </div><!-- /.col-lg-6 -->   
+                         <hr>
+						 
+						 
+
+						 <div class="col-md-4">
                             <label for="exptype">Expense Type</label>
 							       <select class="form-control"  ng-model="Expense.type" id="exptype" ng-options="c.name for c in expensetype" ng-disabled=disableComponents>  
 			                       </select>

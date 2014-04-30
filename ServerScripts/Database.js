@@ -51,8 +51,9 @@ collection.insert(req.body, function(err, item) {
 
 
 exports.listoftenant = function(req, res) {
+
  db.collection('Tenant', function(err, collection) {
- collection.find({"plot.name":"kahawa_2"}).toArray( function(err, item){
+ collection.find({"plot.name":req.params.plot}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -63,7 +64,7 @@ exports.listoftenant = function(req, res) {
 
 exports.listofHouse = function(req, res) {
  db.collection('House', function(err, collection) {
- collection.find({"plot.name":"kahawa_2"}).toArray( function(err, item){
+ collection.find({"plot.name":req.params.plot}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -74,8 +75,9 @@ exports.listofHouse = function(req, res) {
 
 
 exports.listofUnbookedtenant = function(req, res) {
+	 console.log("The Parameter for listofUnbookedtenant  is.."+req.params.plot);
  db.collection('Tenant', function(err, collection) {
- collection.find({"plot.name":"kahawa_2","hsestatus":0}).toArray( function(err, item){
+ collection.find({"plot.name":req.params.plot,"hsestatus":0},{name:1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -86,7 +88,7 @@ exports.listofUnbookedtenant = function(req, res) {
 
 exports.listofbookedtenant = function(req, res) {
  db.collection('Tenant', function(err, collection) {
- collection.find({"plot.name":"kahawa_2","hsestatus":1}).toArray( function(err, item){
+ collection.find({"plot.name":req.params.plot,"hsestatus":1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -99,7 +101,7 @@ exports.listofbookedtenant = function(req, res) {
 
 exports.listofVacantHouse = function(req, res) {
  db.collection('House', function(err, collection) {
- collection.find({"plot.name":"kahawa_2","status":"vacant"}).toArray( function(err, item){
+ collection.find({"plot.name":req.params.plot,"status":"vacant"},{number:1,amount:1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 

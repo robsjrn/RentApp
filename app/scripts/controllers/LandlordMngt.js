@@ -47,9 +47,14 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
  $scope.Tenant={};
  $scope.disableComponents=true;
 
-tenantlist.query=function(data){
-   $scope.tenantdata=data
+
+   $scope.GetDetails=function(){
+ // have this in a nested Promise
+     $http.get('/tenantList/'+$scope.Tenant.plot.name).success(function (data){$scope.tenantdata=data }); 
 }
+
+
+
            $scope.addTenant=function(){
 				    $scope.tenantcreated=false;
 					$scope.tenanterror=false;
@@ -77,7 +82,7 @@ tenantlist.query=function(data){
                      }
 
 			
- $http.get('/tenantList/'+{"plot.name":"kahawa_2"}).success(function (data){$scope.tenantdata=data });
+
 
 
    
@@ -176,9 +181,17 @@ $scope.paymentposted=false;
 $scope.paymenterror=false;
 $scope.disableComponents=true;
 $scope.crit={};
+$scope.Tenant={};
 
 
- $http.get('/tenantList/'+{"plot.name":"kahawa_2"}).success(function (data){$scope.Tenants=data });
+ $scope.landlordplots=$rootScope.plot;
+ $scope.Tenant.plot=$scope.landlordplots[0];
+
+   $scope.GetDetails=function(){
+ // have this in a nested Promise
+     $http.get('/tenantList/'+$scope.Tenant.plot.name).success(function (data){$scope.Tenants=data }); 
+}
+
 
 
 $scope.Transaction={};
@@ -245,8 +258,16 @@ landlordtmngt.controller('expensemngtctrl', function($scope,$http,$rootScope) {
 $scope.paymentposted=false;
 $scope.paymenterror=false;
 $scope.disableComponents=true;
+$scope.Tenant={};
 
- $http.get('/tenantList/'+{"plot.name":"kahawa_2"}).success(function (data){$scope.Tenants=data });
+ $scope.landlordplots=$rootScope.plot;
+ $scope.Tenant.plot=$scope.landlordplots[0];
+
+    $scope.GetDetails=function(){
+ // have this in a nested Promise
+     $http.get('/tenantList/'+$scope.Tenant.plot.name).success(function (data){$scope.Tenants=data }); 
+}
+
 
 $scope.Expense=[];
 $scope.crit={};
@@ -272,7 +293,7 @@ $scope.AddExpense=function(){
  
 
  $scope.PostExpense=function(){
-	 $scope.disableComponents=false;
+
 
   $scope.expense={"tenantid":$scope.crit._id,
 	              "housenumber":$scope.crit.housename,
@@ -297,7 +318,7 @@ $scope.AddExpense=function(){
 							 $scope.msg=data.error;
 							 });
 
-
+$scope.disableComponents=true;
 
  };
 
@@ -364,7 +385,7 @@ landlordtmngt.controller('inboxctrl', function($scope) {
 
 
 
-landlordtmngt.controller('vacatectrl', function($scope,$http) {
+landlordtmngt.controller('vacatectrl', function($scope,$http,$rootScope) {
 
 
  $scope.disableComponents=true;
@@ -372,11 +393,20 @@ landlordtmngt.controller('vacatectrl', function($scope,$http) {
   $scope.vacateerror=false;
 
 $scope.crit={};
+$scope.Tenant={};
+
+ $scope.landlordplots=$rootScope.plot;
+ $scope.Tenant.plot=$scope.landlordplots[0];
+
+
+   $scope.GetDetails=function(){
+ // have this in a nested Promise
+     $http.get('/bookedtenantList/'+$scope.Tenant.plot.name).success(function (data){$scope.tenantdata=data }); 
+}
+
 
 
 $scope.Add=function(){
-
-   $http.get('/bookedtenantList/'+{"plot.name":"kahawa_2"}).success(function (data){$scope.tenantdata=data; });
     $scope.disableComponents=false;
 };
 
@@ -413,15 +443,24 @@ $scope.Update=function(){
 
 
 
-landlordtmngt.controller('rentctrl', function($scope,$http) {
+landlordtmngt.controller('rentctrl', function($scope,$http,$rootScope) {
 $scope.Tenant={};
 $scope.House={};
 $scope.housetaken=false;
 $scope.housetakenerror=false;
  $scope.disableComponents=true;
 
-$http.get('/UnbookedtenantList/'+{"plot.name":"kahawa_2"}).success(function (data){$scope.tenantdata=data ;$scope.Tenant.name=$scope.tenantdata[0];});
-$http.get('/VacanthouseList/'+{"plot.name":"kahawa_2"}).success(function (data){$scope.housedata=data;$scope.Tenant.housename=$scope.housedata[0]; });
+
+ $scope.landlordplots=$rootScope.plot;
+$scope.Tenant.plot=$scope.landlordplots[0];
+
+
+$scope.GetDetails=function(){
+ // have this in a nested Promise
+   $http.get('/UnbookedtenantList/'+ $scope.Tenant.plot.name).success(function (data){$scope.tenantdata=data ;$scope.Tenant.name=$scope.tenantdata[0];});
+   $http.get('/VacanthouseList/'+$scope.Tenant.plot.name).success(function (data){$scope.housedata=data;$scope.Tenant.housename=$scope.housedata[0]; });
+ 
+}
 
 
  $scope.Add=function(){
@@ -435,7 +474,7 @@ $http.get('/VacanthouseList/'+{"plot.name":"kahawa_2"}).success(function (data){
 		 "tenantupdate":{"AccessStatus":0,"hsestatus":1,"housename":$scope.House.housename.number,"balance":($scope.House.housename.amount * 2)},
 		 "houseUpdate":{"status":"rented","tenantid":$scope.Tenant.name._id},
          "Trxn":{"tenantid":$scope.Tenant.name._id, "housenumber":$scope.House.housename.number,
-	             "plotnumber":$scope.House.housename.plot.name,"transactiondate":new Date(),
+	             "plotnumber":$scope.Tenant.plot.name,"transactiondate":new Date(),
 	              "transactiontype":"Posting", "Description":"Rent And Deposit",
 	              "tranAmount":($scope.House.housename.amount * 2)},
 		 "details":{"_id":$scope.Tenant.name._id,"number":$scope.House.housename.number}

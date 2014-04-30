@@ -97,14 +97,14 @@ try
 		app.post('/createTenant',ensureAuthenticated,DatabaseConn.CreateTenant);
 		app.post('/createHouse',ensureAuthenticated,DatabaseConn.CreateHouse);
 
-		app.get('/tenantList/:param',ensureAuthenticated,DatabaseConn.listoftenant);
-		app.get('/houseList/:param',ensureAuthenticated,DatabaseConn.listofHouse);
+		app.get('/tenantList/:plot',ensureAuthenticated,DatabaseConn.listoftenant);
+		app.get('/houseList/:plot',ensureAuthenticated,DatabaseConn.listofHouse);
 
 
-		app.get('/UnbookedtenantList/:param',ensureAuthenticated,DatabaseConn.listofUnbookedtenant);
-		app.get('/VacanthouseList/:param',ensureAuthenticated,DatabaseConn.listofVacantHouse);
+		app.get('/UnbookedtenantList/:plot',ensureAuthenticated,DatabaseConn.listofUnbookedtenant);
+		app.get('/VacanthouseList/:plot',ensureAuthenticated,DatabaseConn.listofVacantHouse);
 
-		app.get('/bookedtenantList/:param',ensureAuthenticated,DatabaseConn.listofbookedtenant);
+		app.get('/bookedtenantList/:plot',ensureAuthenticated,DatabaseConn.listofbookedtenant);
 
 		app.post('/Rent',ensureAuthenticated,DatabaseConn.Rent);
 		app.post('/vacate',ensureAuthenticated,DatabaseConn.vacate);

@@ -4,6 +4,18 @@
 					 
 					  </div>
 					   <div class="panel-body">
+								<div class="col-lg-6">
+									<div class="input-group">
+									  <span class="input-group-addon">Plot</span>
+									  <select class="form-control"  ng-model="Tenant.plot"  ng-options="c.name for c in landlordplots"	ng-disabled=disableComponents>  
+											   </select>
+									  <span class="input-group-btn">
+										<button class="btn btn-danger" type="button" ng-click="GetDetails()" ng-disabled=disableComponents >Get!</button>
+									  </span>
+									</div><!-- /input-group -->
+								  </div><!-- /.col-lg-6 -->   
+                         <hr>
+
 					     <div class="col-md-4">
                             <label for="tenant">Tenant Name</label>
 							       <select class="form-control"  ng-model="crit" id="tenant" ng-options="c.name for c in Tenants" ng-disabled=disableComponents>  
