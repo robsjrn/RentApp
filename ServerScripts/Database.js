@@ -391,3 +391,16 @@ var updatenohse=function (landlordid,no,Amount ,callback){
    });
 };
 
+
+
+exports.UpdateTenantAgreement=function (req, res){
+	  console.log("Agreeement Status for " +req.user.identifier );
+   db.collection('Tenant', function(err, collection) {
+    collection.update({"_id" : req.user.identifier},{$set:{"AgreementStatus" : false}},{safe:true}, function(err, item) {
+   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+   else{res.json(200);}
+});
+});
+};
+
+

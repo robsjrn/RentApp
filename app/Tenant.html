@@ -46,7 +46,8 @@
 					<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
 					  <ul class="nav navbar-nav navbar-right">
 					    <li ><a href="#!/help"><i class="fa fa-question fa-fw"></i> Help</a></li>
-						<li ><a href="#!/help"><i class="fa fa-question fa-fw"></i>Terms/Condition</a></li>
+						<li ><a href="#!/terms"><i class="fa fa-question fa-fw"></i>Terms/Condition</a></li>
+						<li ><a href="#!/pwdchange"><i class="fa fa-cogs fa-fw"></i> Change Password</a></li>
 						<li ><a href="#!/about">About</a></li>
 						<li ><a href="#!/settings"><i class="fa fa-cogs fa-fw"></i> Settings</a></li>
 						<li class="divider"></li>
@@ -96,6 +97,15 @@
 		
        </div>
 	
+
+<modal-dialog show='dialogShown' dialog-title='Tenant Agreement' width='500px'>
+  <p>{{doc.txt}} </p>
+   <hr>
+    <button type="button" class="btn btn-info" ng-click="AgreeTerms()" >Agree</button>
+    <button type="button" class="btn btn-warning" ng-click="CancelTerms()" >DisAgree</button>		 			  
+</modal-dialog>
+
+
 
 		<div class="row">  
                     <ul class="nav nav-tabs" id="myTab">

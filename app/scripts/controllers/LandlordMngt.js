@@ -471,7 +471,7 @@ $scope.GetDetails=function(){
 
 
 	  data={"update":{
-		 "tenantupdate":{"AccessStatus":0,"hsestatus":1,"housename":$scope.House.housename.number,"balance":($scope.House.housename.amount * 2)},
+		 "tenantupdate":{"AgreementStatus":true,"AccessStatus":0,"hsestatus":1,"housename":$scope.House.housename.number,"balance":($scope.House.housename.amount * 2)},
 		 "houseUpdate":{"status":"rented","tenantid":$scope.Tenant.name._id},
          "Trxn":{"tenantid":$scope.Tenant.name._id, "housenumber":$scope.House.housename.number,
 	             "plotnumber":$scope.Tenant.plot.name,"transactiondate":new Date(),

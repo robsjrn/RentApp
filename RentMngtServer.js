@@ -128,8 +128,9 @@ try
 		app.post('/ExpenseTypeConfiguration',DatabaseConn.ExpenseTypeConfiguration);
         app.post('/CreateLandlord',DatabaseConn.CreateLandlord);
 
+        app.get('/UpdateTenantAgreement',ensureAuthenticated,DatabaseConn.UpdateTenantAgreement);
 
-		app.post('/LandlordAddPlots',DatabaseConn.LandlordAddPlots);
+		app.get('/LandlordAddPlots',ensureAuthenticated,DatabaseConn.LandlordAddPlots);
 		 
           
 		

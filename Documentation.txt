@@ -23,6 +23,8 @@ var config={"_id":"RentalConfiguration",
 
 
 
+db.Configuration.insert(config)
+
 [{"_id":"1","name":"Deposit Refund"},
 		{"_id":"2","name":"Damages"},
 		{"_id":"3","name":"Materials"},
