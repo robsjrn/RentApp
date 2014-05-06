@@ -57,7 +57,6 @@ try
  {
 			
 		app.get('/', function(req, res){res.redirect('/index.html');});
-        app.get('/Admin', function(req, res){res.redirect('/Admin.html');});
      
 
 		app.post('/login', passport.authenticate('local'),  function(req, res) { res.send(200);});
@@ -80,8 +79,7 @@ try
 			 }
 			  else if(req.user.role=="admin"){
 			    res.redirect('/Admin.html');
-			 }
-				
+			 }	
 			
 			});
 
@@ -130,7 +128,7 @@ try
 
         app.get('/UpdateTenantAgreement',ensureAuthenticated,DatabaseConn.UpdateTenantAgreement);
 
-		app.get('/LandlordAddPlots',ensureAuthenticated,DatabaseConn.LandlordAddPlots);
+		app.post('/LandlordAddPlots',ensureAuthenticated,DatabaseConn.LandlordAddPlots);
 		 
           
 		

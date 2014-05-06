@@ -15,6 +15,7 @@
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="public/bootstrap/dist/css/bootstrap.css" />
+	<link rel="stylesheet" href="public/font-awesome/css/font-awesome.min.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
@@ -28,115 +29,149 @@
 
     <!-- Add your site or application content here -->
 
-<div class="container">
-             <header class="navbar navbar-inverse navbar-fixed-top" role="banner">
-		      
-				  <div class="navbar-header">
-					   <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-							<span class="sr-only">Toggle navigation</span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-						</button>
-					 <a href="#" class="navbar-brand">Rent Management System</a>
-				 </div>
-					<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-					  <ul class="nav navbar-nav navbar-right">
-					    <li ><a href="#!/help"><i class="fa fa-question fa-fw"></i> Help</a></li>
-						<li ><a href="#!/about">About</a></li>
-						<li ><a href="#!/settings"><i class="fa fa-cogs fa-fw"></i> Settings</a></li>
-						<li ><a href="#!/pwdchange"><i class="fa fa-cogs fa-fw"></i> Change Password</a></li>
-						<li class="divider"></li>
-						<li><a type="button"  ng-click="Logout()">Logout</a></li>
-					 </ul>
-	                  </nav>
-  
-          
+<div id="wrapper" data-ng-controller="MainLandlordctrl">
+      <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" id="menu-toggle" >
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Rent Management System</a>
+            </div>
 
-        </header>
-</div>
+            <!-- /.navbar-header -->
 
-
-
-<div class="container">
-      <div class="row" data-ng-controller="MainLandlordctrl">
-  	        
-			<div class="col-xs-3 col-sm-2 col-md-2">
 			
-					<div class="panel panel-primary">
-					<div class="panel-heading">
-					  <h5 class="panel-title">LandLord Details</h5>
-				   </div>
-					  <div class="panel-body">
-                          <p> <h5>{{landlordDetails.names}}</h5>  </p>
-                          <p> <h5>{{landlordDetails.id}}</h5>  </p>
-						  <p> <h5>{{landlordDetails.occupation}}</h5>  </p>
-						  <p> <h5>{{landlordDetails.Home}}</h5>  </p>
-						  <p> <h5>{{landlordDetails.contact}}</h5>  </p>
-						</div>
-					</div>  
-			
-                 <div class="panel panel-primary">
-					<div class="panel-heading">
-					  <h3 class="panel-title">Summary</h3>
-				   </div>
-					  <div class="panel-body">
-                            <p>Number of Plots <span class="badge badge-success">{{landlordDetails.noplots}}</span></p>   
-							<p>Number of Houses <span class="badge badge-success">{{landlordDetails.nohse}}</span></p>  
-							<p>Expected Monthly Income <span class="badge badge-success">{{landlordDetails.expcMonthlyIncome}}</span></p>  
-						
-					   </div>
-					</div>  
+             <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li ng-repeat="message in emails.messages" >
+                            <a href="#">
+                                <div>
+                                    <strong>{{ message.from }}</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>{{ message.subject }}</div>
+                            </a>
+							  <div class="divider"></div>
+                        </li>
+                        
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>Read All Messages</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-messages -->
+                </li>
 
-                   
-			
-
-
-		    </div>
-			
-			
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+					<li><a href="#"><i class="fa fa-user fa-fw"></i>Change Password</a></li>
+					<li ><a href="#!/help"><i class="fa fa-question fa-fw"></i> Help</a></li> 
+                     <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
+                     <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a> </li>
+                        <li class="divider"></li>
+                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->		
 		
-      
-	<div class="col-xs-5 col-sm-6 col-md-7">
-          <div data-ng-view >
-          </div>
-	</div>
+		</nav>
 
-            <div class="col-xs-4 col-sm-4 col-md-3">
-	               <div class="panel panel-primary">
-					<div class="panel-heading">
-					  <h3 class="panel-title">Navigation</h3>
-				   </div>
-					  <div class="panel-body">
-                            <ul class="nav nav-pills nav-stacked" id="myTab">
-							    <li><a href="#!/tenantsmngt">Tenants Mngt</a></li>								
+         <div id="sidebar-wrapper">
+            <ul class="nav sidebar-nav">
+			        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                      <li> <a href="#"> <img src="holder.js/100x100/sky/text:Sample Photo"></a> </li>
+                        <li> <a href="#"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>    </li>
+						       <li><a href="#!/tenantsmngt">Tenants Mngt</a></li>								
 								<li><a href="#!/housemngt">House Mngt</a></li>
 								<li><a href="#!/rent">Rent</a></li>
 								<li><a href="#!/vacate">Vacate</a></li>
 								<li><a href="#!/plotmngt">Plots Mngt </a></li>
 								<li><a href="#!/trxnmngt">Transaction Mngt</a></li>
 								<li><a href="#!/expensemngt">Expenses Mngt</a></li>
-								<li><a href="#!/summarymngt">Summary</a></li>
+								<li><a href="#!/RentPosting">Post Monthly Rent</a></li>
+								<li><a href="#!/reports">Reports Portal</a></li>
+								<li><a href="#!/summarymngt">Chart Summary</a></li>
 								<li><a href="#!/documentmngt">Documents Mngt</a></li>
 								<li><a href="#!/inbox">Message Inbox</a></li>
-								
-							</ul>
-										
-					   </div>
-					</div>  
+            </ul>
+        </div>
+
+
+
+				<div id="page-wrapper" >
+
+                     <div class="row">
+					 <br>
+                <div class="col-xs-6">
+                 
+					      <p> Names {{landlordDetails.names}} </p>
+                          <p> Identification {{landlordDetails.id}}  </p>
+						  <p>Occupation {{landlordDetails.occupation}} </p>
+						  <p> Contacts {{landlordDetails.contact}} </p>
+                </div>
+				 <div class="col-xs-6">
+                 
+					               <p>Number of Plots <span class="badge badge-success">{{landlordDetails.noplots}}</span></p>   
+									<p>Number of Houses <span class="badge badge-success">{{landlordDetails.nohse}}</span></p>  
+									<p>Expected Monthly Income <span class="badge badge-success">{{landlordDetails.expcMonthlyIncome}}</span></p>  
+									<p>Expected Monthly Income <span class="badge badge-success">{{landlordDetails.expcMonthlyIncome}}</span></p> 
+                </div>
+                <!-- /.col-lg-12 -->
+            </div> 
+  
+					  <div class="row" >	     
+						 <div data-ng-view ></div>
+					 </div>
+
+
+
+  </div>
 
 </div>
-                      
+
+
+
+				
+
+           
                 
          
 
-<div class="navbar navbar-default navbar-fixed-bottom">
+             <div class="navbar navbar-default navbar-fixed-bottom">
 		         <div class="container" >
 			       <p>copyrights @Softsol 2014 </p>	
 				   
-				   </div>
+				  </div>
                </div>
-  </div>
+
 
 
   <!--[if lt IE 9]>
@@ -158,6 +193,7 @@
     <script src="public/angular-bootstrap/ui-bootstrap-tpls.min.js"></script> 
     <script src="public/d3/d3.min.js"></script> 
 	<script src="public/angular-charts/dist/angular-charts.min.js"></script> 
+    <script src="public/holderjs/holder.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -165,6 +201,19 @@
         	<script src="scripts/controllers/LandlordMngt.js"></script>
         <!-- endbuild -->
  
+
+
+<script>
+
+  $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("active");
+    });
+
+</script>
+           
+
+
 			
   </body>
 </html>

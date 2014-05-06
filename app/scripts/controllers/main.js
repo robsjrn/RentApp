@@ -8,27 +8,47 @@ $locationProvider.hashPrefix("!");
 
   $routeProvider
 	 
- .when('/tenants', {
-     templateUrl: 'views/partials/tenantlogin.html',   
+ .when('/home', {
+     templateUrl: '/templates/home.html',   
       controller: 'Tenantsctrl'
         })
-  .when('/landlords', {
-     templateUrl: 'views/partials/landlordlogin.html',   
+  .when('/news', {
+     templateUrl: '/templates/news.html',   
      controller: 'landlordsctrl'
         })
-   .when('/agents', {
-       templateUrl: 'views/partials/agentlogin.html',   
+   .when('/Services', {
+       templateUrl: '/templates/services.html',   
+       controller: 'Agentsctrl'
+        })
+   .when('/about', {
+       templateUrl: '/templates/about.html',   
+       controller: 'Agentsctrl'
+        })
+	.when('/contacts', {
+       templateUrl: '/templates/contact.html',   
        controller: 'Agentsctrl'
         })
   
 		.otherwise({
-         redirectTo: '/tenants'
+         redirectTo: '/home'
       });
 
 });
 
- Rentmngt.controller('MainCtrl', function ($scope) {
+ Rentmngt.controller('MainCtrl', function ($scope,$http,$window) {
     $scope.awesomeThings = ['HTML5 Boilerplate','AngularJS','Karma' ];
+     $scope.Userlogin=function(){
+    
+        $http.post('/login',$scope.user)
+				 		 .success(function(data) {
+								    $scope.invalidcredential=false;
+                                     $window.location.href='/LoginRedirect';							   
+							 }) 
+						 .error(function(data) {
+							   $scope.invalidcredential=true;
+							 });	
+   };
+
   });
 
 

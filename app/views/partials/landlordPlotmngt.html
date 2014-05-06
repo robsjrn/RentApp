@@ -1,4 +1,4 @@
-<div class="panel panel-primary">
+<div class="panel panel-default">
 					<div class="panel-heading">
 					  <h3 class="panel-title">Plot Management</h3>
 				     </div>
@@ -15,7 +15,8 @@
 
 							  <div class="col-md-4">
 							         <label for="location">Location</label>
-								     <input type="text" class="form-control" placeholder="Location" id="location" ng-model="LandlordPlot.location">
+								     <input type="text" class="form-control" placeholder="Location Latitude" id="location" ng-model="LandlordPlot.location.latitude">
+									  <input type="text" class="form-control" placeholder="Location Longitude" id="location" ng-model="LandlordPlot.location.longitude">
                                       <label for="plotdesc">Description</label>
 									  <textarea class="form-control" rows="3" id="plotdesc" ng-model="LandlordPlot.description"></textarea>
 							 </div>
