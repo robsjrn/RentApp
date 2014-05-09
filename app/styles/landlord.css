@@ -193,9 +193,6 @@ display: inline-block;
 }
 
 
-#menu-toggle {
-  display: none;
-}
 
 .inset {
   padding: 20px;
@@ -250,3 +247,4 @@ display: inline-block;
   .section {
     padding-top: 50px;
   }
+

@@ -10,23 +10,27 @@ $locationProvider.hashPrefix("!");
 	 
  .when('/home', {
      templateUrl: '/templates/home.html',   
-      controller: 'Tenantsctrl'
+      controller: 'homectrl'
         })
   .when('/news', {
      templateUrl: '/templates/news.html',   
-     controller: 'landlordsctrl'
+     controller: 'newsctrl'
         })
    .when('/Services', {
        templateUrl: '/templates/services.html',   
-       controller: 'Agentsctrl'
+       controller: 'Servicesctrl'
         })
    .when('/about', {
        templateUrl: '/templates/about.html',   
-       controller: 'Agentsctrl'
+       controller: 'aboutctrl'
         })
 	.when('/contacts', {
        templateUrl: '/templates/contact.html',   
-       controller: 'Agentsctrl'
+       controller: 'contactsctrl'
+        })
+     .when('/login', {
+       templateUrl: '/templates/login.html',   
+       controller: 'MainCtrl'
         })
   
 		.otherwise({
@@ -51,57 +55,4 @@ $locationProvider.hashPrefix("!");
 
   });
 
-
- Rentmngt.controller('Tenantsctrl', function($scope,$http,$window) {
-
-   $scope.Tenantlogin=function(){
-
-        $http.post('/login',$scope.user)
-				 		 .success(function(data) {
-								    $scope.invalidcredential=false;
-                                     $window.location.href='/LoginRedirect';							   
-							 }) 
-						 .error(function(data) {
-							   $scope.invalidcredential=true;
-							 });	
-   };
-  
-});
-
- Rentmngt.controller('landlordsctrl', function($scope,$http,$window) {
-   
-   $scope.Landlordlogin=function(){
-
-                  $http.post('/login',$scope.landlord)
-				 		 .success(function(data) {
-								    $scope.invalidcredential=false;
-                                     $window.location.href='/LoginRedirect';							   
-							 }) 
-						 .error(function(data) {
-							   $scope.invalidcredential=true;
-							 });	
-   };
-
-
-  
-});
-
- Rentmngt.controller('Agentsctrl', function($scope,$http,$window) {
-   
-
-   $scope.Agentlogin=function(){
-
-                  $http.post('/login',$scope.agent)
-				 		 .success(function(data) {
-								    $scope.invalidcredential=false;
-                                     $window.location.href='/LoginRedirect';							   
-							 }) 
-						 .error(function(data) {
-							   $scope.invalidcredential=true;
-							 });	
-   };
-
-
-  
-});
 

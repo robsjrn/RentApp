@@ -5,7 +5,7 @@ landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope) {
 
  
  $http.get('/LandLordDetails').success(function (data){
-	 console.log(data);$
+	 console.log(data);
 	 $rootScope.landlordDetails=data;
 	 $rootScope.plot=data.plots;
 		 

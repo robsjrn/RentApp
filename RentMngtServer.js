@@ -131,7 +131,7 @@ try
 		app.post('/LandlordAddPlots',ensureAuthenticated,DatabaseConn.LandlordAddPlots);
 		 
           
-		
+	    app.get('/mobileTest',DatabaseConn.TestMobile);	
  }
  
  catch (e)

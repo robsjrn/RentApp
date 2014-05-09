@@ -27,37 +27,40 @@
     <!-- Add your site or application content here -->
 
 <div data-ng-controller="MainCtrl" >
-      <form id="login" name="login" class="navbar-form navbar-right" role="form" novalidate>
-	     <h5><span class="fa fa-sign-in">Login</h5>
-		  <div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid Credential !!!</strong> </div>  
-            <div class="form-group">
-              <input type="text" placeholder="UserName" class="form-control" name="username" id="username"  ng-model="user.username" required><span ng-show="login.username.$dirty &amp;&amp; login.username.$error.required" class="help-block">User Credential Required</span>
-
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control" name="password" id="password"  ng-model="user.password" required ><span ng-show="login.password.$dirty &amp;&amp; login.password.$error.required" class="help-block"> Password is Required</span>
-            </div>
-            <button  ng-disabled="login.$invalid" ng-click="Userlogin()" type="submit" class="btn btn-success">Sign in</button>
-          </form>
+     
 
  
     <div class="container">
  
+    
+               <div class="navbar-header ">
+					  <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					 <a href="#" class="navbar-brand"><strong><h3>Nana</h3></strong></a>
+				 </div>
+
+
+
       <div class="masthead">
-         <strong><h3>Nana</h3></strong>
+         
 
 
-        <ul class="nav nav-justified">
+        <ul class="nav nav-justified bs-navbar-collapse">
           <li class="active"><a href="#!/home">Home</a></li>
           <li><a href="#!/news">News</a></li>
 		   <li><a href="#!/Services">Services</a></li>
           <li><a href="#!/about">About</a></li>
           <li><a href="#!/contacts">Contact</a></li>
+		  <li><a href="#!/login">Login</a></li>
         </ul>
       </div>
  
      
-
+<br>
  <div data-ng-view ></div>
    
 </div>
@@ -103,7 +106,15 @@
         <script src="scripts/controllers/main.js"></script>
         <!-- endbuild -->
 
+<script>
 
+  $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("active");
+    });
+
+</script>
+         
 		
 <SCRIPT id=/templates/my-head.html type=text/ng-template>   <h1>{{title}}</h1> <p>TESSSSSS</p> </SCRIPT> 
 
@@ -119,20 +130,43 @@
 
 
 <SCRIPT id=/templates/services.html type=text/ng-template>  
-      <ul class="list-group">
+     <div class="col-xs-6">
+	  <ul class="list-group">
 		  <li class="list-group-item">Shoping Delivery</li>
 		  <li class="list-group-item">Food Delivery</li>
 		  <li class="list-group-item">Movie Delivery</li>
 		  <li class="list-group-item">Search Houses</li>
-		  <li class="list-group-item">Search for Property</li>
+		  <li class="list-group-item">Property Search</li>
       </ul>
+	 </div>
+	 
+	 <div class="col-xs-6">
+	 <ul class="nav" >
+	    <li><a href="#!/Services">Service Registration</a></li> 
+		 <li><a href="#!/Services">Property Registration</a></li> 
+     </ul>
+	 </div>
+	 
  </SCRIPT> 
 
 
 <SCRIPT id=/templates/news.html type=text/ng-template>   <p>News</p> </SCRIPT> 
 <SCRIPT id=/templates/about.html type=text/ng-template>   <p>About</p> </SCRIPT> 
 <SCRIPT id=/templates/contact.html type=text/ng-template>   <p>Contact</p> </SCRIPT> 
+<SCRIPT id=/templates/login.html type=text/ng-template>    
+       <form id="login" name="login" class="navbar-form navbar-right" role="form" novalidate>
+	     <h5><span class="fa fa-sign-in">Login</h5>
+		  <div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid Credential !!!</strong> </div>  
+            <div class="form-group">
+              <input type="text" placeholder="UserName" class="form-control" name="username" id="username"  ng-model="user.username" required><span ng-show="login.username.$dirty &amp;&amp; login.username.$error.required" class="help-block">User Credential Required</span>
 
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control" name="password" id="password"  ng-model="user.password" required ><span ng-show="login.password.$dirty &amp;&amp; login.password.$error.required" class="help-block"> Password is Required</span>
+            </div>
+            <button  ng-disabled="login.$invalid" ng-click="Userlogin()" type="submit" class="btn btn-success">Sign in</button>
+          </form>
+	</SCRIPT> 
 
 </body>
 </html>

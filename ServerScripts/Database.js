@@ -404,3 +404,14 @@ exports.UpdateTenantAgreement=function (req, res){
 };
 
 
+
+exports.TestMobile=function(req, res) {
+ db.collection('Tenant', function(err, collection) {
+ collection.find().toArray( function(err, item){
+  if(item){res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+

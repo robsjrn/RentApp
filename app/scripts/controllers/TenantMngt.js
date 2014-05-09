@@ -1,4 +1,4 @@
-var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute'] ); 
+var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute','ui.bootstrap'] ); 
 
 Tenantmngt.controller('MainTenantsctrl', function($scope,$http) {
   
@@ -50,9 +50,45 @@ Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
 
 Tenantmngt.controller('inboxsctrl', function($scope) {
 
+ $scope.emails = {};
 
 
-   
+
+  $scope.emails = [{
+        "from": "Steve Jobs",
+        "subject": "Greetings",
+        "msg": "I think I'm holding my phone wrong :/",
+        "date": "2013-10-01T08:05:59Z"
+    },{
+        "from": "Ellie Goulding",
+        "subject": "I've got Starry Eyes, lulz",
+		"msg": "I've got Starry Eyes, lulz",
+        "date": "2013-09-21T19:45:00Z"
+    },{
+        "from": "Michael Stipe",
+        "subject": "Hurt",
+		"msg": "Everybody hurts, sometimes.",
+        "date": "2013-09-12T11:38:30Z"
+    },{
+        "from": "Jeremy Clarkson",
+        "subject": "",
+		"msg": "Think I've found the best car... In the world",
+        "date": "2013-09-03T13:15:11Z"
+    }];
+
+
+$scope.Sentemails= [{
+        "to": "Manager",
+        "subject": "Thanks",
+        "msg": "Welcome :/",
+        "date": "2013-10-01T08:05:59Z"
+    },{
+        "to": "Manager",
+        "subject": "Test",
+		"msg": "I've got Starry Eyes, lulz",
+        "date": "2013-09-21T19:45:00Z"
+    }
+   ];
   
 });
 

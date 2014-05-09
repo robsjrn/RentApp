@@ -1,28 +1,61 @@
 <br>
-<div class="panel">
-<div class="span3">
 
-
+ 
 <br>
- <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  <span class="glyphicon glyphicon-pencil"></span> Compose
-</button>
-
 </div>
-<div class="span6">
-<table class="table table-striped" >
-<thead>
-<td><a>From</a></td>
-<td><a>Subject</a></td>
-<td><a>Message</a></td>
-</thead>
-       <tr data-ng-repeat="inboxx in inbox ">
-	    <td><a href="#/viewuser/{{inboxx.from}}">{{inboxx.from}}</a></td>
-	    <td>{{inboxx.subject}}</td>
-		<td>{{inboxx.msg}}</td>
-	    <td><a href="#/reply"> Reply</a> </td>
-		</tr>
-</table>
+	<div class="panel panel-default">
+	<div class="panel-heading">
+				<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#myModal">
+				  <span class="glyphicon glyphicon-pencil"></span> Compose
+				</button>
+					</div>
+	<div class="panel-body">
+ <tabset>
+  <tab heading="Inbox">
+	<div class="col-xs-12" >
+		<div class="table-responsive">
+			<table class="table table-striped table-condensed" >
+			<thead>
+			<td><a>From</a></td>
+			<td><a>Subject</a></td>
+			<td><a>Message</a></td>
+			<td><a>Date</a></td>
+			</thead>
+				   <tr data-ng-repeat="inboxx in emails">
+					<td><a href="#/viewuser/{{inboxx.from}}">{{inboxx.from}}</a></td>
+					<td>{{inboxx.subject}}</td>
+					<td>{{inboxx.msg}}</td>
+					<td>{{inboxx.date}}</td>
+					<td><a href="#/reply"> Reply</a> </td>
+					<td><a href="#/">Delete</a> </td>
+					</tr>
+			</table>
+		</div>
+	</div>
+ </tab>
+<tab heading="Sent">
+	<div class="col-xs-12">
+	 <div class="table-responsive">
+		<table class="table table-striped table-condensed" >
+		<thead>
+		<td><a>To</a></td>
+		<td><a>Subject</a></td>
+		<td><a>Message</a></td>
+		<td><a>Date</a></td>
+		</thead>
+			   <tr data-ng-repeat="Sent in Sentemails">
+				<td><a href="#/viewuser/{{inboxx.from}}">{{Sent.to}}</a></td>
+				<td>{{Sent.subject}}</td>
+				<td>{{Sent.msg}}</td>
+				<td>{{Sent.date}}</td>
+				<td><a href="#/">Delete</a> </td>
+				</tr>
+		</table>
+	</div>
+	</div>
+</tab>
+ <tabset>
+
 </div>
 </div>
 
