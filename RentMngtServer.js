@@ -130,6 +130,9 @@ try
 
 		app.post('/LandlordAddPlots',ensureAuthenticated,DatabaseConn.LandlordAddPlots);
 		 
+
+	    app.post('/Mail',ensureAuthenticated,DatabaseConn.CreateMail);
+		app.get('/Viewmail',ensureAuthenticated,DatabaseConn.Viewmail);
           
 	    app.get('/mobileTest',DatabaseConn.TestMobile);	
  }

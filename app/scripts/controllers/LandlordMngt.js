@@ -84,6 +84,9 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
 					$scope.tenanterror=false;
                     $scope.disableComponents=false;
 					$scope.Tenant.hsestatus=0;
+                    $scope.Tenant.Owner={};
+					$scope.Tenant.Owner.id=$rootScope.landlordDetails._id;
+					$scope.Tenant.Owner.name=$rootScope.landlordDetails.names;
 		   };
                  $scope.clearTenant=function(){
                   $scope.Tenant="";
@@ -91,18 +94,19 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
 
 		   
               $scope.saveTenant=function(){
-				   $scope.disableComponents=true;
-				   
+				   $scope.disableComponents=true; 
                    $http.post('/createTenant', $scope.Tenant)
 						 .success(function(data) {
 							    $scope.tenantcreated=true;
 								$scope.msg=data.success;
-								$scope.tenantdata.push($scope.Tenant)
 							 }) 
 						 .error(function(data) {
 							 $scope.tenanterror=true;
 							 $scope.msg=data.error;
 							 });	
+
+
+
                      }
 
 			

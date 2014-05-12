@@ -16,7 +16,8 @@
     "d3": "~3.4.6",
     "angular-charts": "~0.0.1",
     "font-awesome": "~4.0.3",
-    "holderjs": "~2.3.2"
+    "holderjs": "~2.3.2",
+    "mobile-angular-ui": "~1.1.0-beta.20"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

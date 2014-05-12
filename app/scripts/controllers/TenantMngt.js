@@ -1,10 +1,14 @@
 var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute','ui.bootstrap'] ); 
 
-Tenantmngt.controller('MainTenantsctrl', function($scope,$http) {
+Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope) {
   
   $scope.doc={"txt":"I {{TenantData.name}} Agree to Take House {{TenantData.housename}} And Maintain it Well"};
 
-  $http.get('/tenantDetails').success(function (data){$scope.TenantData=data; $scope.dialogShown=$scope.TenantData.AgreementStatus; });
+  $http.get('/tenantDetails').success(function (data){
+	  $rootScope.Tenant=data
+	  $scope.TenantData= $rootScope.Tenant; 
+	  $scope.dialogShown=$scope.TenantData.AgreementStatus;
+	  });
   
 
 
@@ -48,48 +52,89 @@ Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
 
 });
 
-Tenantmngt.controller('inboxsctrl', function($scope) {
+Tenantmngt.controller('inboxsctrl', function($scope,$http, $rootScope) {
+$scope.Mail={};
+$scope.UserMail={};
+$scope.Sentemails={};
+
+ $scope.viewMail=false;
+ $scope.ComposeMail=false;
+ $scope.viewSentMail=false;
+
+ $scope.MailTo=[{"name":"Landlord","_id":"100","names":"josepgh"}];
+
+ $scope.Mail.to=$scope.MailTo[0];
 
  $scope.emails = {};
 
+ $scope.ShowMailpopUp=function(mailinbox){
+        $scope.viewMail=true;
+		$scope.Mail=mailinbox;
+ }
+
+$scope.ShowSentMailpopUp=function(mailinbox){
+        $scope.viewSentMail=true;
+		$scope.Mail=mailinbox;
+ }
 
 
-  $scope.emails = [{
-        "from": "Steve Jobs",
-        "subject": "Greetings",
-        "msg": "I think I'm holding my phone wrong :/",
-        "date": "2013-10-01T08:05:59Z"
-    },{
-        "from": "Ellie Goulding",
-        "subject": "I've got Starry Eyes, lulz",
-		"msg": "I've got Starry Eyes, lulz",
-        "date": "2013-09-21T19:45:00Z"
-    },{
-        "from": "Michael Stipe",
-        "subject": "Hurt",
-		"msg": "Everybody hurts, sometimes.",
-        "date": "2013-09-12T11:38:30Z"
-    },{
-        "from": "Jeremy Clarkson",
-        "subject": "",
-		"msg": "Think I've found the best car... In the world",
-        "date": "2013-09-03T13:15:11Z"
-    }];
+ $scope.CloseViewMailpopup=function(){
+        $scope.viewMail=false;
+ }
+
+ $scope.ComposeMailpopup=function(){
+        $scope.ComposeMail=true;
+ }
+
+  $scope.CloseComposeMailpopup=function(){
+       $scope.ComposeMail=false;
+ }
+
+  $http.get('/Viewmail').success(function (data){$scope.UserMail=data; $scope.emails = $scope.UserMail.Received; $scope.Sentemails= $scope.UserMail.Sent;});
 
 
-$scope.Sentemails= [{
-        "to": "Manager",
-        "subject": "Thanks",
-        "msg": "Welcome :/",
-        "date": "2013-10-01T08:05:59Z"
-    },{
-        "to": "Manager",
-        "subject": "Test",
-		"msg": "I've got Starry Eyes, lulz",
-        "date": "2013-09-21T19:45:00Z"
-    }
-   ];
-  
+ $scope.SendMail=function(){
+
+    var mail ={"update":{
+		"senderDetails":{         
+		 "to": $rootScope.Tenant.Owner.name,
+         "subject": $scope.Mail.subject,
+         "msg": $scope.Mail.msg,
+         "date": new Date()
+		},
+         "ReceiverId":$rootScope.Tenant.Owner.id,
+         "ReceiverDetails":{
+		   "from": $rootScope.Tenant.name,
+           "subject": $scope.Mail.subject,
+           "msg": $scope.Mail.msg,
+           "date": new Date()
+
+		}
+	  }
+	}
+
+                  $http.post('/Mail',mail )
+				 		 .success(function(data) {
+					               console.log("Res from Serv" + data);
+								   $scope.SuccessStatus=true;
+								   $scope.Sentemails.push(mail.update.senderDetails );							 
+								   $scope.ComposeMail=false;
+							 }) 
+						 .error(function(data) {
+							   $scope.ErrorStatus=true;
+							   console.log("Erororro" + data);
+							 });	
+
+	 
+
+ }
+ 
+
+ 
+
+
+
+
 });
 
 Tenantmngt.controller('pwdchangectrl', function($scope) {

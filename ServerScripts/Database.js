@@ -415,3 +415,59 @@ exports.TestMobile=function(req, res) {
 });
 };
 
+
+
+exports.CreateMail=function(req, res) {
+       var update=req.body.update;
+	   var senderDetails=update.senderDetails;
+	   var ReceiverDetails =update.ReceiverDetails;
+	   var ReceiverID =update.ReceiverId;
+
+	   console.log("User identification.."+ req.user.identifier + "User Details.." + ReceiverDetails);
+
+     UpdateSenderInbox(req.user.identifier,senderDetails,function(ok,status){
+             if (ok){
+				 	 UpdateReceiverInbox(ReceiverID,ReceiverDetails,function(ok,status){
+                          if (ok){res.json(200,{success: "Succesfull"})}; 		
+						   if(status){res.json(500,{error: "Database Error"})};
+	                  });		
+			 }; 
+			 if(status){res.json(500,{error: "Database Error"})};
+
+			
+	      });
+	 
+};
+
+
+var UpdateReceiverInbox=function (id,ReceiverDet ,callback){
+   db.collection('Inbox', function(err, collection) {
+     collection.update({"_id" : id},{$addToSet: {"Received":ReceiverDet}}, { upsert: true },{safe:true}, function(err, item) {
+     if(err){return callback(false,err);}
+	  else{ return callback(true,null);}
+      });
+   });
+};
+
+
+var UpdateSenderInbox=function (id,SenderDet ,callback){
+   db.collection('Inbox', function(err, collection) {
+    collection.update({"_id" : id},{$addToSet: {"Sent":SenderDet}}, { upsert: true },{safe:true}, function(err, item) {
+     if(err){return callback(false,err);}
+	  else{ return callback(true,null);}
+      });
+   });
+};
+
+
+
+
+exports.Viewmail=function(req, res) {
+ db.collection('Inbox', function(err, collection) {
+  collection.findOne({"_id":req.user.identifier},function(err, item){
+  if(item){res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
