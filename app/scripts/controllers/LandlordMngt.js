@@ -406,31 +406,87 @@ landlordtmngt.controller('documentmngtctrl', function($scope) {
 
 
 
-landlordtmngt.controller('inboxctrl', function($scope) {
+landlordtmngt.controller('inboxctrl', function($scope,$http,$rootScope) {
 
-  
-    $scope.emails = {};
+$http.get('/LandlordTenants').success(function (data){ console.log("Tenants Listing.." + data);$scope.MailTo=data});
+
+$http.get('/Viewmail').success(function (data){$scope.UserMail=data; $scope.emails = $scope.UserMail.Received; $scope.Sentemails= $scope.UserMail.Sent;});
 
 
 
-  $scope.emails.messages = [{
-        "from": "Steve Jobs",
-        "subject": "I think I'm holding my phone wrong :/",
-        "sent": "2013-10-01T08:05:59Z"
-    },{
-        "from": "Ellie Goulding",
-        "subject": "I've got Starry Eyes, lulz",
-        "sent": "2013-09-21T19:45:00Z"
-    },{
-        "from": "Michael Stipe",
-        "subject": "Everybody hurts, sometimes.",
-        "sent": "2013-09-12T11:38:30Z"
-    },{
-        "from": "Jeremy Clarkson",
-        "subject": "Think I've found the best car... In the world",
-        "sent": "2013-09-03T13:15:11Z"
-    }];
+$scope.Mail={};
+$scope.UserMail={};
+$scope.Sentemails={};
 
+ $scope.viewMail=false;
+ $scope.ComposeMail=false;
+ $scope.viewSentMail=false;
+
+
+ $scope.emails = {};
+
+ $scope.ShowMailpopUp=function(mailinbox){
+        $scope.viewMail=true;
+		$scope.Mail=mailinbox;
+ }
+
+$scope.ShowSentMailpopUp=function(mailinbox){
+        $scope.viewSentMail=true;
+		$scope.Mail=mailinbox;
+ }
+
+
+ $scope.CloseViewMailpopup=function(){
+        $scope.viewMail=false;
+ }
+
+ $scope.ComposeMailpopup=function(){
+        $scope.ComposeMail=true;
+ }
+
+  $scope.CloseComposeMailpopup=function(){
+       $scope.ComposeMail=false;
+ }
+
+
+
+
+ $scope.SendMail=function(){
+
+    var mail ={"update":{
+		"senderDetails":{         
+		 "to": $scope.Mail.to.name,
+         "subject": $scope.Mail.subject,
+         "msg": $scope.Mail.msg,
+         "date": new Date()
+		},
+         "ReceiverId":$scope.Mail.to._id,
+         "ReceiverDetails":{
+		   "from": $rootScope.landlordDetails.names,
+           "subject": $scope.Mail.subject,
+           "msg": $scope.Mail.msg,
+           "date": new Date()
+
+		}
+	  }
+	}
+
+                  $http.post('/Mail',mail )
+				 		 .success(function(data) {
+								   $scope.SuccessStatus=true;
+								   $scope.Sentemails.push(mail.update.senderDetails );							 
+								   $scope.ComposeMail=false;
+							 }) 
+						 .error(function(data) {
+							   $scope.ErrorStatus=true;
+							   console.log("Erororro" + data.error);
+							   $scope.ComposeMail=false;
+							 });	
+
+	 
+
+ }
+ 
 
 });
 
@@ -550,7 +606,7 @@ $scope.GetDetails=function(){
 
 
 
-
+//Directives
 
 
 landlordtmngt.directive("clickToEdit", function() {
@@ -601,6 +657,10 @@ landlordtmngt.directive("clickToEdit", function() {
 
 
 
+landlordtmngt.provider("ngModalDefaults", function() {    return {      options: {        closeButtonHtml: "<span class='ng-modal-close-x'>X</span>"      },      $get: function() {        return this.options;      },      set: function(keyOrHash, value) {        var k, v, _results;        if (typeof keyOrHash === 'object') {          _results = [];          for (k in keyOrHash) {            v = keyOrHash[k];            _results.push(this.options[k] = v);          }          return _results;        } else {          return this.options[keyOrHash] = value;        }      }    };  });
+landlordtmngt.directive('modalDialog', [    'ngModalDefaults', '$sce', function(ngModalDefaults, $sce) {      return {        restrict: 'E',        scope: {          show: '=',          dialogTitle: '@',          onClose: '&?'        },        replace: true,        transclude: true,        link: function(scope, element, attrs) {          var setupCloseButton, setupStyle;          setupCloseButton = function() {            return scope.closeButtonHtml = $sce.trustAsHtml(ngModalDefaults.closeButtonHtml);          };          setupStyle = function() {            scope.dialogStyle = {};            if (attrs.width) {              scope.dialogStyle['width'] = attrs.width;            }            if (attrs.height) {              return scope.dialogStyle['height'] = attrs.height;            }          };          scope.hideModal = function() {            return scope.show = false;          };          scope.$watch('show', function(newVal, oldVal) {            if (newVal && !oldVal) {              document.getElementsByTagName("body")[0].style.overflow = "hidden";            } else {              document.getElementsByTagName("body")[0].style.overflow = "";            }            if ((!newVal && oldVal) && (scope.onClose != null)) {              return scope.onClose();            }          });          setupCloseButton();          return setupStyle();        }, template: "<div class='ng-modal' ng-show='show'>\n  <div class='ng-modal-overlay' ng-click='hideModal()'></div>\n  <div class='ng-modal-dialog' ng-style='dialogStyle'>\n    <span class='ng-modal-title' ng-show='dialogTitle && dialogTitle.length' ng-bind='dialogTitle'></span>\n    <div class='ng-modal-close' ng-click='hideModal()'>\n      <div ng-bind-html='closeButtonHtml'></div>\n    </div>\n    <div class='ng-modal-dialog-content' ng-transclude></div>\n  </div>\n</div>"      };    }  ]);
+
+
 //Services
 //{
 
@@ -615,6 +675,49 @@ landlordtmngt.factory('tenantlist', function($resource) {
       query: {method:'GET', params:{"plot.name":"kahawa_2"}, isArray:true}
    });
 });
+
+
+
+
+landlordtmngt.controller('pwdchangectrl', function($scope,$http) {
+
+$scope.btnStatus=true;
+$scope.pwdchanged=false;
+$scope.pwderror=false;
+$scope.SubmitPwd=function(){
+    $http.post('/ChangePwd',$scope.pwd )
+		   .success(function(data) {
+		    console.log(data.success)
+		    $scope.pwdchanged=true;
+		     }) 
+			.error(function(data) {
+				 $scope.pwderror=true;	 
+				});	
+}
+
+
+$scope.CheckPwd=function(){
+	$scope.busy=true;
+     $http.post('/CheckPwd',$scope.pwd )
+		   .success(function(data) {
+		     if (data.success)
+		     {
+				 $scope.busy=false; 
+				 $scope.btnStatus=false;
+				 $scope.invalidcredential=false;
+				 
+		     }
+			 else{$scope.invalidcredential=true;}
+				
+							 }) 
+			.error(function(data) {
+					  $scope.invalidcredential=true;
+					  $scope.msg=data.error
+				});	
+}
+     
+});
+
 
 
 //}
@@ -669,6 +772,12 @@ landlordtmngt.config(function($routeProvider,$locationProvider)	{
        templateUrl: 'views/partials/LandlordVacate.html',   
        controller: 'vacatectrl'
         })
+
+    .when('/pwdchange', {
+     templateUrl: 'views/partials/PwdChange.html',   
+     controller: 'pwdchangectrl'
+        })
+			
 			
 	.otherwise({
          redirectTo: '/tenantsmngt'

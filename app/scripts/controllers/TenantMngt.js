@@ -32,10 +32,8 @@ Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope) {
 
 			
   }
- 
- 
+  
 });
-
 
 Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
  
@@ -53,6 +51,8 @@ Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
 });
 
 Tenantmngt.controller('inboxsctrl', function($scope,$http, $rootScope) {
+
+
 $scope.Mail={};
 $scope.UserMail={};
 $scope.Sentemails={};
@@ -61,9 +61,12 @@ $scope.Sentemails={};
  $scope.ComposeMail=false;
  $scope.viewSentMail=false;
 
- $scope.MailTo=[{"name":"Landlord","_id":"100","names":"josepgh"}];
+ $scope.MailTo=[{"name":"Landlord"}];
 
  $scope.Mail.to=$scope.MailTo[0];
+ 
+
+
 
  $scope.emails = {};
 
@@ -115,10 +118,10 @@ $scope.ShowSentMailpopUp=function(mailinbox){
 
                   $http.post('/Mail',mail )
 				 		 .success(function(data) {
-					               console.log("Res from Serv" + data);
 								   $scope.SuccessStatus=true;
-								   $scope.Sentemails.push(mail.update.senderDetails );							 
 								   $scope.ComposeMail=false;
+								   $scope.Sentemails.push(mail.update.senderDetails );							 
+								 
 							 }) 
 						 .error(function(data) {
 							   $scope.ErrorStatus=true;
@@ -137,16 +140,59 @@ $scope.ShowSentMailpopUp=function(mailinbox){
 
 });
 
-Tenantmngt.controller('pwdchangectrl', function($scope) {
+Tenantmngt.controller('pwdchangectrl', function($scope,$http) {
+
+$scope.btnStatus=true;
+$scope.pwdchanged=false;
+$scope.pwderror=false;
+$scope.SubmitPwd=function(){
+    $http.post('/ChangePwd',$scope.pwd )
+		   .success(function(data) {
+		    console.log(data.success)
+		    $scope.pwdchanged=true;
+		     }) 
+			.error(function(data) {
+				 $scope.pwderror=true;	 
+				});	
+}
 
 
-
-   
-  
+$scope.CheckPwd=function(){
+	$scope.busy=true;
+     $http.post('/CheckPwd',$scope.pwd )
+		   .success(function(data) {
+		     if (data.success)
+		     {
+				 $scope.busy=false; 
+				 $scope.btnStatus=false;
+				 $scope.invalidcredential=false;
+				 
+		     }
+			 else{$scope.invalidcredential=true;}
+				
+							 }) 
+			.error(function(data) {
+					  $scope.invalidcredential=true;
+					  $scope.msg=data.error
+				});	
+}
+     
 });
 
 
 
+
+
+   Tenantmngt.directive('match', [function () {
+		 return {
+			 require: 'ngModel',
+			 link: function (scope, elem, attrs, ctrl) {     
+			 scope.$watch('[' + attrs.ngModel + ', ' + attrs.match + ']', function(value){
+			 ctrl.$setValidity('match', value[0] === value[1] );
+			   }, true);
+	    }
+		 }
+	}]);
 
 
 
@@ -173,7 +219,7 @@ $locationProvider.hashPrefix("!");
      controller: 'inboxsctrl'
         })
 .when('/pwdchange', {
-     templateUrl: 'views/partials/TenantPwdChange.html',   
+     templateUrl: 'views/partials/PwdChange.html',   
      controller: 'pwdchangectrl'
         })
 			

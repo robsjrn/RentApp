@@ -56,3 +56,29 @@ $locationProvider.hashPrefix("!");
   });
 
 
+   Rentmngt.controller('homectrl', function ($scope) {
+    
+
+  });
+
+  Rentmngt.controller('Servicesctrl', function ($scope) {
+    
+
+  });
+
+
+   Rentmngt.controller('newsctrl', function ($scope) {
+    
+
+  });
+
+  Rentmngt.controller('contactsctrl', function ($scope) {
+    
+
+  });
+
+  Rentmngt.controller('aboutctrl', function ($scope) {
+    
+
+  });
+

@@ -249,7 +249,7 @@ exports.getCredentials=function(userid,fn){
   collection.findOne({'_id':userid}, function(err, user) {
 	 console.log("Getting User Credentials.." + userid);
 	  if(user){ return fn(null, user); }
-	  else{  return fn(null, null); }
+	  else{ console.log("Error" + err); return fn(null, null); }
 });
 });
 };
@@ -423,26 +423,21 @@ exports.CreateMail=function(req, res) {
 	   var ReceiverDetails =update.ReceiverDetails;
 	   var ReceiverID =update.ReceiverId;
 
-	   console.log("User identification.."+ req.user.identifier + "User Details.." + ReceiverDetails);
-
-     UpdateSenderInbox(req.user.identifier,senderDetails,function(ok,status){
+     UpdateSenderInbox(req.user.identifier ,senderDetails,function(ok,status){
              if (ok){
 				 	 UpdateReceiverInbox(ReceiverID,ReceiverDetails,function(ok,status){
                           if (ok){res.json(200,{success: "Succesfull"})}; 		
 						   if(status){res.json(500,{error: "Database Error"})};
 	                  });		
 			 }; 
-			 if(status){res.json(500,{error: "Database Error"})};
-
-			
-	      });
-	 
+			 if(status){res.json(500,{error: "Database Error"})};		
+	      });	 
 };
 
 
 var UpdateReceiverInbox=function (id,ReceiverDet ,callback){
-   db.collection('Inbox', function(err, collection) {
-     collection.update({"_id" : id},{$addToSet: {"Received":ReceiverDet}}, { upsert: true },{safe:true}, function(err, item) {
+    db.collection('Inbox', function(err, collection) {
+     collection.update({"_id" : id},{$addToSet: {"Received":ReceiverDet}}, { upsert: true }, function(err, item) {
      if(err){return callback(false,err);}
 	  else{ return callback(true,null);}
       });
@@ -450,16 +445,15 @@ var UpdateReceiverInbox=function (id,ReceiverDet ,callback){
 };
 
 
-var UpdateSenderInbox=function (id,SenderDet ,callback){
+var UpdateSenderInbox=function (id,SenderDet,callback){
    db.collection('Inbox', function(err, collection) {
-    collection.update({"_id" : id},{$addToSet: {"Sent":SenderDet}}, { upsert: true },{safe:true}, function(err, item) {
+    collection.update({"_id" :id},{$addToSet: {"Sent":SenderDet}}, { upsert: true }, function(err, item) {
      if(err){return callback(false,err);}
-	  else{ return callback(true,null);}
+	  else{return callback(true,null);}
       });
    });
+	
 };
-
-
 
 
 exports.Viewmail=function(req, res) {
@@ -470,4 +464,55 @@ exports.Viewmail=function(req, res) {
 
 });
 });
+};
+
+
+
+exports.LandlordTenants=function(req, res) {
+ db.collection('Tenant', function(err, collection) {
+ collection.find({"Owner.id":req.user.identifier},{name:1}).toArray( function(err, item){
+  if(item){res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+
+
+exports.CheckPwd= function(req, res) {
+    db.collection('Credential', function(err, collection) {
+     collection.findOne({"identifier":req.user.identifier},function(err, item) {
+	   if(item){
+		     
+			 if (item.password==req.body.oldpwd)
+			 {
+              res.json(200,{success: true});
+			 }
+			 else{
+				 res.json(200,{success: false});
+				 }
+
+		   
+	   }else{res.json(500,{error: "database Error"});}
+});
+});
+
+};
+
+
+exports.ChangePwd=function(req, res) {
+    db.collection('Credential', function(err, collection) {
+   collection.update({"identifier":req.user.identifier},{$set:{"password" : req.body.password}},{safe:true}, function(err, item) {
+   if (err) {
+	   console.log(err);res.json(500,{error: "database Error"});
+	   }
+   else{
+	   res.json(200,{success: true});
+	   }
+});
+});
+
+     
+
 };

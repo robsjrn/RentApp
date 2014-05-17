@@ -133,6 +133,14 @@ try
 
 	    app.post('/Mail',ensureAuthenticated,DatabaseConn.CreateMail);
 		app.get('/Viewmail',ensureAuthenticated,DatabaseConn.Viewmail);
+
+        app.post('/CheckPwd',ensureAuthenticated,DatabaseConn.CheckPwd);
+		app.post('/ChangePwd',ensureAuthenticated,DatabaseConn.ChangePwd);
+
+        app.get('/LandlordTenants',ensureAuthenticated,DatabaseConn.LandlordTenants);
+
+
+
           
 	    app.get('/mobileTest',DatabaseConn.TestMobile);	
  }

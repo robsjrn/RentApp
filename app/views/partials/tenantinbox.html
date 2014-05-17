@@ -27,8 +27,8 @@
 					<td><a href="#">{{inboxx.from}}</a></td>
 					<td>{{inboxx.subject}}</td>
 					<td>{{inboxx.date}}</td>
-					<td><a href="#/reply"> Reply</a> </td>
-					<td><a href="#/">Delete</a> </td>
+					<td><a href="#/reply"><i class="fa fa-mail-reply fa-fw"></i> Reply</a> </td>
+					<td><a href="#/"><i class="fa fa-eraser fa-fw"></i>Delete</a> </td>
 					</tr>
 			</table>
 		</div>
@@ -54,7 +54,7 @@
 								<td><a href="#">{{Sent.to}}</a></td>
 								<td>{{Sent.subject}}</td>
 								<td>{{Sent.date}}</td>
-								<td><a href="#/">Delete</a> </td>
+								<td><a href="#/"><i class="fa fa-eraser fa-fw"></i> Delete</a> </td>
 							</tr>
 						</table>
 	</div>
@@ -70,7 +70,7 @@
 
  
 <!--Compose  Modal -->
-<modal-dialog show='ComposeMail' dialog-title='Compose Mail' width='500px'>
+<modal-dialog show='ComposeMail' dialog-title='Compose Mail' width='300px'>
             <select class="form-control"  ng-model="Mail.to"  ng-options="c.name for c in MailTo"	>  
 			</select>
              <br/>
@@ -87,7 +87,7 @@
 
 
 <!--View Received Mail  Modal -->
-<modal-dialog show='viewMail' dialog-title='Subject' width='500px'>
+<modal-dialog show='viewMail' dialog-title='Subject' width='300px'>
 
         <strong>From:</strong> {{Mail.from}}<br />
         <strong>Date:</strong> {{Mail.date}} <br />
@@ -101,7 +101,7 @@
 
 
 <!--View SentMail  Modal -->
-<modal-dialog show='viewSentMail' dialog-title='Subject' width='500px'>
+<modal-dialog show='viewSentMail' dialog-title='Subject' width='300px'>
 
         <strong>To:</strong> {{Mail.to}}<br />
         <strong>Date:</strong> {{Mail.date}} <br />
@@ -111,4 +111,17 @@
         </p>
    <hr> 
     <button type="button" class="btn btn-warning" ng-click="CloseViewMailpopup()" >Close</button>		 			  
+</modal-dialog>
+
+
+<modal-dialog show='ReplyMail' dialog-title='Reply' width='300px'>
+
+        <strong>To:</strong> {{Mail.to}}<br />
+        <strong>Date:</strong> {{Mail.date}} <br />
+        <br />
+        <p>
+           {{Mail.msg}}
+        </p>
+   <hr> 
+    <button type="button" class="btn btn-warning" ng-click="CloseReplyMailpopup()" >Close</button>		 			  
 </modal-dialog>
