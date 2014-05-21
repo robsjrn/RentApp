@@ -50,12 +50,12 @@
                         <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-messages">
-                        <li ng-repeat="message in emails.messages" >
+                        <li ng-repeat="message in emails.messages  | limitTo :4" >
                             <a href="#">
                                 <div>
                                     <strong>{{ message.from }}</strong>
                                     <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
+                                        <em>{{ message.date | date:'yyyy-MM-dd'  }}</em>
                                     </span>
                                 </div>
                                 <div>{{ message.subject }}</div>
@@ -65,7 +65,7 @@
                         
                         <li>
                             <a class="text-center" href="#">
-                                <strong>Read All Messages</strong>
+                                <strong><a href="#!/inbox">Read All Messages</a></strong>
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         </li>

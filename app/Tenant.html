@@ -46,11 +46,12 @@
 				 </div>
 					<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
 					  <ul class="nav navbar-nav navbar-right">
+					    <li ><a href="#!/nyumbakumi"><i class="fa fa-question fa-fw"></i> Nyumba Kumi</a></li>
 					    <li ><a href="#!/help"><i class="fa fa-question fa-fw"></i> Help</a></li>
 						<li ><a href="#!/terms"><i class="fa fa-edit fa-fw"></i>Terms/Condition</a></li>
 						<li ><a href="#!/pwdchange"><i class="fa fa-cogs fa-fw"></i> Change Password</a></li>
 						<li ><a href="#!/about"><i class="fa fa-info fa-fw"></i>About</a></li>
-						<li ><a href="#!/settings"><i class="fa fa-cogs fa-fw"></i> Settings</a></li>
+						<li ><a href="#!/Profile"><i class="fa fa-cogs fa-fw"></i>Profile</a></li>
 						<li class="divider"></li>
 						<li><a type="button"  ng-click="Logout()"><i class="fa fa-power-off fa-fw"></i>Logout</a></li>
 					 </ul>
@@ -138,7 +139,9 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="public/jquery/jquery.js"></script>
+	<script src="public/ng-file-upload-shim/angular-file-upload-shim.min.js"></script> 
     <script src="public/angular/angular.js"></script>
+	<script src="public/ng-file-upload/angular-file-upload.min.js"></script>
     <script src="public/bootstrap/dist/js/bootstrap.js"></script>
     <script src="public/angular-resource/angular-resource.js"></script>
     <script src="public/angular-cookies/angular-cookies.js"></script>
@@ -147,6 +150,7 @@
     <script src="public/angular-animate/angular-animate.js"></script>
     <script src="public/angular-touch/angular-touch.js"></script>
 	<script src="public/angular-bootstrap/ui-bootstrap-tpls.min.js"></script> 
+	<script src="public/holderjs/holder.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 

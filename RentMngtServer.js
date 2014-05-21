@@ -41,6 +41,7 @@ function ensureAuthenticated(req, res, next) {
 app.configure(function() {
   
    app.use(express.cookieParser());
+   app.use(express.bodyParser({uploadDir:__dirname +'/app/uploads'}));
    app.use(express.session({secret: '1234567890QWERTY'}));
    app.use(express.bodyParser());
    app.use(express.static(__dirname + '/app'));
@@ -138,8 +139,8 @@ try
 		app.post('/ChangePwd',ensureAuthenticated,DatabaseConn.ChangePwd);
 
         app.get('/LandlordTenants',ensureAuthenticated,DatabaseConn.LandlordTenants);
-
-
+        app.get('/Findneighbours',ensureAuthenticated,DatabaseConn.Findneighbours);
+       app.post('/photoupload',ensureAuthenticated,DatabaseConn.photoupload);
 
           
 	    app.get('/mobileTest',DatabaseConn.TestMobile);	

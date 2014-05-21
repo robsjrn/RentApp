@@ -405,6 +405,10 @@ exports.UpdateTenantAgreement=function (req, res){
 
 
 
+
+
+
+
 exports.TestMobile=function(req, res) {
  db.collection('Tenant', function(err, collection) {
  collection.find().toArray( function(err, item){
@@ -516,3 +520,26 @@ exports.ChangePwd=function(req, res) {
      
 
 };
+
+
+
+
+exports.Findneighbours = function(req, res) {
+ db.collection('Tenant', function(err, collection) {
+ collection.find({$and: [ {"plot.name":"Kahawa"},{"hsestatus" : 1}]},{name:1,housename:1}).toArray( function(err, item){
+   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+   else{res.send(item);}
+});
+});
+};
+
+exports.photoupload = function(req, res) {
+
+	 console.log("Image  " +toString(req));
+    var tmp_path =req.file.path;
+	var imagename=req.file.name;
+  
+	 console.log("Temp Path  " + tmp_path);
+	  console.log("imagename " + imagename);
+};
+
