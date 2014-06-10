@@ -1,49 +1,80 @@
-<br>
-<div class="col-xs-6">
+
   <div class="panel panel-default">
 					 <div class="panel-heading">
-						     Upload Photo
+						      Tenant Details                       
+									<div class="pull-right">
+										   <label>Public</label>
+											    Yes <input type="radio" name="view" value="true" ng-model="det.details.view">
+												No <input type="radio" name="view" value="false" ng-model="det.details.view">    
+										  </div>
+							
 						  </div>
 					<div class="panel-body">
-                        
-                          <input type="file"  ng-file-select="onFileSelect($files)" >
+                         
+                  <div class="col-xs-6">
+						   
+                          <input type="file"  ng-file-select="onFileSelect($files)"  >
 						  <p>OR</p>
 
                        <div ng-file-drop="onFileSelect($files)" class="drop-box" ng-file-drag-over-class="optional-css-class"
-                  ng-show="dropSupported">drop files here</div>
+                        ng-show="dropSupported">drop files here</div>
                    <div ng-file-drop-available="dropSupported=true" 
                        ng-show="!dropSupported">Droping File is not supported!</div>
-
-
-
-						  
+				  
 			             <span class="progress" ng-show="progress[$index] >= 0">						
 							<div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
 						</span>
-						  <hr>
-						    <div class="btn-group">
-						      <button type="button" class="btn btn-danger">Upload</button>
-							   <button type="button" class="btn btn-success">Save</button>
-                            </div>
+						 
 					 </div>
-					</div>  
+
+
+					 <div class="col-xs-6">
+                             <div class="row">
+                                 <div class="col-sm-6 col-md-5">
+								      <label for="cell">Cell Phone</label>
+									  <input id="cell" type="text"  ng-model="det.details.CellPhone"> 
+			                     </div>
+								<div class="col-sm-6 col-md-5">
+								      <label for="Email">Email</label>
+									  <input id="Email" type="email"  ng-model="det.details.Email"> 
+			                     </div>
+                             </div>
+							  <div class="row">
+                                 <div class="col-sm-6 col-md-5">
+								      <label for="mstatus">Marital Status</label>
+										<select class="form-control"  ng-model="det.details.Marital" id="mstatus" ng-options="c.Status for c in mstatus" >  
+										  </select>
+			                     </div>
+								<div class="col-sm-6 col-md-5">
+								      <label for="otherDet">Your Other Details</label>							        
+		                             <textarea id="otherDet" rows="2"  ng-model="det.details.OtherDetails"></textarea>
+			                     </div>
+                             </div>
+							  <div class="row">
+                                 <div class="col-sm-6 col-md-5">
+								       <label >Children ? </label>
+											 Yes <input type="radio" name="choice" value="yes" ng-click="showme(true)" ng-model="det.details.hasChildren">
+											No <input type="radio" name="choice" value="no" ng-click="showme(false)" ng-model="det.details.hasChildren" >
+			                     </div>
+							   <div class="col-sm-6 col-md-5">
+										<div ng-show="showChild">
+											 <label for="noChildren">Number of Children</label>
+											<input id="noChildren" type="number"  ng-model="det.details.noChildren"> 
+										</div>
+			                     </div>
+                             </div>
+
+				
+					    
+						 <div ng-show="Profileupdate" class="alert alert-danger"><strong>Update Successfull</strong></div>	
+					 </div>
+				</div>  
+       <div class="panel-footer">
+	     <div class="btn-group">
+							 <button type="button " class="btn btn-danger" ng-click="updateUserDetails()">Update</button>
+                  </div>
+	   </div>
+
 			
 </div>
 
-<div class="col-xs-6">
-<div class="panel panel-default">
-					   <div class="panel-heading">
-						     Tenant Details
-						</div>
-					<div class="panel-body">
-                           Photo Details	
-						   
-						   <hr>
-						   <div class="btn-group">
-						     <button type="button" class="btn btn-success">Save</button>
-							 <button type="button" class="btn btn-warning">Clear</button>
-							 <button type="button" class="btn btn-danger">Edit</button>
-                            </div>
-					 </div>
-		</div> 
-</div>

@@ -1,7 +1,28 @@
-var landlordtmngt= angular.module('LandlordmngtApp', ['ngResource','ngRoute','ui.bootstrap','angularCharts'] ); 
+var landlordtmngt= angular.module('LandlordmngtApp', ['ngResource','ngRoute','ui.bootstrap','angularCharts','angularFileUpload'] ); 
 
 
-landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope) {
+
+ 
+   landlordtmngt.config(['$httpProvider',  function ($httpProvider,$window) {
+    $httpProvider.interceptors.push(function ($q,$window) {
+        return {
+            'response': function (response) {
+                //Will only be called for HTTP up to 300
+                 return response;
+            },
+            'responseError': function (rejection) {
+                if(rejection.status === 401) {
+					 $window.location.href = "Error.html";
+                }
+                return $q.reject(rejection);
+            }
+        };
+    });
+	
+}]);
+
+
+landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope,$window) {
 
  
  $http.get('/LandLordDetails').success(function (data){
@@ -24,7 +45,16 @@ landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope) {
 $http.get('/Viewmail').success(function (data){$scope.UserMail=data; $scope.emails.messages=$scope.UserMail.Received;
 });
  
- 
+ $scope.Logout=function(){
+            $http.get('/logout')
+              .success(function(data) {
+					$window.location.href = "/";
+					}) 
+				 .error(function(data) {
+					$window.location.href = "/";
+					});	
+
+       } 
 
 
 	  
@@ -89,15 +119,8 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
 							 $scope.msg=data.error;
 							 });	
 
-
-
                      }
 
-			
-
-
-
-   
     $scope.open = function (TenantDetails) {
         var modalInstance = $modal.open({
             templateUrl: 'views/partials/landlordEditTenantDetails.html',
@@ -116,9 +139,6 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
     }; 
   
 });
-
-
-
 
 
 landlordtmngt.controller('housemngtctrl', function($scope,$rootScope,$http) {
@@ -234,10 +254,12 @@ $scope.postPayment=function(){
  $scope.disableComponents=true;
 
 
-  $scope.Payment={"tenantid":$scope.crit._id,
+  $scope.Payment={
+	              "receiptno":$scope.Transaction.receiptno,
+	              "tenantid":$scope.crit._id,
 	              "housenumber":$scope.crit.housename,
 	              "plotnumber":$scope.crit.plot.name,
-	              "transactiondate":new Date(),
+	              "transactiondate":new Date().toISOString(),
 	              "transactiontype":$scope.Transaction.transactiontype.name,
 	              "paymentmethod":$scope.Transaction.paymentmethod.name,
 	              "Description":$scope.Transaction.comments,
@@ -346,7 +368,8 @@ $scope.chartType = 'bar';
 $scope.messages = [];
    $scope.data = {
 		series: ['Expense', 'Income'],
-		data : [{
+		data : [
+		{
 			x : "Jan",
 			y: [210, 384]
 		
@@ -362,7 +385,13 @@ $scope.messages = [];
 		{
 			x : "April",
 			y: [ 341, 879]
-		}]     
+		},
+		{
+			x : "May",
+			y: [ 500, 900]
+		}
+			
+			]     
 	}
 
 
@@ -388,6 +417,66 @@ landlordtmngt.controller('documentmngtctrl', function($scope) {
   
 });
 
+landlordtmngt.controller('ReportsPortalctrl', function($scope) {
+ $scope.today = function() {
+    $scope.fromdt = new Date();
+	$scope.todt= new Date();
+  };
+  $scope.today();
+
+  $scope.clear = function () {
+    $scope.fromdt = null;
+	$scope.todt= null;
+  };
+
+  // Disable weekend selection
+  $scope.disabled = function(date, mode) {
+    return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+  };
+
+  $scope.toggleMin = function() {
+    $scope.minDate = $scope.minDate ? null : new Date();
+  };
+  $scope.toggleMin();
+
+  $scope.Fromopen = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+
+    $scope.Fromopened = true;
+  };
+
+
+
+ $scope.Toopen = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+
+    $scope.Toopened = true;
+  };
+
+
+
+  $scope.dateOptions = {
+    formatYear: 'yy',
+    startingDay: 1
+  };
+
+  $scope.initDate = new Date('2016-15-20');
+  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+  $scope.format = $scope.formats[0];
+  
+});
+
+landlordtmngt.controller('Dashboardctrl', function($scope) {
+
+  
+});
+
+landlordtmngt.controller('RentPostingctrl', function($scope) {
+
+  
+});
 
 
 landlordtmngt.controller('inboxctrl', function($scope,$http,$rootScope) {
@@ -533,6 +622,43 @@ $scope.Update=function(){
 
 
 
+landlordtmngt.controller('LandlordProfilectrl', function($scope,$http,$rootScope,$upload) {
+
+  $scope.onFileSelect = function($files) {
+    //$files: an array of files selected, each file has name, size, and type.
+    for (var i = 0; i < $files.length; i++) {
+      var file = $files[i];
+      $scope.upload = $upload.upload({
+        url: '/Landlordphotoupload', //upload.php script, node.js route, or servlet url
+        method: 'POST',
+        // headers: {'header-key': 'header-value'},
+        // withCredentials: true,
+        data: {myObj: $scope.myModelObj},
+        file: file, // or list of files: $files for html5 only
+        /* set the file formData name ('Content-Desposition'). Default is 'file' */
+        //fileFormDataName: myFile, //or a list of names for multiple files (html5).
+        /* customize how data is added to formData. See #40#issuecomment-28612000 for sample code */
+        //formDataAppender: function(formData, key, val){}
+      }).progress(function(evt) {
+        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+      }).success(function(data, status, headers, config) {
+        // file is uploaded successfully
+		//update landlord image
+		$scope.Profileupdate=true;
+		  $rootScope.landlordDetails.Details.imageUrl=data.imageUrl;
+        
+      });
+      //.error(...)
+      //.then(success, error, progress); 
+      //.xhr(function(xhr){xhr.upload.addEventListener(...)})// access and attach any event listener to XMLHttpRequest.
+    }
+    /* alternative way of uploading, send the file binary with the file's content-type.
+       Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed. 
+       It could also be used to monitor the progress of a normal http post/put request with large data*/
+    // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
+  };
+
+});
 
 landlordtmngt.controller('rentctrl', function($scope,$http,$rootScope) {
 $scope.Tenant={};
@@ -761,8 +887,26 @@ landlordtmngt.config(function($routeProvider,$locationProvider)	{
      templateUrl: 'views/partials/PwdChange.html',   
      controller: 'pwdchangectrl'
         })
-			
-			
+
+    .when('/profile', {
+     templateUrl: 'views/partials/LandlordProfile.html',   
+     controller: 'LandlordProfilectrl'
+        })
+	.when('/ReportsPortal', {
+     templateUrl: 'views/partials/ReportsPortal.html',   
+     controller: 'ReportsPortalctrl'
+        })		
+	.when('/Dashboard', {
+     templateUrl: 'views/partials/LandlordDashboard.html',   
+     controller: '/Dashboardctrl'
+        })
+
+			.when('/RentPosting', {
+     templateUrl: 'views/partials/RentPosting.html',   
+     controller: '/RentPostingctrl'
+        })
+		
+		
 	.otherwise({
          redirectTo: '/tenantsmngt'
       });

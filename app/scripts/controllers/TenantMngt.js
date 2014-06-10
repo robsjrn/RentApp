@@ -1,15 +1,46 @@
 var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute','ui.bootstrap','ngAnimate' ,'angularFileUpload'] ); 
 
-Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope) {
+
+   Tenantmngt.config(['$httpProvider',  function ($httpProvider,$window) {
+    $httpProvider.interceptors.push(function ($q,$window) {
+        return {
+            'response': function (response) {
+                //Will only be called for HTTP up to 300
+                 return response;
+            },
+            'responseError': function (rejection) {
+                if(rejection.status === 401) {
+					 $window.location.href = "Error.html";
+                }
+                return $q.reject(rejection);
+            }
+        };
+    });
+	
+}]);
+
+
+
+Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope,$window) {
   
   $scope.doc={"txt":"I {{TenantData.name}} Agree to Take House {{TenantData.housename}} And Maintain it Well"};
 
   $http.get('/tenantDetails').success(function (data){
+
+
 	  $rootScope.Tenant=data
 	  $scope.TenantData= $rootScope.Tenant; 
 	  $scope.dialogShown=$scope.TenantData.AgreementStatus;
 	  });
-  
+
+   $scope.emails = {};
+   
+$http.get('/Viewmail').success(function (data){
+	$scope.UserMail=data;
+	$scope.emails.messages=$scope.UserMail.Received;
+});
+
+
 
 
   $scope.CancelTerms=function(){
@@ -27,13 +58,23 @@ Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope) {
 							 }) 
 						 .error(function(data) {
 
-					           alert("Something Went Wrong");
 							 });	
 
 			
   }
   
-});
+  $scope.Logout=function(){
+            $http.get('/logout')
+              .success(function(data) {
+					$window.location.href = "/";
+					}) 
+				 .error(function(data) {
+					$window.location.href = "/";
+					});	
+
+       }
+
+}); 
 
 Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
  
@@ -43,7 +84,6 @@ Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
 							   $scope.statement=data;
 							 }) 
 						 .error(function(data) {
-					           alert("Errorrrrs..");
 							 });	
 
 
@@ -56,6 +96,36 @@ Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
 
 Tenantmngt.controller('Profilectrl', function($scope,$http,$window,$upload) {
  
+ $scope.details={};
+ $scope.mstatus=[{"Status":"Single"},{"Status":"Married"}];
+  $scope.Profileupdate=false;
+
+ $scope.details.Marital=$scope.mstatus[0];
+$scope.showChild=false;
+ $scope.showme=function(status){
+	
+      $scope.showChild=status;
+ };
+
+$scope.updateUserDetails=function(){
+
+ 
+ $http.post('/updateTenantData',$scope.det )
+		   .success(function(data) {
+              $scope.Profileupdate=true;
+		    
+		     }) 
+			.error(function(data) {
+
+				});
+	
+
+}
+
+$scope.uploadFiles= function($files) {
+	alert($files);
+}
+
 $scope.onFileSelect = function($files) {
     //$files: an array of files selected, each file has name, size, and type.
     for (var i = 0; i < $files.length; i++) {
@@ -91,30 +161,54 @@ $scope.onFileSelect = function($files) {
 });
 
 
-Tenantmngt.controller('nyumbakumictrl', function($scope,$http,$window) {
-
+Tenantmngt.controller('nyumbakumictrl', function($scope,$http,$window,$rootScope) {
  
-      $http.get('/Findneighbours')
+
+$scope.showNeighbour=function(tenant){
+
+    $http.get('/TenantInfo/',{params:{tenant_id:tenant._id}})
 	   
                       .success(function(data) {
-							    $scope.Neighbours=data;
+							console.log(data);
+								$scope.details=data;
+									 // if ($scope.details.Details.view=="undefined"){$scope.details.Details.view=false;}
+									 try{
+								           $scope.isInfoPublic=$scope.details.Details.view;
+									 }
+								 catch(e){$scope.isInfoPublic=false;}
 							 }) 
 						 .error(function(data) {
-					           alert("Errorrrrs..");
+					        	console.log(data)
 							 });	
 
 
 
+	$scope.viewTenantDetails=true;
 
+}
 
-
-
-
+				 $http.get('/Findneighbours',{params:{plot_name:$rootScope.Tenant.plot.name}})   
+                      .success(function(data) {
+					         console.log(data);
+							    $scope.Neighbours=data;
+							 }) 
+						 .error(function(data) {
+							 });	
  });
 
 
 
+Tenantmngt.controller('Termsctrl', function($scope,$http,$window,$rootScope) {
 
+});
+
+Tenantmngt.controller('Aboutctrl', function($scope,$http,$window,$rootScope) {
+
+});
+
+Tenantmngt.controller('Helpctrl', function($scope,$http,$window,$rootScope) {
+
+});
 
 Tenantmngt.controller('inboxsctrl', function($scope,$http, $rootScope) {
 
@@ -266,7 +360,12 @@ $scope.CheckPwd=function(){
 Tenantmngt.provider("ngModalDefaults", function() {    return {      options: {        closeButtonHtml: "<span class='ng-modal-close-x'>X</span>"      },      $get: function() {        return this.options;      },      set: function(keyOrHash, value) {        var k, v, _results;        if (typeof keyOrHash === 'object') {          _results = [];          for (k in keyOrHash) {            v = keyOrHash[k];            _results.push(this.options[k] = v);          }          return _results;        } else {          return this.options[keyOrHash] = value;        }      }    };  });
 Tenantmngt.directive('modalDialog', [    'ngModalDefaults', '$sce', function(ngModalDefaults, $sce) {      return {        restrict: 'E',        scope: {          show: '=',          dialogTitle: '@',          onClose: '&?'        },        replace: true,        transclude: true,        link: function(scope, element, attrs) {          var setupCloseButton, setupStyle;          setupCloseButton = function() {            return scope.closeButtonHtml = $sce.trustAsHtml(ngModalDefaults.closeButtonHtml);          };          setupStyle = function() {            scope.dialogStyle = {};            if (attrs.width) {              scope.dialogStyle['width'] = attrs.width;            }            if (attrs.height) {              return scope.dialogStyle['height'] = attrs.height;            }          };          scope.hideModal = function() {            return scope.show = false;          };          scope.$watch('show', function(newVal, oldVal) {            if (newVal && !oldVal) {              document.getElementsByTagName("body")[0].style.overflow = "hidden";            } else {              document.getElementsByTagName("body")[0].style.overflow = "";            }            if ((!newVal && oldVal) && (scope.onClose != null)) {              return scope.onClose();            }          });          setupCloseButton();          return setupStyle();        },        template: "<div class='ng-modal' ng-show='show'>\n  <div class='ng-modal-overlay' ng-click='hideModal()'></div>\n  <div class='ng-modal-dialog' ng-style='dialogStyle'>\n    <span class='ng-modal-title' ng-show='dialogTitle && dialogTitle.length' ng-bind='dialogTitle'></span>\n    <div class='ng-modal-close' ng-click='hideModal()'>\n      <div ng-bind-html='closeButtonHtml'></div>\n    </div>\n    <div class='ng-modal-dialog-content' ng-transclude></div>\n  </div>\n</div>"      };    }  ]);
 
-
+Tenantmngt.directive('tnPrivacyCheck', function() {
+  return {
+   
+    template: '<label>Public</label>Yes <input type="radio" name="view" value="true" ng-model="details.view">No <input type="radio" name="view" value="false" ng-model="details.view"> '
+  };
+});
 
 
 
@@ -297,7 +396,20 @@ $locationProvider.hashPrefix("!");
      templateUrl: 'views/partials/TenantProfile.html',   
      controller: 'Profilectrl'
         })
-  			
+.when('/Terms', {
+     templateUrl: 'views/partials/Terms.html',   
+     controller: 'Termsctrl'
+        })  
+.when('/about', {
+     templateUrl: 'views/partials/About.html',   
+     controller: 'Aboutctrl'
+        }) 	
+			
+.when('/help', {
+     templateUrl: 'views/partials/Help.html',   
+     controller: 'Helpctrl'
+        }) 
+
   
 		.otherwise({
          redirectTo: '/statements'

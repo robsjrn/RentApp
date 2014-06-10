@@ -33,7 +33,7 @@ passport.use(new LocalStrategy(
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/Error.html');
+  res.send(401);
 }
 
 
@@ -61,8 +61,7 @@ try
      
 
 		app.post('/login', passport.authenticate('local'),  function(req, res) { res.send(200);});
-      
-		
+        app.get('/logout',ensureAuthenticated,DatabaseConn.logout);
 
         app.get('/LoginRedirect', function(req, res){
 			console.log("The User Role is." +req.user.role );
@@ -140,9 +139,12 @@ try
 
         app.get('/LandlordTenants',ensureAuthenticated,DatabaseConn.LandlordTenants);
         app.get('/Findneighbours',ensureAuthenticated,DatabaseConn.Findneighbours);
-       app.post('/photoupload',ensureAuthenticated,DatabaseConn.photoupload);
+        app.post('/photoupload',ensureAuthenticated,DatabaseConn.photoupload);
+		   app.post('/Landlordphotoupload',ensureAuthenticated,DatabaseConn.Landlordphotoupload);
+		
 
-          
+        app.get('/TenantInfo',ensureAuthenticated,DatabaseConn.TenantInfo);
+        app.post('/updateTenantData',ensureAuthenticated,DatabaseConn.updateTenantData); 
 	    app.get('/mobileTest',DatabaseConn.TestMobile);	
  }
  

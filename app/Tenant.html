@@ -32,9 +32,9 @@
 
 
 <div data-ng-controller="MainTenantsctrl">
-<div class="container" >
+
              <header class="navbar navbar-inverse navbar-fixed-top" role="banner">
-		      
+		       <div class="container" >
 				  <div class="navbar-header">
 					   <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
 							<span class="sr-only">Toggle navigation</span>
@@ -42,45 +42,81 @@
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					 <a href="#" class="navbar-brand">Rent System</a>
+					 <a href="#" class="navbar-brand">Tenant Rental System</a>
 				 </div>
 					<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
 					  <ul class="nav navbar-nav navbar-right">
 					    <li ><a href="#!/nyumbakumi"><i class="fa fa-question fa-fw"></i> Nyumba Kumi</a></li>
 					    <li ><a href="#!/help"><i class="fa fa-question fa-fw"></i> Help</a></li>
-						<li ><a href="#!/terms"><i class="fa fa-edit fa-fw"></i>Terms/Condition</a></li>
+						<li ><a href="#!/Terms"><i class="fa fa-edit fa-fw"></i>Terms/Condition</a></li>
 						<li ><a href="#!/pwdchange"><i class="fa fa-cogs fa-fw"></i> Change Password</a></li>
 						<li ><a href="#!/about"><i class="fa fa-info fa-fw"></i>About</a></li>
 						<li ><a href="#!/Profile"><i class="fa fa-cogs fa-fw"></i>Profile</a></li>
 						<li class="divider"></li>
 						<li><a type="button"  ng-click="Logout()"><i class="fa fa-power-off fa-fw"></i>Logout</a></li>
 					 </ul>
-	                  </nav>      
+	                  </nav>   
+					   
+   
+      </div>
         </header>
-</div>
 
+<ol class="breadcrumb">
+  <li><a href="#!/statements">Statement </a></li>
+  <li><a href="#!/inbox">Notifications </a></li>
+
+   <li class="dropdown pull-right">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li ng-repeat="message in emails.messages  | limitTo :4" >
+                            <a href="#">
+                                <div>
+                                    <strong>{{ message.from }}</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>{{ message.date | date:'yyyy-MM-dd'  }}</em>
+                                    </span>
+                                </div>
+                                <div>{{ message.subject }}</div>
+                            </a>
+							  <div class="divider"></div>
+                        </li>
+                        
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong><a href="#!/inbox">Read All Messages</a></strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+</ol>
 <div class="container">
       <div class="row">
   	        
 			<div class="col-md-4">
-			
+			     <div class="row">
 					<div class="panel panel-default">
 					 <div class="panel-heading">
 						  Tenant Details
 						   </div>
 					<div class="panel-body">
-                          <p> <h5>Names :{{TenantData.name}} </h5>  </p>
-                            <p> <h5>ID NO. {{TenantData._id}} </h5>  </p>
-							  <p> <h5>Occupation :{{TenantData.occupation}}</h5>  </p>
-							   <p> <h5>Place of Work :{{TenantData.location}}</h5>  </p>										
+					 <div class="col-xs-8">
+                           <p> <h5>Names :{{TenantData.name}} </h5>  </p>
+                           <p> <h5>ID NO. {{TenantData._id}} </h5>  </p>
+						   <p> <h5>Occupation :{{TenantData.occupation}}</h5>  </p>
+						   <p> <h5>Place of Work :{{TenantData.location}}</h5>  </p>
+						</div>	   
+							 <div class="col-xs-4">
+			                     <img class="img-thumbnail" ng-src="{{ TenantData.Details.imageUrl }}" />		
+			                </div>
 					 </div>
 					</div>  
-			
-			</div>
-			
-			<div class="col-md-4 col-md-offset-4">
-			 
-                          <div class="panel panel-default">
+                 </div>
+				 
+            <div class="row">
+            
+
+			   <div class="panel panel-default">
 						   <div class="panel-heading">
 						  Tenant Housing Details
 						   </div>
@@ -95,6 +131,14 @@
 							 </div>
 							</div>  
 
+           </div>
+			
+			</div>
+			
+			<div class="col-md-8">
+			 	
+                   <div data-ng-view >
+			     </div>        
             </div>
 		
        </div>
@@ -109,16 +153,10 @@
 
 
 
-		<div class="row" >  
-                    <ul class="nav nav-tabs" id="myTab">
-                        <li><a href="#!/statements">Statement </a></li>
-						<li><a href="#!/inbox">Notifications </a></li>
-                    </ul>     
-		</div>
-		
-      <div data-ng-view >
-      </div>
-
+	
+	 
+			
+   
 
           
 </div>

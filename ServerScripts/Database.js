@@ -1,6 +1,7 @@
 var mongo = require('mongodb');
-
-
+ var fs = require('fs');
+var util     = require('util')
+var path     = require('path');
 
 var Server = mongo.Server,
 Db = mongo.Db,
@@ -369,6 +370,8 @@ exports.CreateLandlord = function(req, res) {
 };
 
 
+
+
 var GrantLandlordAccess=function (CredentialDet ,callback){
    db.collection('Credential', function(err, collection) {
     collection.insert(CredentialDet,{safe:true}, function(err, item) {
@@ -405,20 +408,39 @@ exports.UpdateTenantAgreement=function (req, res){
 
 
 
-
+exports.updateTenantData=function (req, res){
+	  console.log("Updating Tenant Details for " +req.user.identifier );
+   db.collection('Tenant', function(err, collection) {
+    collection.update({"_id" : req.user.identifier},{$set:{"Details" : req.body.details}}, { upsert: true }, function(err, item) {
+   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+   else{res.json(200);}
+});
+});
+};
 
 
 
 exports.TestMobile=function(req, res) {
+ console.log("Querry Params is " +req.query.tenant_id); 
+
+ console.log("Params is " +req.params); 
+ console.log("Variable is " +req.params.id );
+
+	 res.send("Okkkk")
+};
+
+
+exports.TenantInfo=function(req, res) {
+
+	console.log("Querry Params is " +req.query.tenant_id); 
  db.collection('Tenant', function(err, collection) {
- collection.find().toArray( function(err, item){
-  if(item){res.send(item);}
+  collection.findOne({"_id":req.query.tenant_id},{Details:1},function(err, item){
+  if(item){res.send(item); console.log(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
 });
 });
 };
-
 
 
 exports.CreateMail=function(req, res) {
@@ -469,6 +491,10 @@ exports.Viewmail=function(req, res) {
 });
 });
 };
+
+
+
+
 
 
 
@@ -524,9 +550,16 @@ exports.ChangePwd=function(req, res) {
 
 
 
+exports.logout = function(req, res) {
+	     req.logout();
+         res.send(200);
+
+	};
+
 exports.Findneighbours = function(req, res) {
+
  db.collection('Tenant', function(err, collection) {
- collection.find({$and: [ {"plot.name":"Kahawa"},{"hsestatus" : 1}]},{name:1,housename:1}).toArray( function(err, item){
+ collection.find({$and: [ {"plot.name":req.query.plot_name},{"hsestatus" : 1}]},{name:1,housename:1,_id:1}).toArray( function(err, item){
    if (err) {console.log(err);res.json(500,{error: "database Error"});}
    else{res.send(item);}
 });
@@ -535,11 +568,77 @@ exports.Findneighbours = function(req, res) {
 
 exports.photoupload = function(req, res) {
 
-	 console.log("Image  " +toString(req));
-    var tmp_path =req.file.path;
-	var imagename=req.file.name;
-  
-	 console.log("Temp Path  " + tmp_path);
-	  console.log("imagename " + imagename);
+   var tmp_path = req.files.file.path;
+
+    console.log("The path is "+req.files.file.path);
+    // set where the file should actually exists - in this case it is in the "images" directory
+   // var target_path = __dirname +  "/"  + req.files.file.name; 
+
+	  var target_path = './app/images/Photos/' + req.files.file.name;
+	  var dbpath='./images/Photos/'+req.files.file.name;
+	
+
+	  console.log("The Target path is "+target_path);
+    // move the file from the temporary location to the intended location
+    fs.rename(tmp_path, target_path, function(err) {
+        if (err) throw err;
+        // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
+        fs.unlink(tmp_path, function() {
+            if (err) throw err;
+
+
+                   console.log("Updating Tenant Photo Details for " +req.user.identifier );
+				   db.collection('Tenant', function(err, collection) {
+					collection.update({"_id" : req.user.identifier},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
+				   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+				   else{res.json(200,{imageUrl:dbpath});}
+				});
+				});
+
+         
+        });
+    });
+
+
+
+
 };
 
+
+
+
+
+exports.Landlordphotoupload = function(req, res) {
+
+   var tmp_path = req.files.file.path;
+
+    // set where the file should actually exists - in this case it is in the "images" directory
+   // var target_path = __dirname +  "/"  + req.files.file.name; 
+
+	  var target_path = './app/images/Photos/' + req.files.file.name;
+	  var dbpath='./images/Photos/'+req.files.file.name;
+	
+    // move the file from the temporary location to the intended location
+    fs.rename(tmp_path, target_path, function(err) {
+        if (err) throw err;
+        // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
+        fs.unlink(tmp_path, function() {
+            if (err) throw err;
+
+
+                   console.log("Updating Landlord Photo Details for " +req.user.identifier );
+				   db.collection('Landlord', function(err, collection) {
+					collection.update({"_id" : req.user.identifier},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
+				   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+				   else{res.json(200,{imageUrl:dbpath});}
+				});
+				});
+
+         
+        });
+    });
+
+
+
+
+};
