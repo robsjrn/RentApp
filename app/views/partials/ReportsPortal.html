@@ -1,6 +1,19 @@
   <div class="panel panel-default">
 					 <div class="panel-heading">
-					 Reports
+
+
+
+                       
+							   <label for="trantype">Report Type</label>
+							       <select   ng-model="reportTypename" id="trantype" ng-options="report.name for report in reportType" >  
+			                       </select>
+
+
+								   <label for="plot">Plot Name</label>
+							       <select  ng-model="plot" id="plot" ng-options="c.name for c in plots"  required>    
+			                       </select>  
+		             
+
 					 </div>
 					
 					 	<div class="panel-body">
@@ -31,10 +44,38 @@
 								</div>
 							</div>
                           </div>
+
+
+                    <button type="button" class="btn-danger" ng-click="getReport()">Get</button>
+                      <hr>
+						<div class="row">
+                              
 						 </div>
+					 </div>
  </div>
 
+<modal-dialog show='showData' dialog-title='Transaction Data' width='600px'>
 
-     <pre>Selected From date is: <em>{{fromdt | date:'fullDate' }}</em></pre>
+     <pager total-items="totalItems" ng-model="currentPage"></pager>
+						      
+							    <div class="col-xs-12" >
+									<div class="table-responsive">
+										<table class="table table-striped table-condensed" >
+										<thead>
+										<td><a>House Number</a></td>
+										<td><a>Amount</a></td>
+										<td><a>Transaction Type</a></td>
+										<td><a>Description</a></td>
+										</thead>
+											   <tr data-ng-repeat="report in reportData" >
+												<td><a href="#">{{report.housenumber}}</a></td>
+												<td>{{report.tranAmount}}</td>
+												<td>{{report.transactiontype}}</td>
+												<td>{{report.Description}}</td>
+												</tr>
+										</table>
+									</div>
+								</div>
 
-	  <pre>Selected To date is: <em>{{todt | date:'fullDate' }}</em></pre>
+</modal-dialog>
+    

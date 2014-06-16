@@ -417,7 +417,11 @@ landlordtmngt.controller('documentmngtctrl', function($scope) {
   
 });
 
-landlordtmngt.controller('ReportsPortalctrl', function($scope) {
+landlordtmngt.controller('ReportsPortalctrl', function($scope,$http,$rootScope) {
+
+	 $scope.reportType= $rootScope.TransactionType;
+	  $scope.plots=$rootScope.plot;
+     $scope.showData=false;
  $scope.today = function() {
     $scope.fromdt = new Date();
 	$scope.todt= new Date();
@@ -465,6 +469,36 @@ landlordtmngt.controller('ReportsPortalctrl', function($scope) {
   $scope.initDate = new Date('2016-15-20');
   $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
   $scope.format = $scope.formats[0];
+
+
+
+$scope.getReport=function(){
+ 
+
+  console.log("Report Type name"+$scope.reportTypename.name);
+
+  $scope.reportData={"startdate" :$scope.fromdt,
+	                  "enddate":$scope.todt,
+	                   "ReportType" :$scope.reportTypename.name,
+	                   "plot":$scope.plot.name
+  };
+
+     $http.post('/Report', $scope.reportData)
+						 .success(function(data) {
+								   $scope.reportData=data;
+							       $scope.totalItems=data.length;
+							
+							       $scope.showData=true;
+							 }) 
+						 .error(function(data) {
+							  console.log(data)
+								  $scope.showData=false;
+							 });
+
+
+
+}
+
   
 });
 

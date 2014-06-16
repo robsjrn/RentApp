@@ -140,12 +140,15 @@ try
         app.get('/LandlordTenants',ensureAuthenticated,DatabaseConn.LandlordTenants);
         app.get('/Findneighbours',ensureAuthenticated,DatabaseConn.Findneighbours);
         app.post('/photoupload',ensureAuthenticated,DatabaseConn.photoupload);
-		   app.post('/Landlordphotoupload',ensureAuthenticated,DatabaseConn.Landlordphotoupload);
+		app.post('/Landlordphotoupload',ensureAuthenticated,DatabaseConn.Landlordphotoupload);
 		
 
         app.get('/TenantInfo',ensureAuthenticated,DatabaseConn.TenantInfo);
         app.post('/updateTenantData',ensureAuthenticated,DatabaseConn.updateTenantData); 
-	    app.get('/mobileTest',DatabaseConn.TestMobile);	
+
+		 app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
+	   
+		app.get('/mobileTest',DatabaseConn.TestMobile);	
  }
  
  catch (e)

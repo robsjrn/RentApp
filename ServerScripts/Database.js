@@ -397,7 +397,6 @@ var updatenohse=function (landlordid,no,Amount ,callback){
 
 
 exports.UpdateTenantAgreement=function (req, res){
-	  console.log("Agreeement Status for " +req.user.identifier );
    db.collection('Tenant', function(err, collection) {
     collection.update({"_id" : req.user.identifier},{$set:{"AgreementStatus" : false}},{safe:true}, function(err, item) {
    if (err) {console.log(err);res.json(500,{error: "database Error"});}
@@ -409,7 +408,6 @@ exports.UpdateTenantAgreement=function (req, res){
 
 
 exports.updateTenantData=function (req, res){
-	  console.log("Updating Tenant Details for " +req.user.identifier );
    db.collection('Tenant', function(err, collection) {
     collection.update({"_id" : req.user.identifier},{$set:{"Details" : req.body.details}}, { upsert: true }, function(err, item) {
    if (err) {console.log(err);res.json(500,{error: "database Error"});}
@@ -421,7 +419,6 @@ exports.updateTenantData=function (req, res){
 
 
 exports.TestMobile=function(req, res) {
- console.log("Querry Params is " +req.query.tenant_id); 
 
  console.log("Params is " +req.params); 
  console.log("Variable is " +req.params.id );
@@ -432,7 +429,6 @@ exports.TestMobile=function(req, res) {
 
 exports.TenantInfo=function(req, res) {
 
-	console.log("Querry Params is " +req.query.tenant_id); 
  db.collection('Tenant', function(err, collection) {
   collection.findOne({"_id":req.query.tenant_id},{Details:1},function(err, item){
   if(item){res.send(item); console.log(item);}
@@ -642,3 +638,24 @@ exports.Landlordphotoupload = function(req, res) {
 
 
 };
+exports.Report= function(req, res) {
+
+//var start = new Date("Thursday, May 1, 2014").toISOString();
+//var end = new Date("Friday, June 13, 2014").toISOString();
+var start =req.body.startdate;
+var end=req.body.enddate;
+var reportType=req.body.ReportType;
+var plot=req.body.plot;
+
+
+
+console.log("Start Date .. " + start  +"  End Date .." + end + "Report Type... " +reportType + "And the plot is .." + plot);
+
+  db.collection('Transaction', function(err, collection) {
+ collection.find({$and: [{transactiondate: {$gte: start, $lt: end}},{transactiontype:reportType}]}).toArray( function(err, item){
+  if(item){console.log(item);res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+	};
