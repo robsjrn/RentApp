@@ -145,9 +145,11 @@ try
 
         app.get('/TenantInfo',ensureAuthenticated,DatabaseConn.TenantInfo);
         app.post('/updateTenantData',ensureAuthenticated,DatabaseConn.updateTenantData); 
-
+    
 		 app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
-	   
+	      app.post('/MonthlyRentPosting',ensureAuthenticated,DatabaseConn.MonthlyRentPosting); 
+
+
 		app.get('/mobileTest',DatabaseConn.TestMobile);	
  }
  

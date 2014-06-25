@@ -157,14 +157,7 @@ var updateTenant=function (tenantdetails,tenantid ,callback){
 
 
 
-var updateTenantBal=function (tenantbal,tenantid ,callback){
-   db.collection('Tenant', function(err, collection) {
-    collection.update({"_id" : tenantid},{$inc:{balance:-tenantbal}},{safe:true}, function(err, item) {
-     if(err){return callback(false,err);}
-	  else{ return callback(true,null);}
-      });
-   });
-};
+
 
 
 var updateAccessStatus=function (tenantid ,callback){
@@ -192,14 +185,37 @@ collection.insert(Trxn, function(err, item) {
 
 
 exports.postTransaction = function(req, res) {
+
+	postTran(req,function(ok,status) {
+	    if (ok) {res.json(200,{Status: "Ok"});}
+		else{res.json(500,{error: "Database Error"});}
+	});
+
+};
+
+var postTran=function(req,callback){
+ 
 db.collection('Transaction', function(err, collection) {
 collection.insert(req.body, function(err, item) {
-   if (err) {res.json(500,{error: "database Error"});}
-   else{updateTenantBal(req.body.tranAmount,req.body.tenantid,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
+   if (err) {return callback(false,err);}
+   else{updateTenantBal(req.body.tranAmount,req.body.tenantid,function(ok,status) {if (ok){return callback(true,null); }	
    });}
 });
 });
 };
+
+var updateTenantBal=function (tenantbal,tenantid ,callback){
+   db.collection('Tenant', function(err, collection) {
+    collection.update({"_id" : tenantid},{$inc:{balance:-tenantbal}},{safe:true}, function(err, item) {
+     if(err){return callback(false,err);}
+	  else{ return callback(true,null);}
+      });
+   });
+};
+
+
+
+
 
 
 exports.tenantStatement = function(req, res) {
@@ -640,17 +656,11 @@ exports.Landlordphotoupload = function(req, res) {
 };
 exports.Report= function(req, res) {
 
-//var start = new Date("Thursday, May 1, 2014").toISOString();
-//var end = new Date("Friday, June 13, 2014").toISOString();
 var start =req.body.startdate;
 var end=req.body.enddate;
 var reportType=req.body.ReportType;
 var plot=req.body.plot;
-
-
-
 console.log("Start Date .. " + start  +"  End Date .." + end + "Report Type... " +reportType + "And the plot is .." + plot);
-
   db.collection('Transaction', function(err, collection) {
  collection.find({$and: [{transactiondate: {$gte: start, $lt: end}},{transactiontype:reportType}]}).toArray( function(err, item){
   if(item){console.log(item);res.send(item);}
@@ -659,3 +669,49 @@ console.log("Start Date .. " + start  +"  End Date .." + end + "Report Type... "
 });
 });
 	};
+
+
+
+exports.MonthlyRentPosting= function(req, res) {
+
+var plotname =req.body.plotName;
+var month =req.body.Month;
+var ReceiptNo =req.body.ReceiptNo;
+var det={};
+var req1={};
+var i=0;
+            det.receiptno=ReceiptNo ;
+			det.transactiontype="Posting";
+			det.plotnumber=plotname;
+			det.transactiondate=new Date().toISOString();
+			det.Description="Rent for "+month;
+
+  db.collection('House', function(err, collection) {
+   var recCount = collection.find({$and:[{"plot.name":plotname},{"status":"rented"}]},{amount:1,tenantid:1,_id:0,number:1});	  
+	var cursor  =collection.find({$and:[{"plot.name":plotname},{"status":"rented"}]},{amount:1,tenantid:1,_id:0,number:1});
+	   
+	cursor.each(function(err,item){
+       i=i+1;
+     if (err){res.json(500,{error: "Database Error"});}
+	 else {
+			console.log("Amount " + item.amount);
+
+			  det.tranAmount=item.amount;
+			  det.tenantid=item.tenantid;
+			  req1.body=det;   
+              postTran(req1,function(ok,err)
+			      {
+				    if(err){res.json(500,{error: "Database Error"});}
+	                });
+	             }	 
+	   });
+
+	   console.log("Item length " +recCount );
+  if (i=recCount)
+  {
+     res.json(200,{Status: "Ok"});
+  }
+	   				
+
+  });
+};

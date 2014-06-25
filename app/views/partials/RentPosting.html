@@ -4,9 +4,17 @@
 					 </div>
 
 					 	<div class="panel-body">
+						  <div class="col-sm-6">
+						    <label for="plot">Plot Name</label>
+							<select class="form-control"  ng-model="Landlord.plot" id="plot" ng-options="c.name for c in plot" >    
+			                       </select>
+                              <hr>
+								   <button type="button" class="btn btn-large btn-warning" ng-click="PostMonthlyRent()">Post This Month Rent </button>   
+                          </div>
+                       
 
-						 <button type="button" class="btn btn-large btn-warning">Post This Month Rent </button>
-						 </div>
+					</div>
+
  </div>
 					  
 		

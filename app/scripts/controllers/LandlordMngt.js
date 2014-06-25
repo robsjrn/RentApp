@@ -507,9 +507,25 @@ landlordtmngt.controller('Dashboardctrl', function($scope) {
   
 });
 
-landlordtmngt.controller('RentPostingctrl', function($scope) {
+landlordtmngt.controller('RentPostingctrl', function($scope,$rootScope,$http) {
+    $scope.Landlord={};
+   $scope.plot=$rootScope.plot;
+   $scope.Landlord;
+   $scope.PostMonthlyRent=function(){ 
 
-  
+	    var Details={"plotName": $scope.Landlord.plot.name,
+			         "Month":"January",
+			         "ReceiptNo":"12345"
+		  }
+                  $http.post('/MonthlyRentPosting',Details )
+				 		 .success(function(data) {
+								console.log(data);  
+							 }) 
+						 .error(function(data) {
+							  
+							 });	
+   }
+
 });
 
 
@@ -586,7 +602,6 @@ $scope.ShowSentMailpopUp=function(mailinbox){
 							 }) 
 						 .error(function(data) {
 							   $scope.ErrorStatus=true;
-							   console.log("Erororro" + data.error);
 							   $scope.ComposeMail=false;
 							 });	
 
@@ -932,12 +947,12 @@ landlordtmngt.config(function($routeProvider,$locationProvider)	{
         })		
 	.when('/Dashboard', {
      templateUrl: 'views/partials/LandlordDashboard.html',   
-     controller: '/Dashboardctrl'
+     controller: 'Dashboardctrl'
         })
 
 			.when('/RentPosting', {
      templateUrl: 'views/partials/RentPosting.html',   
-     controller: '/RentPostingctrl'
+     controller: 'RentPostingctrl'
         })
 		
 		
