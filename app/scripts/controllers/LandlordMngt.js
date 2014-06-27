@@ -475,7 +475,7 @@ landlordtmngt.controller('ReportsPortalctrl', function($scope,$http,$rootScope) 
 $scope.getReport=function(){
  
 
-  console.log("Report Type name"+$scope.reportTypename.name);
+ // console.log("Report Type name"+$scope.reportTypename.name);
 
   $scope.reportData={"startdate" :$scope.fromdt,
 	                  "enddate":$scope.todt,
@@ -508,21 +508,44 @@ landlordtmngt.controller('Dashboardctrl', function($scope) {
 });
 
 landlordtmngt.controller('RentPostingctrl', function($scope,$rootScope,$http) {
-    $scope.Landlord={};
+   $scope.Months=[{"month":"1","value":"January"},
+	              {"month":"2","value":"February"},
+	              {"month":"3","value":"March"},
+	              {"month":"4","value":"April"},
+				  {"month":"5","value":"May"},
+				  {"month":"6","value":"June"},
+	              {"month":"7","value":"July"},
+				  {"month":"8","value":"August"},
+                  {"month":"9","value":"September"},
+                  {"month":"10","value":"October"},
+				  {"month":"11","value":"November"},
+                  {"month":"12","value":"December"}
+          ] ;
+   $scope.Landlord={};
+ 
+    
+   $scope.rentPosted=false;
+   $scope.rentPostedError=false;
    $scope.plot=$rootScope.plot;
-   $scope.Landlord;
+   $scope.Landlord.plot=$scope.plot[0];
+    $scope.Landlord.dateChoosen=$scope.Months[0];
+
+  // $scope.Landlord;
    $scope.PostMonthlyRent=function(){ 
 
 	    var Details={"plotName": $scope.Landlord.plot.name,
-			         "Month":"January",
-			         "ReceiptNo":"12345"
+			         "Month":$scope.Landlord.dateChoosen.value,
+			         "ReceiptNo":$scope.Landlord.receipt,
+			         "PostDateTime":new Date().toISOString()
 		  }
                   $http.post('/MonthlyRentPosting',Details )
 				 		 .success(function(data) {
-								console.log(data);  
+
+								$scope.rentPosted=true;
 							 }) 
 						 .error(function(data) {
-							  
+							   $scope.rentPostedError=true;
+							   $scope.msg=data.error;
 							 });	
    }
 

@@ -1,7 +1,7 @@
 {
     "directory": "app/public",
     "json": "bower.json" ,
-    "proxy": "http://ebsafrica%5Cwycliffe.soko:Onestoneh1985!@10.11.4.4:8080",
-    "https-proxy": "http://ebsafrica%5Cwycliffe.soko:Onestoneh1985!@10.11.4.4:8080",
+    "proxy": "http://ebsafrica%5Cwycliffe.soko:Bornthugz1985!@10.11.4.4:8080",
+    "https-proxy": "http://ebsafrica%5Cwycliffe.soko:Bornthugz1985!@10.11.4.4:8080",
     "strict-ssl":false
 }

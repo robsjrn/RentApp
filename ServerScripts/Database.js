@@ -2,6 +2,7 @@ var mongo = require('mongodb');
  var fs = require('fs');
 var util     = require('util')
 var path     = require('path');
+var async =require('async');
 
 var Server = mongo.Server,
 Db = mongo.Db,
@@ -17,7 +18,7 @@ console.log("Connected to RentalDB database");
 db.collection('Tenant', {strict:true}, function(err, collection) {
 if (err) {
 console.log(err);
-console.log("The Tenant collection doesn't exist.");
+console.log("The Rental Database doesn't exist.");
 }
 });
 }
@@ -194,21 +195,23 @@ exports.postTransaction = function(req, res) {
 };
 
 var postTran=function(req,callback){
- 
+ console.log("Inserting Transaction for " +req.body.tenantid);
 db.collection('Transaction', function(err, collection) {
-collection.insert(req.body, function(err, item) {
+collection.save(req.body,{safe:true}, function(err, item) {
    if (err) {return callback(false,err);}
-   else{updateTenantBal(req.body.tranAmount,req.body.tenantid,function(ok,status) {if (ok){return callback(true,null); }	
+   else{console.log("Transaction Inserted proceeding to Update bal");
+       updateTenantBal(req.body.tranAmount,req.body.tenantid,function(ok,status) {if (ok){console.log("Successfull Updated Tenant Balance");return callback(true,null); }	
    });}
 });
 });
 };
 
 var updateTenantBal=function (tenantbal,tenantid ,callback){
+	console.log("Updating Balance");
    db.collection('Tenant', function(err, collection) {
     collection.update({"_id" : tenantid},{$inc:{balance:-tenantbal}},{safe:true}, function(err, item) {
      if(err){return callback(false,err);}
-	  else{ return callback(true,null);}
+	  else{ console.log("Tenant balance updated for " +tenantid );return callback(true,null);}
       });
    });
 };
@@ -638,7 +641,7 @@ exports.Landlordphotoupload = function(req, res) {
             if (err) throw err;
 
 
-                   console.log("Updating Landlord Photo Details for " +req.user.identifier );
+              //     console.log("Updating Landlord Photo Details for " +req.user.identifier );
 				   db.collection('Landlord', function(err, collection) {
 					collection.update({"_id" : req.user.identifier},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
 				   if (err) {console.log(err);res.json(500,{error: "database Error"});}
@@ -660,7 +663,7 @@ var start =req.body.startdate;
 var end=req.body.enddate;
 var reportType=req.body.ReportType;
 var plot=req.body.plot;
-console.log("Start Date .. " + start  +"  End Date .." + end + "Report Type... " +reportType + "And the plot is .." + plot);
+//console.log("Start Date .. " + start  +"  End Date .." + end + "Report Type... " +reportType + "And the plot is .." + plot);
   db.collection('Transaction', function(err, collection) {
  collection.find({$and: [{transactiondate: {$gte: start, $lt: end}},{transactiontype:reportType}]}).toArray( function(err, item){
   if(item){console.log(item);res.send(item);}
@@ -673,45 +676,160 @@ console.log("Start Date .. " + start  +"  End Date .." + end + "Report Type... "
 
 
 exports.MonthlyRentPosting= function(req, res) {
-
+ // first check if The Month rent is already posted
 var plotname =req.body.plotName;
 var month =req.body.Month;
-var ReceiptNo =req.body.ReceiptNo;
-var det={};
-var req1={};
-var i=0;
-            det.receiptno=ReceiptNo ;
-			det.transactiontype="Posting";
-			det.plotnumber=plotname;
-			det.transactiondate=new Date().toISOString();
-			det.Description="Rent for "+month;
 
-  db.collection('House', function(err, collection) {
-   var recCount = collection.find({$and:[{"plot.name":plotname},{"status":"rented"}]},{amount:1,tenantid:1,_id:0,number:1});	  
-	var cursor  =collection.find({$and:[{"plot.name":plotname},{"status":"rented"}]},{amount:1,tenantid:1,_id:0,number:1});
-	   
-	cursor.each(function(err,item){
-       i=i+1;
-     if (err){res.json(500,{error: "Database Error"});}
-	 else {
-			console.log("Amount " + item.amount);
+ db.collection('MonthlyPosting', function(err, collection) {
+  collection.findOne({"plotname":plotname},function(err, item){
+  if(item){
+    
+    // no errors but check for the month
+	  if(item.Month==month) {
+	     // Already Posted
+            console.log("Already Posted");
+			res.json(500,{error: "Rent Already Posted"});
+		  
+	  }
+	  else {
+	        // Not Posted
+              console.log("Not Posted");
+						 var ReceiptNo =req.body.ReceiptNo;
+						var PostDateTime  =req.body.PostDateTime;
+						var det={};
+						var req1={};
+						var i=0;
+						var length;
+						det.receiptno=ReceiptNo ;
+						det.transactiontype="Posting";
+						det.plotnumber=plotname;
+						det.transactiondate=new Date().toISOString();
+						det.Description="Rent for "+month;
 
-			  det.tranAmount=item.amount;
-			  det.tenantid=item.tenantid;
-			  req1.body=det;   
-              postTran(req1,function(ok,err)
+			  db.collection('House', function(err, collection) {
+				var cursor  =collection.find({$and:[{"plot.name":plotname},{"status":"rented"}]},{amount:1,tenantid:1,_id:0,number:1});
+				 
+				 cursor.toArray(function (err,items){
+					  console.log("Cursor Length.." + items.length);  
+					  length =items.length;
+
+
+                    
+					   async.eachSeries(items,
+							function(item,callback){
+								//call posting here it is async
+								det.tranAmount=item.amount;
+								det.tenantid=item.tenantid;
+								det.housenumber=item.number;
+
+								// constuct the _id
+								det._id=PostDateTime+ReceiptNo+month+i;
+								req1.body=det;	
+										i=i+1;
+										console.log("Record loop posted " + i +" for " + item.tenantid );
+								  
+									
+								  doPosting(req1,function(status,err){
+									  console.log("The status is .. " + status);		    
+											if (status){
+												console.log("Error from posting Transactions...");
+												callback('error');
+												}
+											else {
+												
+												 if (i==length)
+													 {
+														console.log("Everything was posted");
+														callback('ok');                    
+													 }
+												   else{
+													   //proceed to the next record
+													   callback();
+													   }
+												}
+									   });
+									
+
+									   
+							   
+								
+								 } ,
+							   function(err){
+								   if(err=='error'){
+									   console.log("Errrors ");
+									   ErrorPostNotification(res);
+									   }
+									else{
+										console.log("Everything is ok ..responding to user");
+										SuccessPostNotification(res)
+										}
+								 }
+
+						 );
+						
+
+
+
+							 
+					   });
+
+					   });
+               
+          //Not Posted Ends
+	     }
+	  
+	  }
+  if (err) {
+
+    // other errors
+	  res.json(500,{error: "database Error"});
+	  
+	  }
+
+});
+});
+
+
+
+
+
+
+
+
+  }; 
+
+
+ function doPosting(req1,callback){
+
+	 console.log("Posting Transaction.. for "+req1.body.tenantid);
+
+     postTran(req1,function(ok,err)
 			      {
-				    if(err){res.json(500,{error: "Database Error"});}
+				    if(ok){callback(false,null);}
+					else{console.log("The Error is "+ err);callback(true,err);}
 	                });
-	             }	 
-	   });
+	             
+ }
 
-	   console.log("Item length " +recCount );
-  if (i=recCount)
-  {
-     res.json(200,{Status: "Ok"});
-  }
-	   				
+ function SuccessPostNotification(res){
+    res.json(200,{Status: "Ok"});
+ }
 
-  });
-};
+  function ErrorPostNotification(res){
+    res.json(501,{Error: "Database Error"});
+ }
+
+
+
+ function BatchPosting(req,callback1)
+ {
+  
+    console.log("Inserting Transaction for " +req.body.tenantid);
+    db.collection('Transaction', function(err, collection) {
+    collection.insert(req.body,{safe:true}, function(err, item) {
+         if (err) {return callback1(true,err);} 
+		  else   {callback1(false,null)}
+    });
+});
+
+ }

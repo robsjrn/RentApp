@@ -14,10 +14,9 @@
     "angular-animate": "~1.2.16",
     "angular-touch": "~1.2.16",
     "d3": "~3.4.6",
-    "angular-charts": "~0.0.1",
+    "angular-charts": "~0.2.4",
     "font-awesome": "~4.0.3",
     "holderjs": "~2.3.2",
-
     "ng-file-upload": "~1.4.0",
     "ng-file-upload-shim": "~1.4.0"
   },
