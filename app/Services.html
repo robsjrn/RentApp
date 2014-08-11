@@ -16,60 +16,78 @@
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/Services.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="RentmngtApp">
+  <body ng-app="RentmngtAppServices" background="images/Assets/index_background.jpg">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <!-- Add your site or application content here -->
-
-<div data-ng-controller="MainCtrl" >
-      <form id="login" name="login" class="navbar-form navbar-right" role="form" novalidate>
-	     <h5><span class="fa fa-sign-in">Login</h5>
-		  <div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid Credential !!!</strong> </div>  
-            <div class="form-group">
-              <input type="text" placeholder="UserName" class="form-control" name="username" id="username"  ng-model="user.username" required><span ng-show="login.username.$dirty &amp;&amp; login.username.$error.required" class="help-block">User Credential Required</span>
-
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control" name="password" id="password"  ng-model="user.password" required ><span ng-show="login.password.$dirty &amp;&amp; login.password.$error.required" class="help-block"> Password is Required</span>
-            </div>
-            <button  ng-disabled="login.$invalid" ng-click="Userlogin()" type="submit" class="btn btn-success">Sign in</button>
-          </form>
-
- 
-    <div class="container">
- 
-      <div class="masthead">
-         <strong><h3>Nana</h3></strong>
-
-
-        <ul class="nav nav-justified">
-          <li class="active"><a href="/">Home</a></li>
-          <li><a href="#">News</a></li>
-		   <li><a href="/Services.html">Services</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
- 
-      <!-- Jumbotron -->
-      <ul class="list-group">
-		  <li class="list-group-item">Shoping Delivery</li>
-		  <li class="list-group-item">Food Delivery</li>
-		  <li class="list-group-item">Movie Delivery</li>
-		  <li class="list-group-item">Search Houses</li>
-		  <li class="list-group-item">Search for Property</li>
-</ul>
-
-
-
-
    
-</div>
+ <!-- Add your site or application content here -->
+
+
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Nana</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/index.html">Home</a></li>
+        <li><a href="#">To Rent</a></li>
+		<li><a href="#">Landlords/Agents</a></li>
+		<li><a href="#">List Property</a></li>
+         <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">List Property <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Apartments</a></li>
+			 <li><a href="#">Villas</a></li>
+            <li><a href="#">Condos</a></li>
+            <li><a href="#">Loft</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Duplexes</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Others</a></li>
+          </ul>
+        </li>
+
+		<li><a href="#">News</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">List Services <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Enlist a Service</a></li>
+            <li><a href="/Services.html">View Services</a></li>
+          </ul>
+        </li>
+      </ul>
+      
+      <ul class="nav navbar-nav navbar-right">
+	      <li><a href="/Login.html">Login</a></li>
+		<li><a href="#"></a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+        <ol class="breadcrumb">
+		  <li><a href="#!enlistService">Enlist Service</a></li>
+		  <li class="active"><a href="#!ViewService">View Services</a></li>
+		</ol>
+
+           <div data-ng-view ></div>
+   
+           </div>
 
 
          <div class="navbar navbar-default navbar-fixed-bottom">
@@ -104,12 +122,67 @@
     <script src="public/angular-sanitize/angular-sanitize.js"></script>
     <script src="public/angular-route/angular-route.js"></script>
     <script src="public/angular-animate/angular-animate.js"></script>
+    <script src="public/angular-bootstrap/ui-bootstrap-tpls.min.js"></script> 
     <script src="public/angular-touch/angular-touch.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/ServicesMngt.js"></script>
+
+
+      <SCRIPT id=/templates/Enlist.html type=text/ng-template> 	  
+	    <div class="col-md-4">
+		  <div class="well well-sm">
+			 <form id="serviceRegistration" name="serviceRegistration" novalidate>
+			     <label for="location">Location</label>
+			     <select class="form-control"  ng-model="service.location" ng-options="loca.name for loca in loc">
+			     </select>
+				 <label for="servicenames">Service Name</label>
+				 <input type="text" class="form-control" placeholder="Service Names" id="servicenames" name="servicenames" ng-model="service.servicenames" required >
+				  <label for="servicedet">Service Details</label>
+				  <textarea class="form-control" rows="3" id="servicedet" ng-model="service.details" required ></textarea>
+				 <label for="servicecontact">Service Contact</label>
+				 <input type="text" class="form-control" placeholder="Service Contacts" id="servicecontact" name="servicecontact" ng-model="service.contact" required >
+				 <hr>
+                    <div class="btn-group btn-group-sm ">
+                       <div class="btn-group">
+			             <button type="button" ng-click="add()" class="btn btn-info" ng-disabled="serviceRegistration.$invalid" >Add</button>
+					   </div>
+                      <div class="btn-group">
+					    <button type="button" ng-click="clear()" class="btn btn-warning" >Clear</button>
+                     </div>
+				 </div>
+				 <div ng-show="saved" class="alert alert-danger"><strong>Details Saved</strong> </div>
+				  <div ng-show="error" class="alert alert-danger"><strong>Error in Maintaing your Details</strong> 
+				</form>
+			</div>
+		</div>		
+	  
+	  </SCRIPT> 
+      <SCRIPT id=/templates/ViewServices.html type=text/ng-template> 
+	  
+	 
+
+<div class="row cont"  data-ng-controller="mainctrl">
+
+   <div class="col-md-8">
+	  <ul class="list-group">
+		  <li class="list-group-item">Shoping Delivery</li>
+		  <li class="list-group-item">Food Delivery</li>
+		  <li class="list-group-item">Movie Delivery</li>
+		  <li class="list-group-item">Hardware</li>
+		  <li class="list-group-item">Salon/Kinyozi</li>
+      </ul>
+	 </div>
+	 
+	
+	  
+	  
+	  </SCRIPT> 
+
+
+
         <!-- endbuild -->
 </body>
 </html>

@@ -30,6 +30,7 @@ Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope,$windo
 
 	  $rootScope.Tenant=data
 	  $scope.TenantData= $rootScope.Tenant; 
+	//  console.log($scope.TenantData.Details.imageUrl);
 	  $scope.dialogShown=$scope.TenantData.AgreementStatus;
 	  });
 
@@ -94,7 +95,7 @@ Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
 
 
 
-Tenantmngt.controller('Profilectrl', function($scope,$http,$window,$upload) {
+Tenantmngt.controller('Profilectrl', function($scope,$http,$window,$upload,$rootScope) {
  
  $scope.details={};
  $scope.mstatus=[{"Status":"Single"},{"Status":"Married"}];
@@ -145,7 +146,9 @@ $scope.onFileSelect = function($files) {
         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
-        console.log(data);
+
+		$rootScope.Tenant.Details.imageUrl=data.imageUrl;
+ 
       });
       //.error(...)
       //.then(success, error, progress); 

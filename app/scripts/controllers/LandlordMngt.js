@@ -419,61 +419,79 @@ landlordtmngt.controller('documentmngtctrl', function($scope) {
 
 landlordtmngt.controller('ReportsPortalctrl', function($scope,$http,$rootScope) {
 
-	 $scope.reportType= $rootScope.TransactionType;
-	  $scope.plots=$rootScope.plot;
-     $scope.showData=false;
- $scope.today = function() {
-    $scope.fromdt = new Date();
-	$scope.todt= new Date();
-  };
-  $scope.today();
+				  $scope.reportType= $rootScope.TransactionType;
+				  $scope.plots=$rootScope.plot;
+				 $scope.showData=false;
+				 $scope.today = function() {
+						$scope.fromdt = new Date();
+						$scope.todt= new Date();
+					  };
+			  $scope.today();
 
-  $scope.clear = function () {
-    $scope.fromdt = null;
-	$scope.todt= null;
-  };
+			  $scope.clear = function () {
+				$scope.fromdt = null;
+				$scope.todt= null;
+			  };
 
   // Disable weekend selection
-  $scope.disabled = function(date, mode) {
-    return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-  };
+			  $scope.disabled = function(date, mode) {
+				return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+			  };
 
-  $scope.toggleMin = function() {
-    $scope.minDate = $scope.minDate ? null : new Date();
-  };
-  $scope.toggleMin();
+			  $scope.toggleMin = function() {
+				$scope.minDate = $scope.minDate ? null : new Date();
+			  };
+			  $scope.toggleMin();
 
-  $scope.Fromopen = function($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
+			  $scope.Fromopen = function($event) {
+				$event.preventDefault();
+				$event.stopPropagation();
 
-    $scope.Fromopened = true;
-  };
-
-
-
- $scope.Toopen = function($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
-
-    $scope.Toopened = true;
-  };
+				$scope.Fromopened = true;
+			  };
 
 
 
-  $scope.dateOptions = {
-    formatYear: 'yy',
-    startingDay: 1
-  };
+				 $scope.Toopen = function($event) {
+					$event.preventDefault();
+					$event.stopPropagation();
 
-  $scope.initDate = new Date('2016-15-20');
-  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-  $scope.format = $scope.formats[0];
+					$scope.Toopened = true;
+				  };
+
+
+
+				  $scope.dateOptions = {
+					formatYear: 'yy',
+					startingDay: 1
+				  };
+
+				  $scope.initDate = new Date('2016-15-20');
+				  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+				  $scope.format = $scope.formats[0];
+
+				 $scope.pageChanged = function() {
+					console.log('Page changed to: ' + $scope.currentPage);
+				  };
+
+
+//********************************************
+
+
+$scope.NextRec=function(){
+
+$scope.startPage+=$scope.dataLim;
+$scope.endPage+=$scope.dataLim;
+ // $scope.reportData=dat.sclice(1,4);  
+ console.log($scope.reportData.slice($scope.startPage,$scope.endPage));
+
+$scope.reportData=$scope.reportData.slice($scope.startPage,$scope.endPage);
+};
 
 
 
 $scope.getReport=function(){
- 
+
 
  // console.log("Report Type name"+$scope.reportTypename.name);
 
@@ -486,8 +504,8 @@ $scope.getReport=function(){
      $http.post('/Report', $scope.reportData)
 						 .success(function(data) {
 								   $scope.reportData=data;
-							       $scope.totalItems=data.length;
-							
+							       $scope.bigTotalItems=data.length;
+							 console.log(data.length);
 							       $scope.showData=true;
 							 }) 
 						 .error(function(data) {

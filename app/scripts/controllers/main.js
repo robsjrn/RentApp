@@ -1,46 +1,17 @@
 'use strict';
 
-var Rentmngt= angular.module('RentmngtApp', ['ngCookies','ngSanitize','ngResource','ngRoute'] ); 
+var Rentmngt= angular.module('RentmngtApp', ['ngCookies','ngSanitize','ngResource','ngRoute','ui.bootstrap'] ); 
 
-Rentmngt.config(function($routeProvider,$locationProvider)	{
 
-$locationProvider.hashPrefix("!");
+ Rentmngt.controller('MainCtrl', function ($scope,$http,$window,$modal) {
 
-  $routeProvider
-	 
- .when('/home', {
-     templateUrl: '/templates/home.html',   
-      controller: 'homectrl'
-        })
-  .when('/news', {
-     templateUrl: '/templates/news.html',   
-     controller: 'newsctrl'
-        })
-   .when('/Services', {
-       templateUrl: '/templates/services.html',   
-       controller: 'Servicesctrl'
-        })
-   .when('/about', {
-       templateUrl: '/templates/about.html',   
-       controller: 'aboutctrl'
-        })
-	.when('/contacts', {
-       templateUrl: '/templates/contact.html',   
-       controller: 'contactsctrl'
-        })
-     .when('/login', {
-       templateUrl: '/templates/login.html',   
-       controller: 'MainCtrl'
-        })
-  
-		.otherwise({
-         redirectTo: '/home'
-      });
+  $scope.items = ['item1', 'item2', 'item3'];
+  $scope.locations = ['Kahawa', 'Kiambu', 'Ruiru'];
+$scope.selectLocation=function(loc){
+	alert(loc);
+}
+	$scope.awesomeThings = ['HTML5 Boilerplate','AngularJS','Karma' ];
 
-});
-
- Rentmngt.controller('MainCtrl', function ($scope,$http,$window) {
-    $scope.awesomeThings = ['HTML5 Boilerplate','AngularJS','Karma' ];
      $scope.Userlogin=function(){
     
         $http.post('/login',$scope.user)

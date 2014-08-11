@@ -19,71 +19,167 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="RentmngtApp">
+  <body ng-app="RentmngtApp" background="images/Assets/index_background.jpg">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <!-- Add your site or application content here -->
+   
+ <!-- Add your site or application content here -->
 
-<div data-ng-controller="MainCtrl" >
-     
 
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Nana</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">To Rent</a></li>
+		<li><a href="#">Landlords/Agents</a></li>
+		<li><a href="#">List Property</a></li>
+         <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">List Property <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Apartments</a></li>
+			 <li><a href="#">Villas</a></li>
+            <li><a href="#">Condos</a></li>
+            <li><a href="#">Loft</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Duplexes</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Others</a></li>
+          </ul>
+        </li>
+
+		<li><a href="#">News</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">List Services <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Enlist a Service</a></li>
+            <li><a href="/Services.html">View Services</a></li>
+          </ul>
+        </li>
+      </ul>
+      
+      <ul class="nav navbar-nav navbar-right">
+	      <li><a href="/Login.html">Login</a></li>
+		<li><a href="#"></a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class="row cont">
+  <div class="col-md-8">
+    <div class="jumbotron hegt">
+      
+		  <div class="col-sm-6 col-md-6 col-lg-6 trans">
+					<div class="input-group">
+					  <div class="input-group-btn">
+						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Search For <span class="caret"></span></button>
+						<ul class="dropdown-menu" role="menu">
+						  <li><a href="#">Rental</a></li>
+						  <li><a href="#">Properties</a></li>
+						  <li><a href="#">Apartments</a></li>
+						  <li><a href="#">Town House</a></li>
+						  <li class="divider"></li>
+						  <li><a href="#">Others</a></li>
+						</ul>
+					  </div><!-- /btn-group -->
+					  <input type="text" class="form-control">
+					   <span class="input-group-btn">
+						  <button class="btn btn-danger" type="button">Go!</button>
+						</span>
+					</div><!-- /input-group -->
+				  </div><!-- /.col-lg-6 -->
+				
+	    </div>
+  </div><!-- /.col-lg-8 -->
+	      <div data-ng-controller="MainCtrl" class="col-md-4">
+				  <div class="panel panel-default">
+				  <div class="panel-heading">
+				           Search
+					 </div>
+					  <div class="panel-body">
+						 <a data-toggle="modal" data-target="#myModal">Location</a>				 
+					  </div>
+					  <div class="panel-footer">
+					      <button type="button" class="btn btn-danger ">Action</button>
+					  </div>
+					</div>
+		 </div>
+		</div><!-- /.col-lg-4 -->
+	</div>
+<div class="row cont">
+	 <div class="col-md-12" >
+		 <div class="well well-sm">
+			<h4>Welcome</h4>
+			<p>
+            If you've got a property that needs a tenant, or if you're a renter who needs a place to live, you've come to the right place! We makes it quick and easy for tenants to search for rental homes, which is why thousands of them use our comprehensive database every day to find their perfect home for rent. This is the best place for renters, property owners and property managers to connect online.
+
+            With Us, you can take your time finding your next residence -- search as much as you want when it's convenient for you, and it's all free! We've got thousands of available houses, apartments, condos and duplexes all over the country and in your area.
+
+           Whether you're looking for a house, apartment or other type of rental property, We makes it easy to find a home that you'll love. You can even narrow your search to specific types of rentals, such as rent-to-own properties and lease option rentals. Right from the comfort of your own home or office, you can take a tour of any of our rental properties. It's all right there for you - without any cost or hassle
+
+			</p>
+		 </div>
+	</div>
+</div>
+   <div class="row cont">
+      <div class="col-md-4" >
+	     <div class="well well-sm">
+		   <h4>For Renters</h4>
+            <p>Search thousands of listings -- around the block or across the country -- anytime for FREE. No limitations and no membership required.</p>
+		 </div>
+	  </div>
  
-    <div class="container">
+	     <div class="col-md-4" >
+		  <div class="well well-sm">
+             <h4> Landlords / Agents /Property Management</h4>
+            <p>Reach qualified renters at the best time during the rental search.
+				List on a site that focuses on rental advertising for homes and apartments.
+				Save time and money by getting new tenants as soon as possible after someone moves out.
+				Get reliable, accurate reports.
+				Close vacancies faster.
+			</p>
+		 </div>
+		 
+         </div>
  
-    
-               <div class="navbar-header ">
-					  <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-							<span class="sr-only">Toggle navigation</span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-						</button>
-					 <a href="#" class="navbar-brand"><strong><h3>Nana</h3></strong></a>
-				 </div>
-
-
-
-      <div class="masthead">
-         
-
-
-        <ul class="nav nav-justified bs-navbar-collapse">
-          <li class="active"><a href="#!/home">Home</a></li>
-          <li><a href="#!/news">News</a></li>
-		   <li><a href="#!/Services">Services</a></li>
-          <li><a href="#!/about">About</a></li>
-          <li><a href="#!/contacts">Contact</a></li>
-		  <li><a href="#!/login">Login</a></li>
-        </ul>
+	     <div class="col-md-4" >
+		  <div class="well well-sm">
+		  <h4>For Service Provider</h4>
+            <p>Search thousands of listings -- around the block or across the country -- anytime for FREE. No limitations and no membership required.</p>
+        </div>
       </div>
- 
-     
-<br>
- <div data-ng-view ></div>
+      
+   </div>
+	
+	  
+	</div>
+  <div data-ng-view ></div>
    
 </div>
-
-
-         <div class="navbar navbar-default navbar-fixed-bottom">
-		         <div class="container" >
-			       <p>copyrights @SoftSol 2014 </p>				    	
-          </div>
+</div>
+<div class="row cont">
+<p>Contacts</p>
+<p>About Us</p>
 
 </div>
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
 
-    <!--[if lt IE 9]>
+		 <!--[if lt IE 9]>
     <script src="public/es5-shim/es5-shim.js"></script>
     <script src="public/json3/lib/json3.min.js"></script>
     <![endif]-->
@@ -98,75 +194,42 @@
     <script src="public/angular-sanitize/angular-sanitize.js"></script>
     <script src="public/angular-route/angular-route.js"></script>
     <script src="public/angular-animate/angular-animate.js"></script>
+	<script src="public/angular-bootstrap/ui-bootstrap-tpls.min.js"></script> 
     <script src="public/angular-touch/angular-touch.js"></script>
+
+
     <!-- endbower -->
     <!-- endbuild -->
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+
+	 <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/controllers/main.js"></script>
         <!-- endbuild -->
 
-<script>
+<!-- Modal -->
 
-  $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("active");
-    });
-
-</script>
+<div data-ng-controller="MainCtrl" class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Search Location</h4>
+      </div>
+      <div class="modal-body">
+         <ul>
+                <li ng-repeat="item in locations">
+                    <a ng-click="selectLocation(item)">{{ item }}</a>
+                </li>
+            </ul>
          
-		
-<SCRIPT id=/templates/my-head.html type=text/ng-template>   <h1>{{title}}</h1> <p>TESSSSSS</p> </SCRIPT> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<SCRIPT id=/templates/home.html type=text/ng-template>   
-     <!-- Jumbotron -->
-      <div class="jumbotron">
-        <h1>Marketing stuff!</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet.</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Get started today</a></p>
-      </div> 
- </SCRIPT> 
-
-
-
-<SCRIPT id=/templates/services.html type=text/ng-template>  
-     <div class="col-xs-6">
-	  <ul class="list-group">
-		  <li class="list-group-item">Shoping Delivery</li>
-		  <li class="list-group-item">Food Delivery</li>
-		  <li class="list-group-item">Movie Delivery</li>
-		  <li class="list-group-item">Search Houses</li>
-		  <li class="list-group-item">Property Search</li>
-      </ul>
-	 </div>
-	 
-	 <div class="col-xs-6">
-	 <ul class="nav" >
-	    <li><a href="#!/Services">Service Registration</a></li> 
-		 <li><a href="#!/Services">Property Registration</a></li> 
-     </ul>
-	 </div>
-	 
- </SCRIPT> 
-
-
-<SCRIPT id=/templates/news.html type=text/ng-template>   <p>News</p> </SCRIPT> 
-<SCRIPT id=/templates/about.html type=text/ng-template>   <p>About</p> </SCRIPT> 
-<SCRIPT id=/templates/contact.html type=text/ng-template>   <p>Contact</p> </SCRIPT> 
-<SCRIPT id=/templates/login.html type=text/ng-template>    
-       <form id="login" name="login" class="navbar-form navbar-right" role="form" novalidate>
-	     <h5><span class="fa fa-sign-in">Login</h5>
-		  <div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid Credential !!!</strong> </div>  
-            <div class="form-group">
-              <input type="text" placeholder="UserName" class="form-control" name="username" id="username"  ng-model="user.username" required><span ng-show="login.username.$dirty &amp;&amp; login.username.$error.required" class="help-block">User Credential Required</span>
-
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control" name="password" id="password"  ng-model="user.password" required ><span ng-show="login.password.$dirty &amp;&amp; login.password.$error.required" class="help-block"> Password is Required</span>
-            </div>
-            <button  ng-disabled="login.$invalid" ng-click="Userlogin()" type="submit" class="btn btn-success">Sign in</button>
-          </form>
-	</SCRIPT> 
 
 </body>
 </html>

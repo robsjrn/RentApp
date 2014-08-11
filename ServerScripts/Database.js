@@ -439,10 +439,19 @@ exports.updateTenantData=function (req, res){
 
 exports.TestMobile=function(req, res) {
 
- console.log("Params is " +req.params); 
- console.log("Variable is " +req.params.id );
+ //console.log("Params is " +req.params); 
+// console.log("Variable is " +req.params.id );
+ console.log("Received Request" );
+	 res.json(200,{status:"Good Response"});
+};
 
-	 res.send("Okkkk")
+
+exports.TestMobilePost=function(req, res) {
+
+ //console.log("Params is " +req.params); 
+console.log("Request Body id " +req.body.id );
+ console.log("Received Request" );
+	 res.json(200,{status:"OOgh Yeag"});
 };
 
 
@@ -498,6 +507,8 @@ var UpdateSenderInbox=function (id,SenderDet,callback){
 
 
 exports.Viewmail=function(req, res) {
+
+console.log("User details is "+req.user.identifier)
  db.collection('Inbox', function(err, collection) {
   collection.findOne({"_id":req.user.identifier},function(err, item){
   if(item){res.send(item);}
@@ -522,6 +533,7 @@ exports.LandlordTenants=function(req, res) {
 });
 });
 };
+
 
 
 
@@ -602,7 +614,7 @@ exports.photoupload = function(req, res) {
             if (err) throw err;
 
 
-                   console.log("Updating Tenant Photo Details for " +req.user.identifier );
+                   console.log("Updating Tenant Photo Details for " +req.user.identifier.toString() );
 				   db.collection('Tenant', function(err, collection) {
 					collection.update({"_id" : req.user.identifier},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
 				   if (err) {console.log(err);res.json(500,{error: "database Error"});}
@@ -833,3 +845,25 @@ var month =req.body.Month;
 });
 
  }
+
+
+ exports.Viewmail2=function(id, res) {
+ db.collection('Inbox', function(err, collection) {
+  collection.findOne({"_id":100},function(err, item){
+  if(item){res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+
+
+exports.ServiceRegistration=function(req, res) {
+db.collection('Services', function(err, collection) {
+collection.insert(req.body, function(err, item) {
+     if(err){res.json(500,{error: "database Error"});}
+	  else{ res.json(200,{Success: "Success"});}
+      });
+   }); 
+};

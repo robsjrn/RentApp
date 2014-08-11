@@ -149,8 +149,13 @@ try
 		 app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
 	      app.post('/MonthlyRentPosting',ensureAuthenticated,DatabaseConn.MonthlyRentPosting); 
 
+          app.post('/ServiceRegistration',DatabaseConn.ServiceRegistration); 
+
+		  
+
 
 		app.get('/mobileTest',DatabaseConn.TestMobile);	
+		app.post('/TestMobilePost', passport.authenticate('local'),  function(req, res) { res.send(200);});	
  }
  
  catch (e)
