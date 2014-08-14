@@ -66,13 +66,10 @@ landlordtmngt.controller('editTenantCtrl', function modalController ($scope, $mo
     $scope.Tenant = Tenant;
     $scope.ok = function () {
         $modalInstance().close($scope.Tenant);
-        console.log("Update DB");
-        console.log('ok');
     };
     $scope.cancel = function () {
         $modalInstance().dismiss('cancel');
-        console.log('cancel');
-		console.log("Cancell Cliked");
+  
     };
 });
 
@@ -82,7 +79,10 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
  $scope.tenantcreated=false;
  $scope.tenanterror=false;
  $scope.plots=$rootScope.plot;
+ 
  $scope.Tenant={};
+ $scope.Tenant.plot=$scope.plots[0];
+
  $scope.disableComponents=true;
 
 
@@ -134,7 +134,7 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
         modalInstance.result.then(function (response) {
             $scope.selected = response;
         }, function () {
-			console.log("Cancell Cliked 3we");
+			//console.log("Cancell Cliked 3we");
         });
     }; 
   
@@ -146,7 +146,7 @@ landlordtmngt.controller('housemngtctrl', function($scope,$rootScope,$http) {
      $scope.housecreated=false;
 	 $scope.houseterror=false;
 	  $scope.disableComponents=true;
-   
+  // console.log($rootScope.plot);
     $scope.House.status="vacant";
 	$scope.plot=$rootScope.plot;
  
@@ -189,7 +189,17 @@ landlordtmngt.controller('housemngtctrl', function($scope,$rootScope,$http) {
   
 });
 landlordtmngt.controller('plotmngtctrl', function($scope,$http,$rootScope) {
-
+	$scope.LandlordPlot={};
+ $scope.LandlordPlot.location={};
+ 
+ $scope.loc = [
+		  {name:'Nairobi'},
+		  {name:'Kahawa'},
+		  {name:'Buru Buru'},
+		  {name:'Kiambu'},
+		  {name:'Kasarani'}
+        ];
+	  $scope.LandlordPlot.location=$scope.loc[0];
    $scope.Addplot=function(){  
 
 		  $http.post('/LandlordAddPlots', $scope.LandlordPlot)
@@ -471,7 +481,7 @@ landlordtmngt.controller('ReportsPortalctrl', function($scope,$http,$rootScope) 
 				  $scope.format = $scope.formats[0];
 
 				 $scope.pageChanged = function() {
-					console.log('Page changed to: ' + $scope.currentPage);
+					//console.log('Page changed to: ' + $scope.currentPage);
 				  };
 
 
@@ -483,7 +493,7 @@ $scope.NextRec=function(){
 $scope.startPage+=$scope.dataLim;
 $scope.endPage+=$scope.dataLim;
  // $scope.reportData=dat.sclice(1,4);  
- console.log($scope.reportData.slice($scope.startPage,$scope.endPage));
+ //console.log($scope.reportData.slice($scope.startPage,$scope.endPage));
 
 $scope.reportData=$scope.reportData.slice($scope.startPage,$scope.endPage);
 };
@@ -505,11 +515,11 @@ $scope.getReport=function(){
 						 .success(function(data) {
 								   $scope.reportData=data;
 							       $scope.bigTotalItems=data.length;
-							 console.log(data.length);
+							 //console.log(data.length);
 							       $scope.showData=true;
 							 }) 
 						 .error(function(data) {
-							  console.log(data)
+							//  console.log(data)
 								  $scope.showData=false;
 							 });
 
@@ -572,7 +582,7 @@ landlordtmngt.controller('RentPostingctrl', function($scope,$rootScope,$http) {
 
 landlordtmngt.controller('inboxctrl', function($scope,$http,$rootScope) {
 
-$http.get('/LandlordTenants').success(function (data){ console.log("Tenants Listing.." + data);$scope.MailTo=data});
+$http.get('/LandlordTenants').success(function (data){ $scope.MailTo=data});
 
 $http.get('/Viewmail').success(function (data){$scope.UserMail=data; $scope.emails = $scope.UserMail.Received; $scope.Sentemails= $scope.UserMail.Sent;});
 
@@ -730,7 +740,7 @@ landlordtmngt.controller('LandlordProfilectrl', function($scope,$http,$rootScope
         /* customize how data is added to formData. See #40#issuecomment-28612000 for sample code */
         //formDataAppender: function(formData, key, val){}
       }).progress(function(evt) {
-        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+       // console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
 		//update landlord image
@@ -887,7 +897,7 @@ $scope.pwderror=false;
 $scope.SubmitPwd=function(){
     $http.post('/ChangePwd',$scope.pwd )
 		   .success(function(data) {
-		    console.log(data.success)
+		   // console.log(data.success)
 		    $scope.pwdchanged=true;
 		     }) 
 			.error(function(data) {
@@ -998,7 +1008,7 @@ landlordtmngt.config(function($routeProvider,$locationProvider)	{
 		
 		
 	.otherwise({
-         redirectTo: '/tenantsmngt'
+         redirectTo: '/plotmngt'
       });
 
 });

@@ -31,8 +31,40 @@ $locationProvider.hashPrefix("!");
   });
 
  ServiceMngt.controller('ViewServicectrl', function ($scope,$http) {
+ $scope.service={};
+	  $scope.loc = [
+      {name:'Nairobi'},
+      {name:'Kahawa'},
+      {name:'Buru Buru'},
+      {name:'Kiambu'},
+      {name:'Kasarani'}
+    ];
 
-	
+	 $scope.type = [
+      {name:'Shopkeeper'},
+      {name:'Grocery'},
+      {name:'Plumber'},
+      {name:'Home Delivery'},
+      {name:'Movie'},
+	  {name:'Hardware'},
+	  {name:'Kinyozi/Salon'},
+    ];
+
+	     $scope.service.type = $scope.type[0];  
+         $scope.service.location = $scope.loc[0]; 
+
+		 $scope.search=function(){
+    
+			  $http.post('/ServiceListing',$scope.service)
+	                   .success(function(data) {
+							 $scope.SearchResults=data;
+							 }) 
+						 .error(function(data) {
+
+							 });
+                
+		 };
+
   });
   
 
@@ -40,13 +72,27 @@ $locationProvider.hashPrefix("!");
    
     $scope.service={};
     $scope.isCollapsed = true;
-	$scope.loc = [
+ 
+  $scope.loc = [
       {name:'Nairobi'},
       {name:'Kahawa'},
       {name:'Buru Buru'},
       {name:'Kiambu'},
       {name:'Kasarani'}
     ];
+
+
+	 $scope.type = [
+      {name:'Shopkeeper'},
+      {name:'Grocery'},
+      {name:'Plumber'},
+      {name:'Home Delivery'},
+      {name:'Movie'},
+	  {name:'Hardware'},
+	  {name:'Kinyozi/Salon'},
+    ];
+
+     $scope.service.type = $scope.type[0];  
     $scope.service.location = $scope.loc[0]; 
     $scope.clear=function(){
 			$scope.service.servicenames="";

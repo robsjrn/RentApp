@@ -5,11 +5,19 @@ var Rentmngt= angular.module('RentmngtApp', ['ngCookies','ngSanitize','ngResourc
 
  Rentmngt.controller('MainCtrl', function ($scope,$http,$window,$modal) {
 
+
+$scope.SearchItems=['Properties','Apartments','Town House','Others'];
+
+
   $scope.items = ['item1', 'item2', 'item3'];
   $scope.locations = ['Kahawa', 'Kiambu', 'Ruiru'];
 $scope.selectLocation=function(loc){
-	alert(loc);
+	
 }
+$scope.selectSearch=function(itm){
+  $scope.choice=itm;
+}
+
 	$scope.awesomeThings = ['HTML5 Boilerplate','AngularJS','Karma' ];
 
      $scope.Userlogin=function(){

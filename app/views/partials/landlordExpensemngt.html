@@ -6,7 +6,7 @@
 								<div class="col-md-8">
 									<div class="input-group">
 									  <span class="input-group-addon">Plot</span>
-									  <select class="form-control"  ng-model="Tenant.plot"  ng-options="c.name for c in landlordplots"	ng-disabled=disableComponents>  
+									  <select class="form-control"  ng-model="Tenant.plot"  ng-options="c.Plotname for c in landlordplots"	ng-disabled=disableComponents>  
 											   </select>
 									  <span class="input-group-btn">
 										<button class="btn btn-danger" type="button" ng-click="GetDetails()" ng-disabled=disableComponents >Get!</button>

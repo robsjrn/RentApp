@@ -124,7 +124,7 @@ try
 		app.post('/PaymentmethodConfiguration',DatabaseConn.PaymentmethodConfiguration);
 		app.post('/TransactiontypeConfiguration',DatabaseConn.TransactiontypeConfiguration);
 		app.post('/ExpenseTypeConfiguration',DatabaseConn.ExpenseTypeConfiguration);
-        app.post('/CreateLandlord',DatabaseConn.CreateLandlord);
+        
 
         app.get('/UpdateTenantAgreement',ensureAuthenticated,DatabaseConn.UpdateTenantAgreement);
 
@@ -146,13 +146,16 @@ try
         app.get('/TenantInfo',ensureAuthenticated,DatabaseConn.TenantInfo);
         app.post('/updateTenantData',ensureAuthenticated,DatabaseConn.updateTenantData); 
     
-		 app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
-	      app.post('/MonthlyRentPosting',ensureAuthenticated,DatabaseConn.MonthlyRentPosting); 
+		app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
+	    app.post('/MonthlyRentPosting',ensureAuthenticated,DatabaseConn.MonthlyRentPosting); 
 
+  //Service that dont Require Login
           app.post('/ServiceRegistration',DatabaseConn.ServiceRegistration); 
-
-		  
-
+          app.post('/ServiceListing',DatabaseConn.ServiceListing);
+		  app.post('/PropertyRegistration',DatabaseConn.PropertyRegistration);
+          app.post('/PropertyListing',DatabaseConn.PropertyListing); 
+		  app.post('/VacantRentalListing',DatabaseConn.VacantRentalListing);
+		  app.post('/CreateLandlord',DatabaseConn.CreateLandlord);
 
 		app.get('/mobileTest',DatabaseConn.TestMobile);	
 		app.post('/TestMobilePost', passport.authenticate('local'),  function(req, res) { res.send(200);});	

@@ -403,8 +403,6 @@ var GrantLandlordAccess=function (CredentialDet ,callback){
 
 
 var updatenohse=function (landlordid,no,Amount ,callback){
-    console.log("Updating the hse Details" +landlordid + ".."+ no+".."+ Amount );
-
    db.collection('Landlord', function(err, collection) {
     collection.update({"_id" : landlordid},{ $inc:{expcMonthlyIncome:Amount,nohse:no}},{safe:true}, function(err, item) {
      if(err){console.log(err);return callback(false,err);}
@@ -867,3 +865,50 @@ collection.insert(req.body, function(err, item) {
       });
    }); 
 };
+
+
+exports.ServiceListing=function(req, res) {
+	console.log("The Location " +req.body.location.name );
+	console.log("The Type " +req.body.type.name );
+db.collection('Services', function(err, collection) {
+ collection.find({$and:[{"location.name":req.body.location.name},{"type.name":req.body.type.name}]}).toArray( function(err, item){
+  if(item){console.log("Querry Data "+ item);res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+    });
+  });
+};
+
+exports.PropertyRegistration=function(req, res) {
+db.collection('Property', function(err, collection) {
+collection.insert(req.body, function(err, item) {
+     if(err){res.json(500,{error: "database Error"});}
+	  else{ res.json(200,{Success: "Success"});}
+      });
+   }); 
+}
+
+exports.PropertyListing=function(req, res) {
+db.collection('Property', function(err, collection) {
+ collection.find({$and:[{"location.name":req.body.location.name},{"type.name":req.body.Propertytype.name}]}).toArray( function(err, item){
+  if(item){console.log("Querry Data "+ item);res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+    });
+  });
+};
+
+exports.VacantRentalListing=function(req, res) {
+var min=parseInt(req.body.Amount.Min);
+var max=parseInt(req.body.Amount.Max);
+
+  console.log("Min Amount" + min);
+  console.log("Max Amount" + max);
+db.collection('House', function(err, collection) {
+ collection.find({$and:[{"status":"vacant"},req.body.querry,{"amount":{$gte:min,$lte:max}}]}).toArray( function(err, item){
+  if(item){res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+    });
+  });
+};
+
+
+

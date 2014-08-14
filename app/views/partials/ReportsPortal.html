@@ -10,7 +10,7 @@
 
 
 								   <label for="plot">Plot Name</label>
-							       <select  ng-model="plot" id="plot" ng-options="c.name for c in plots"  required>    
+							       <select  ng-model="plot" id="plot" ng-options="c.Plotname for c in plots"  required>    
 			                       </select>  
 		             
 
@@ -68,12 +68,13 @@
 										<td><a>Transaction Type</a></td>
 										<td><a>Description</a></td>
 										</thead>
-											   <tr data-ng-repeat="report in reportData | limitTo:dataLim " >
-												<td><a href="#">{{report.housenumber}}</a></td>
-												<td>{{report.tranAmount}}</td>
-												<td>{{report.transactiontype}}</td>
-												<td>{{report.Description}}</td>
-												</tr>
+											     <tr data-ng-repeat="report in reportData | limitTo:dataLim " >
+										<td><a href="#">{{report.housenumber}}</a></td>
+										<td>{{report.tranAmount}}</td>
+										<td>{{report.transactiontype}}</td>
+										<td>{{report.Description}}</td>
+										<td>{{report.Description}}</td>
+									</tr>
 										</table>
 									</div>
 								</div>
