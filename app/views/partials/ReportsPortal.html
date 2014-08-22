@@ -48,15 +48,12 @@
 
                     <button type="button" class="btn-danger" ng-click="getReport()">Get</button>
                       <hr>
-						<div class="row">
-                              
-						 </div>
-					 </div>
- </div>
-
-<modal-dialog show='showData' dialog-title='Transaction Data' width='600px'>
-
-     <pager total-items="totalItems" page="currentPage" ></pager>
+					
+						    <div ng-show="showError">
+			                 <div class="alert alert-warning"><strong>No Availbale Data for ..</strong> </div>
+			               </div>
+						     <div ng-show="showData">
+                               <pagination total-items="bigTotalItems" page="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
 
 			      
 							    <div class="col-xs-12" >
@@ -68,20 +65,18 @@
 										<td><a>Transaction Type</a></td>
 										<td><a>Description</a></td>
 										</thead>
-											     <tr data-ng-repeat="report in reportData | limitTo:dataLim " >
+									  <tr data-ng-repeat="report in reportData " >
 										<td><a href="#">{{report.housenumber}}</a></td>
 										<td>{{report.tranAmount}}</td>
 										<td>{{report.transactiontype}}</td>
-										<td>{{report.Description}}</td>
 										<td>{{report.Description}}</td>
 									</tr>
 										</table>
 									</div>
 								</div>
+						    </div>
+					    </div>
+					
 
-  <pre>Page: {{bigCurrentPage}} / {{numPages}}</pre>
+ </div>
 
-  <button type="button" class="btn-danger" ng-click="NextRec()">Next Rec</button>
-
-</modal-dialog>
-    

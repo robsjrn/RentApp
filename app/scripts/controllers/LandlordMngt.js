@@ -28,6 +28,8 @@ landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope,$w
  $http.get('/LandLordDetails').success(function (data){
 	 $rootScope.landlordDetails=data;
 	 $rootScope.plot=data.plots;
+
+
 		 
 	 });
   $http.get('/LandLordConfiguration').success(function (data)
@@ -72,6 +74,8 @@ landlordtmngt.controller('editTenantCtrl', function modalController ($scope, $mo
   
     };
 });
+
+
 
 
 
@@ -231,7 +235,7 @@ $scope.Tenant={};
 
    $scope.GetDetails=function(){
  // have this in a nested Promise
-     $http.get('/tenantList/'+$scope.Tenant.plot.name).success(function (data){$scope.Tenants=data }); 
+     $http.get('/tenantList/'+$scope.Tenant.plot.Plotname).success(function (data){$scope.Tenants=data }); 
 }
 
 
@@ -268,7 +272,7 @@ $scope.postPayment=function(){
 	              "receiptno":$scope.Transaction.receiptno,
 	              "tenantid":$scope.crit._id,
 	              "housenumber":$scope.crit.housename,
-	              "plotnumber":$scope.crit.plot.name,
+	              "plotnumber":$scope.crit.plot.Plotname,
 	              "transactiondate":new Date().toISOString(),
 	              "transactiontype":$scope.Transaction.transactiontype.name,
 	              "paymentmethod":$scope.Transaction.paymentmethod.name,
@@ -309,7 +313,7 @@ $scope.Tenant={};
 
     $scope.GetDetails=function(){
  // have this in a nested Promise
-     $http.get('/tenantList/'+$scope.Tenant.plot.name).success(function (data){$scope.Tenants=data }); 
+     $http.get('/tenantList/'+$scope.Tenant.plot.Plotname).success(function (data){$scope.Tenants=data }); 
 }
 
 
@@ -341,7 +345,7 @@ $scope.AddExpense=function(){
 
   $scope.expense={"tenantid":$scope.crit._id,
 	              "housenumber":$scope.crit.housename,
-	              "plotnumber":$scope.crit.plot.name,
+	              "plotnumber":$scope.crit.plot.Plotname,
 	              "transactiondate":new Date(),
 	              "transactiontype":"Expense Posting",
 	              "Description":$scope.Expense.description,
@@ -429,6 +433,10 @@ landlordtmngt.controller('documentmngtctrl', function($scope) {
 
 landlordtmngt.controller('ReportsPortalctrl', function($scope,$http,$rootScope) {
 
+     $scope.numPerPage=6;
+
+	 
+     $scope.showError=false;
 				  $scope.reportType= $rootScope.TransactionType;
 				  $scope.plots=$rootScope.plot;
 				 $scope.showData=false;
@@ -480,30 +488,12 @@ landlordtmngt.controller('ReportsPortalctrl', function($scope,$http,$rootScope) 
 				  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
 				  $scope.format = $scope.formats[0];
 
-				 $scope.pageChanged = function() {
-					//console.log('Page changed to: ' + $scope.currentPage);
-				  };
-
-
-//********************************************
-
-
-$scope.NextRec=function(){
-
-$scope.startPage+=$scope.dataLim;
-$scope.endPage+=$scope.dataLim;
- // $scope.reportData=dat.sclice(1,4);  
- //console.log($scope.reportData.slice($scope.startPage,$scope.endPage));
-
-$scope.reportData=$scope.reportData.slice($scope.startPage,$scope.endPage);
-};
 
 
 
 $scope.getReport=function(){
 
 
- // console.log("Report Type name"+$scope.reportTypename.name);
 
   $scope.reportData={"startdate" :$scope.fromdt,
 	                  "enddate":$scope.todt,
@@ -513,13 +503,25 @@ $scope.getReport=function(){
 
      $http.post('/Report', $scope.reportData)
 						 .success(function(data) {
-								   $scope.reportData=data;
-							       $scope.bigTotalItems=data.length;
-							 //console.log(data.length);
-							       $scope.showData=true;
+		                     $scope.data=data;
+								 if ($scope.data.length==0)
+								 {
+									  $scope.showError=true;
+									  $scope.showData=false;
+                                 
+								 }else{
+							      	  $scope.bigTotalItems= $scope.data.length;
+									   $scope.bigCurrentPage = 1;
+                                        $scope.showData=true;
+
+										 $scope.$watch('bigCurrentPage', function() {
+										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
+											, end = begin + $scope.numPerPage;
+										   $scope.reportData =$scope.data.slice(begin,end );
+											});
+								 }	;
 							 }) 
 						 .error(function(data) {
-							//  console.log(data)
 								  $scope.showData=false;
 							 });
 
@@ -561,7 +563,7 @@ landlordtmngt.controller('RentPostingctrl', function($scope,$rootScope,$http) {
   // $scope.Landlord;
    $scope.PostMonthlyRent=function(){ 
 
-	    var Details={"plotName": $scope.Landlord.plot.name,
+	    var Details={"plotName": $scope.Landlord.plot.Plotname,
 			         "Month":$scope.Landlord.dateChoosen.value,
 			         "ReceiptNo":$scope.Landlord.receipt,
 			         "PostDateTime":new Date().toISOString()
@@ -774,8 +776,10 @@ $scope.Tenant.plot=$scope.landlordplots[0];
 
 $scope.GetDetails=function(){
  // have this in a nested Promise
-   $http.get('/UnbookedtenantList/'+ $scope.Tenant.plot.name).success(function (data){$scope.tenantdata=data ;$scope.Tenant.name=$scope.tenantdata[0];});
-   $http.get('/VacanthouseList/'+$scope.Tenant.plot.name).success(function (data){$scope.housedata=data;$scope.Tenant.housename=$scope.housedata[0]; });
+
+
+   $http.get('/UnbookedtenantList/'+ $scope.Tenant.plot.Plotname).success(function (data){$scope.tenantdata=data ;$scope.Tenant.name=$scope.tenantdata[0];});
+   $http.get('/VacanthouseList/'+$scope.Tenant.plot.Plotname).success(function (data){$scope.housedata=data;$scope.Tenant.housename=$scope.housedata[0]; });
  
 }
 
@@ -928,6 +932,138 @@ $scope.CheckPwd=function(){
      
 });
 
+landlordtmngt.controller('TenantPaidReportctrl', function($scope,$http,$rootScope,$window) {
+   //todo
+   $scope.landlordplots=$rootScope.plot;
+   $scope.PaidTenant=[];
+   $scope.numPerPage=10;
+  $scope.showData=false;
+   $scope.showError=false;
+   $scope.GetDetails=function(name){
+           $scope.Plotname=name;
+	    $scope.reportData={
+	                   "plot":name
+                    };
+	  
+               $http.post('/TenantPaidReport', $scope.reportData)
+						 .success(function(data) {
+								$scope.data=data;
+								 if ($scope.data.length==0)
+								 {
+									  $scope.showError=true;
+                                 
+								 }else{
+							      	  $scope.bigTotalItems= $scope.data.length;
+									   $scope.bigCurrentPage = 1;
+                                        $scope.showData=true;
+
+										 $scope.$watch('bigCurrentPage', function() {
+										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
+											, end = begin + $scope.numPerPage;
+										   $scope.PaidTenant =$scope.data.slice(begin,end );
+											});
+								 }
+										
+							 }) 
+						 .error(function(data) {
+							//  console.log(data)
+								  $scope.showData=false;
+							 });
+							   
+	
+   
+}
+
+ 
+});
+landlordtmngt.controller('TenantUnpaidReportctrl', function($scope,$http,$rootScope,$window) {
+
+     $scope.landlordplots=$rootScope.plot;
+   $scope.PaidTenant=[];
+   $scope.numPerPage=6;
+  $scope.showData=false;
+  $scope.showError=false;
+
+   $scope.GetDetails=function(name){
+           $scope.Plotname=name;
+	    $scope.reportData={
+	                   "plot":name
+                    };
+	  
+               $http.post('/TenantUnpaidReport', $scope.reportData)
+						 .success(function(data) {
+								$scope.data=data;
+
+								 if ($scope.data.length==0)
+								 {
+									  $scope.showError=true;
+                                 
+								 }else{
+							      	  $scope.bigTotalItems= $scope.data.length;
+									   $scope.bigCurrentPage = 1;
+                                        $scope.showData=true;
+
+										 $scope.$watch('bigCurrentPage', function() {
+										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
+											, end = begin + $scope.numPerPage;
+										   $scope.PaidTenant =$scope.data.slice(begin,end );
+											});
+								 }	
+							 }) 
+						 .error(function(data) {
+							//  console.log(data)
+								  $scope.showData=false;
+							 });
+							   
+	
+   }
+});
+
+landlordtmngt.controller('TenantListReportctrl', function($scope,$http,$rootScope,$window) {
+
+     $scope.landlordplots=$rootScope.plot;
+   $scope.PaidTenant=[];
+   $scope.numPerPage=6;
+  $scope.showData=false;
+  $scope.showError=false;
+
+   $scope.GetDetails=function(name){
+           $scope.Plotname=name;
+	    $scope.reportData={
+	                   "plot":name
+                    };
+	  
+               $http.post('/TenantListReport', $scope.reportData)
+						 .success(function(data) {
+								$scope.data=data;
+
+								 if ($scope.data.length==0)
+								 {
+									  $scope.showError=true;
+                                 
+								 }else{
+							      	  $scope.bigTotalItems= $scope.data.length;
+									   $scope.bigCurrentPage = 1;
+                                        $scope.showData=true;
+
+										 $scope.$watch('bigCurrentPage', function() {
+										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
+											, end = begin + $scope.numPerPage;
+										   $scope.PaidTenant =$scope.data.slice(begin,end );
+											});
+								 }	
+							 }) 
+						 .error(function(data) {
+							//  console.log(data)
+								  $scope.showData=false;
+							 });
+							   
+	
+   }
+});
+
+
+
 
 
 //}
@@ -1001,11 +1137,23 @@ landlordtmngt.config(function($routeProvider,$locationProvider)	{
      controller: 'Dashboardctrl'
         })
 
-			.when('/RentPosting', {
+	.when('/RentPosting', {
      templateUrl: 'views/partials/RentPosting.html',   
      controller: 'RentPostingctrl'
         })
-		
+	.when('/TenantPaidReport', {
+     templateUrl: 'views/partials/ReportsViews/TenantPaidReport.html',   
+     controller: 'TenantPaidReportctrl'
+        })	
+ .when('/TenantUnPaidReport', {
+     templateUrl: 'views/partials/ReportsViews/TenantUnpaidReport.html',   
+     controller: 'TenantUnpaidReportctrl'
+        })	
+ .when('/TenantListReport', {
+     templateUrl: 'views/partials/ReportsViews/TenantListReport.html',   
+     controller: 'TenantListReportctrl'
+        })
+			
 		
 	.otherwise({
          redirectTo: '/plotmngt'

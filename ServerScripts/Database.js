@@ -55,7 +55,7 @@ collection.insert(req.body, function(err, item) {
 exports.listoftenant = function(req, res) {
 
  db.collection('Tenant', function(err, collection) {
- collection.find({"plot.name":req.params.plot}).toArray( function(err, item){
+ collection.find({"plot.Plotname":req.params.plot}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -66,7 +66,7 @@ exports.listoftenant = function(req, res) {
 
 exports.listofHouse = function(req, res) {
  db.collection('House', function(err, collection) {
- collection.find({"plot.name":req.params.plot}).toArray( function(err, item){
+ collection.find({"plot.Plotname":req.params.plot}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -79,7 +79,7 @@ exports.listofHouse = function(req, res) {
 exports.listofUnbookedtenant = function(req, res) {
 	 console.log("The Parameter for listofUnbookedtenant  is.."+req.params.plot);
  db.collection('Tenant', function(err, collection) {
- collection.find({"plot.name":req.params.plot,"hsestatus":0},{name:1}).toArray( function(err, item){
+ collection.find({"plot.Plotname":req.params.plot,"hsestatus":0},{name:1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -90,7 +90,7 @@ exports.listofUnbookedtenant = function(req, res) {
 
 exports.listofbookedtenant = function(req, res) {
  db.collection('Tenant', function(err, collection) {
- collection.find({"plot.name":req.params.plot,"hsestatus":1}).toArray( function(err, item){
+ collection.find({"plot.Plotname":req.params.plot,"hsestatus":1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -103,7 +103,7 @@ exports.listofbookedtenant = function(req, res) {
 
 exports.listofVacantHouse = function(req, res) {
  db.collection('House', function(err, collection) {
- collection.find({"plot.name":req.params.plot,"status":"vacant"},{number:1,amount:1}).toArray( function(err, item){
+ collection.find({"plot.Plotname":req.params.plot,"status":"vacant"},{number:1,amount:1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -584,7 +584,7 @@ exports.logout = function(req, res) {
 exports.Findneighbours = function(req, res) {
 
  db.collection('Tenant', function(err, collection) {
- collection.find({$and: [ {"plot.name":req.query.plot_name},{"hsestatus" : 1}]},{name:1,housename:1,_id:1}).toArray( function(err, item){
+ collection.find({$and: [ {"plot.Plotname":req.query.plot_name},{"hsestatus" : 1}]},{name:1,housename:1,_id:1}).toArray( function(err, item){
    if (err) {console.log(err);res.json(500,{error: "database Error"});}
    else{res.send(item);}
 });
@@ -684,14 +684,52 @@ var plot=req.body.plot;
 	};
 
 
+exports.TenantPaidReport= function(req, res) {
+  var plot=req.body.plot;
+  db.collection('Tenant', function(err, collection) {
+ collection.find({$and: [{"plot.Plotname": plot},{"balance":{$lte: 0}}]}).toArray( function(err, item){
+  if(item){console.log(item);res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+	};
+
+exports.TenantUnpaidReport= function(req, res) {
+  var plot=req.body.plot;
+  db.collection('Tenant', function(err, collection) {
+ collection.find({$and: [{"plot.Plotname": plot},{"balance":{$gte: 0}}]}).toArray( function(err, item){
+  if(item){console.log(item);res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+exports.TenantListReport= function(req, res) {
+  var plot=req.body.plot;
+  db.collection('Tenant', function(err, collection) {
+ collection.find({$and: [{"plot.Plotname": plot},{"hsestatus":1}]}).toArray( function(err, item){
+  if(item){console.log(item);res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+
+
+
+
 
 exports.MonthlyRentPosting= function(req, res) {
- // first check if The Month rent is already posted
+ 
 var plotname =req.body.plotName;
 var month =req.body.Month;
-
+console.log("Posting Rent.... for "+plotname);
  db.collection('MonthlyPosting', function(err, collection) {
   collection.findOne({"plotname":plotname},function(err, item){
+
   if(item){
     
     // no errors but check for the month
@@ -704,7 +742,7 @@ var month =req.body.Month;
 	  else {
 	        // Not Posted
               console.log("Not Posted");
-						 var ReceiptNo =req.body.ReceiptNo;
+						var ReceiptNo =req.body.ReceiptNo;
 						var PostDateTime  =req.body.PostDateTime;
 						var det={};
 						var req1={};
@@ -717,7 +755,7 @@ var month =req.body.Month;
 						det.Description="Rent for "+month;
 
 			  db.collection('House', function(err, collection) {
-				var cursor  =collection.find({$and:[{"plot.name":plotname},{"status":"rented"}]},{amount:1,tenantid:1,_id:0,number:1});
+				var cursor  =collection.find({$and:[{"plot.Plotname":plotname},{"status":"rented"}]},{amount:1,tenantid:1,_id:0,number:1});
 				 
 				 cursor.toArray(function (err,items){
 					  console.log("Cursor Length.." + items.length);  
@@ -758,10 +796,7 @@ var month =req.body.Month;
 													   }
 												}
 									   });
-									
 
-									   
-							   
 								
 								 } ,
 							   function(err){
@@ -776,11 +811,7 @@ var month =req.body.Month;
 								 }
 
 						 );
-						
-
-
-
-							 
+				 
 					   });
 
 					   });

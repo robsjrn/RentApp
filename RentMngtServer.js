@@ -145,9 +145,15 @@ try
 
         app.get('/TenantInfo',ensureAuthenticated,DatabaseConn.TenantInfo);
         app.post('/updateTenantData',ensureAuthenticated,DatabaseConn.updateTenantData); 
-    
+        app.post('/MonthlyRentPosting',ensureAuthenticated,DatabaseConn.MonthlyRentPosting); 
+
+ //Reports
 		app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
-	    app.post('/MonthlyRentPosting',ensureAuthenticated,DatabaseConn.MonthlyRentPosting); 
+	    app.post('/TenantPaidReport',ensureAuthenticated,DatabaseConn.TenantPaidReport); 
+        app.post('/TenantUnpaidReport',ensureAuthenticated,DatabaseConn.TenantUnpaidReport); 
+
+		 app.post('/TenantListReport',ensureAuthenticated,DatabaseConn.TenantListReport); 
+		
 
   //Service that dont Require Login
           app.post('/ServiceRegistration',DatabaseConn.ServiceRegistration); 
