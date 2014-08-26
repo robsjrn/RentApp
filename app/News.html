@@ -74,6 +74,40 @@
 </nav>
 
 
+
+               <div data-ng-controller="MainNewsCtrl" class="row cont">
+
+			        <div class="col-md-3">
+						 <div class="well">
+                              <h4>Highly Rated Properties</h4>
+						    
+						 </div>
+					</div>
+                   <div class="col-md-6">
+						 <div class="well">
+
+						    <ul class="list-group" >
+											  <li class="list-group-item" ng-repeat="news in Data">
+											  <img ng-src="{{news.img}}"/>
+											   <strong><a href="#">{{ news.headline }}</a></strong> 
+											   <div>{{ news.story }}</div>
+											   <span class="pull-right text-muted">
+															<em>Date Posted{{ news.date | date:'yyyy-MM-dd'  }}</em>
+															
+														</span>
+                                              </li>
+                              </ul>
+						 </div>
+					</div>
+
+					 <div class="col-md-3">
+						 <div class="well">
+						 </div>
+					</div>
+
+			   </div>  <!-- /.End of Main -->
+
+
    <!--[if lt IE 9]>
     <script src="public/es5-shim/es5-shim.js"></script>
     <script src="public/json3/lib/json3.min.js"></script>

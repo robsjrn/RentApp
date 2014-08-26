@@ -2,53 +2,35 @@ var express = require('express'),
     app = express.createServer();
 var DatabaseConn=require('./ServerScripts/Database.js');
 var passport = require('passport'),LocalStrategy = require('passport-local').Strategy;
-
-//PDFDocument = require ('pdfkit')
-
- //  doc = new PDFDocument
+var jwt = require('jwt-simple');
 
 
-passport.serializeUser(function(user, done) {
-  done(null, user._id);
-});
 
-passport.deserializeUser(function(_id, done) {
-  DatabaseConn.getCredentials(_id, function(err, user) {
-    done(err, user);
-  });
-});
+var tokenSecret='1234567890QWERTY';
 
-
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    DatabaseConn.getCredentials(username, function(err, user) {
-      if (err) {console.log("error" + err); return done(err); }
-      if (!user) {console.log("Incorrect username" );return done(null, false); }
-      if (user.password != password) { console.log("Incorrect password." ); return done(null, false); }
-      return done(null, user);
-    });
-  }
-));
-
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.send(401);
+ function ensureAuthenticated(req, res, next) {
+	  try
+		  {
+			var decoded = jwt.decode(req.headers.token, tokenSecret);
+			  req.user={};
+			  req.user.identifier=decoded.username;
+			  return next();
+		  }
+		  catch (e)
+		  {
+			   console.error(e);
+	           res.json(401,{error: "Server Error"});
+		  }
+		  
 }
-
-
 
 app.configure(function() {
   
-   app.use(express.cookieParser());
    app.use(express.bodyParser({uploadDir:__dirname +'/app/uploads'}));
-   app.use(express.session({secret: '1234567890QWERTY'}));
    app.use(express.bodyParser());
    app.use(express.static(__dirname + '/app'));
   // any request that gets here is a dynamic page, and benefits from session
   // support
-    app.use(passport.initialize());
-	app.use(passport.session());
 });
 
 var pageNotFound= function(res){
@@ -56,41 +38,24 @@ var pageNotFound= function(res){
 }
 try
  {
-			
-		app.get('/', function(req, res){res.redirect('/index.html');});
-     
+    app.get('/', function(req, res){res.redirect('/index.html');});
 
-		app.post('/login', passport.authenticate('local'),  function(req, res) { res.send(200);});
+     app.post('/Login',   function(req, res) {
+			console.log("The username is.." + req.body.username);
+			console.log("The password is.." + req.body.password);
+				DatabaseConn.getCredentials(req.body.username, function(err, user) {
+				 if (err)  { console.log("error occured is .." + err); res.send(401);  }
+				 if (!user) {console.log("Incorrect username" );res.send(401); } 
+				 if (user.password !=req.body.password) { console.log("Incorrect password." ); res.send(401); }
+				   var token = jwt.encode({username: user.identifier}, tokenSecret);
+				   console.log("the user role is "+user.role);
+					 console.log("Sending Token"+user.identifier);
+					res.json({token : token,role:user.role});	
+							});
+			  });     
+
+		//app.post('/login', passport.authenticate('local'),  function(req, res) { res.send(200);});
         app.get('/logout',ensureAuthenticated,DatabaseConn.logout);
-
-        app.get('/LoginRedirect', function(req, res){
-			console.log("The User Role is." +req.user.role );
-           
-			if(req.user.role=="tenant"){
-			    res.redirect('/Tenant.html');
-			 }
-
-            else if(req.user.role=="landlord"){
-			    res.redirect('/Landlord.html');
-			 }
-         
-             else if(req.user.role=="agent"){
-			    res.redirect('/Agent.html');
-			 }
-			  else if(req.user.role=="admin"){
-			    res.redirect('/Admin.html');
-			 }	
-			
-			});
-
-
-
-        app.get('/404', function(req, res){
-			res.redirect('/Error.html');
-		});
-
-	
-
 
 		app.post('/createTenant',ensureAuthenticated,DatabaseConn.CreateTenant);
 		app.post('/createHouse',ensureAuthenticated,DatabaseConn.CreateHouse);
@@ -111,19 +76,21 @@ try
 
 		app.post('/RentalPayment',ensureAuthenticated,DatabaseConn.postTransaction);
 		app.get('/tenantStatement',ensureAuthenticated,DatabaseConn.tenantStatement);
+
 		app.get('/tenantDetails',ensureAuthenticated,DatabaseConn.tenantDetails); 
+
         app.get('/LandLordDetails',ensureAuthenticated,DatabaseConn.LandLordDetails); 
 		app.get('/LandLordConfiguration',ensureAuthenticated,DatabaseConn.LandLordConfiguration);
 		
         
-		app.get('/AccessRequest',DatabaseConn.Accessrequest);
-		app.post('/GrantAccess',DatabaseConn.GrantAccess);
+		app.get('/AccessRequest',ensureAuthenticated,DatabaseConn.Accessrequest);
+		app.post('/GrantAccess',ensureAuthenticated,DatabaseConn.GrantAccess);
 
 
-        app.post('/HseTypeConfiguration',DatabaseConn.HseTypeConfiguration);
-		app.post('/PaymentmethodConfiguration',DatabaseConn.PaymentmethodConfiguration);
-		app.post('/TransactiontypeConfiguration',DatabaseConn.TransactiontypeConfiguration);
-		app.post('/ExpenseTypeConfiguration',DatabaseConn.ExpenseTypeConfiguration);
+        app.post('/HseTypeConfiguration',ensureAuthenticated,DatabaseConn.HseTypeConfiguration);
+		app.post('/PaymentmethodConfiguration',ensureAuthenticated,DatabaseConn.PaymentmethodConfiguration);
+		app.post('/TransactiontypeConfiguration',ensureAuthenticated,DatabaseConn.TransactiontypeConfiguration);
+		app.post('/ExpenseTypeConfiguration',ensureAuthenticated,DatabaseConn.ExpenseTypeConfiguration);
         
 
         app.get('/UpdateTenantAgreement',ensureAuthenticated,DatabaseConn.UpdateTenantAgreement);
@@ -153,7 +120,8 @@ try
         app.post('/TenantUnpaidReport',ensureAuthenticated,DatabaseConn.TenantUnpaidReport); 
 
 		 app.post('/TenantListReport',ensureAuthenticated,DatabaseConn.TenantListReport); 
-		
+		  app.post('/OccupiedHouseReport',ensureAuthenticated,DatabaseConn.OccupiedHouseReport); 
+		  app.post('/vacantHouseReport',ensureAuthenticated,DatabaseConn.vacantHouseReport); 
 
   //Service that dont Require Login
           app.post('/ServiceRegistration',DatabaseConn.ServiceRegistration); 
@@ -171,10 +139,11 @@ try
  {
 
     console.error(e);
-	pageNotFound(res);
-
+    res.json(500,{error: "Server Error"});
  }
 
 
-app.listen(4000);
+//app.listen(4000);
+// on deployment un comment 
+app.listen(process.env.PORT)
 console.log('Express server started on port 4000');

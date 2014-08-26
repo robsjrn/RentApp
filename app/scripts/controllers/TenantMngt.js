@@ -1,23 +1,36 @@
 var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute','ui.bootstrap','ngAnimate' ,'angularFileUpload'] ); 
 
+		Tenantmngt.factory('authInterceptor', function ($rootScope, $q, $window) {
+		  return {
+			request: function (config) {
+			  config.headers = config.headers || {};
+			  if ($window.sessionStorage.token) {
+				config.headers.token=  $window.sessionStorage.token;
+			  }
+			  else{
+				   // no token in Store
+                    $window.location.href = "Error.html";
+			  }
+			  return config;
+			},
+		
+			response: function (response) {
+			  if (response.status === 401) {
+				// handle the case where the user is not authenticated
+				   $window.location.href = "Error.html";
+			  }
+			 
+			  return response || $q.when(response);
+			}
+		  };
+		});
 
-   Tenantmngt.config(['$httpProvider',  function ($httpProvider,$window) {
-    $httpProvider.interceptors.push(function ($q,$window) {
-        return {
-            'response': function (response) {
-                //Will only be called for HTTP up to 300
-                 return response;
-            },
-            'responseError': function (rejection) {
-                if(rejection.status === 401) {
-					 $window.location.href = "Error.html";
-                }
-                return $q.reject(rejection);
-            }
-        };
-    });
-	
-}]);
+
+Tenantmngt.config(function ($httpProvider) {
+  $httpProvider.interceptors.push('authInterceptor');
+});
+
+
 
 
 
@@ -65,11 +78,14 @@ $http.get('/Viewmail').success(function (data){
   }
   
   $scope.Logout=function(){
+	 
             $http.get('/logout')
-              .success(function(data) {
+              .success(function(data) {	
+				   delete $window.sessionStorage.token; 
 					$window.location.href = "/";
 					}) 
 				 .error(function(data) {
+				   delete $window.sessionStorage.token; 
 					$window.location.href = "/";
 					});	
 
@@ -143,7 +159,7 @@ $scope.onFileSelect = function($files) {
         /* customize how data is added to formData. See #40#issuecomment-28612000 for sample code */
         //formDataAppender: function(formData, key, val){}
       }).progress(function(evt) {
-        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+       // console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
 
@@ -172,7 +188,7 @@ $scope.showNeighbour=function(tenant){
     $http.get('/TenantInfo/',{params:{tenant_id:tenant._id}})
 	   
                       .success(function(data) {
-							console.log(data);
+						//	console.log(data);
 								$scope.details=data;
 									 // if ($scope.details.Details.view=="undefined"){$scope.details.Details.view=false;}
 									 try{
@@ -181,7 +197,7 @@ $scope.showNeighbour=function(tenant){
 								 catch(e){$scope.isInfoPublic=false;}
 							 }) 
 						 .error(function(data) {
-					        	console.log(data)
+					        	//console.log(data)
 							 });	
 
 
@@ -190,9 +206,9 @@ $scope.showNeighbour=function(tenant){
 
 }
 
-				 $http.get('/Findneighbours',{params:{plot_name:$rootScope.Tenant.plot.name}})   
+				 $http.get('/Findneighbours',{params:{plot_name:$rootScope.Tenant.plot.Plotname}})   
                       .success(function(data) {
-					         console.log(data);
+					      //   console.log(data);
 							    $scope.Neighbours=data;
 							 }) 
 						 .error(function(data) {
@@ -288,7 +304,7 @@ $scope.ShowSentMailpopUp=function(mailinbox){
 							 }) 
 						 .error(function(data) {
 							   $scope.ErrorStatus=true;
-							   console.log("Erororro" + data);
+							  // console.log("Erororro" + data);
 							 });	
 
 	 
@@ -311,7 +327,7 @@ $scope.pwderror=false;
 $scope.SubmitPwd=function(){
     $http.post('/ChangePwd',$scope.pwd )
 		   .success(function(data) {
-		    console.log(data.success)
+		  //  console.log(data.success)
 		    $scope.pwdchanged=true;
 		     }) 
 			.error(function(data) {

@@ -50,7 +50,8 @@
 				 </div>
 					<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
 					  <ul class="nav navbar-nav navbar-right">
-					    <li ><a href="#!/nyumbakumi"><i class="fa fa-question fa-fw"></i> Nyumba Kumi</a></li>
+					    <li ><a href="#!/nyumbakumi"><i class="glyphicon glyphicon-home"></i> Nyumba Kumi</a></li>
+						<li ><a href="#!"><i class="fa fa-question fa-fw"></i>Services</a></li>
 					    <li ><a href="#!/help"><i class="fa fa-question fa-fw"></i> Help</a></li>
 						<li ><a href="#!/Terms"><i class="fa fa-edit fa-fw"></i>Terms/Condition</a></li>
 						<li ><a href="#!/pwdchange"><i class="fa fa-cogs fa-fw"></i> Change Password</a></li>
@@ -126,7 +127,7 @@
 						   </div>
 							<div class="panel-body">
 
-                              <p>Plot No. {{TenantData.plot.name}} </p>
+                              <p>Plot No. {{TenantData.plot.Plotname}} </p>
                               <p> <h5>House Number  : {{TenantData.housename}}</h5>  </p>
 							  <p> <h5>Rental Balance :{{TenantData.balance}}</h5>  </p>
 							  
@@ -142,7 +143,8 @@
 			<div class="col-md-8">
 			 	
                    <div data-ng-view >
-			     </div>        
+			     </div> 
+			
             </div>
 		
        </div>
@@ -169,7 +171,7 @@
 
   <div class="navbar navbar-default navbar-fixed-bottom">
 		         <div class="container" >
-			       <p>copyrights @@NanaTec 2014 </p>				    	
+			       <p>copyrights @NanaTec 2014 </p>				    	
                </div>
   </div>
 </div>

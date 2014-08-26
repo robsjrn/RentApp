@@ -3,23 +3,33 @@ var landlordtmngt= angular.module('LandlordmngtApp', ['ngResource','ngRoute','ui
 
 
  
-   landlordtmngt.config(['$httpProvider',  function ($httpProvider,$window) {
-    $httpProvider.interceptors.push(function ($q,$window) {
-        return {
-            'response': function (response) {
-                //Will only be called for HTTP up to 300
-                 return response;
-            },
-            'responseError': function (rejection) {
-                if(rejection.status === 401) {
-					 $window.location.href = "Error.html";
-                }
-                return $q.reject(rejection);
-            }
-        };
-    });
-	
-}]);
+	landlordtmngt.factory('authInterceptor', function ($rootScope, $q, $window) {
+		  return {
+			request: function (config) {
+			  config.headers = config.headers || {};
+			  if ($window.sessionStorage.token) {
+				config.headers.token=  $window.sessionStorage.token;
+			  }
+			   else{
+				   // no token in Store
+                    $window.location.href = "Error.html";
+			  }
+			  return config;
+			},
+			response: function (response) {
+			  if (response.status === 401) {
+				// handle the case where the user is not authenticated
+				$window.location.href = "Error.html";
+			  }
+			  return response || $q.when(response);
+			}
+		  };
+		});
+
+landlordtmngt.config(function ($httpProvider) {
+  $httpProvider.interceptors.push('authInterceptor');
+});
+
 
 
 landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope,$window) {
@@ -50,9 +60,11 @@ $http.get('/Viewmail').success(function (data){$scope.UserMail=data; $scope.emai
  $scope.Logout=function(){
             $http.get('/logout')
               .success(function(data) {
+			    	delete $window.sessionStorage.token;
 					$window.location.href = "/";
 					}) 
 				 .error(function(data) {
+				   delete $window.sessionStorage.token;
 					$window.location.href = "/";
 					});	
 
@@ -437,6 +449,16 @@ landlordtmngt.controller('ReportsPortalctrl', function($scope,$http,$rootScope) 
 
 	 
      $scope.showError=false;
+	 $scope.showSearchBar=true;
+
+$scope.ShowHideBar=function(){
+	if($scope.showSearchBar){
+	  $scope.showSearchBar=false;
+	}else{
+		 $scope.showSearchBar=true;
+	}
+}
+
 				  $scope.reportType= $rootScope.TransactionType;
 				  $scope.plots=$rootScope.plot;
 				 $scope.showData=false;
@@ -507,9 +529,10 @@ $scope.getReport=function(){
 								 if ($scope.data.length==0)
 								 {
 									  $scope.showError=true;
-									  $scope.showData=false;
+									   $scope.showData=false;
                                  
 								 }else{
+									 $scope.showError=false;
 							      	  $scope.bigTotalItems= $scope.data.length;
 									   $scope.bigCurrentPage = 1;
                                         $scope.showData=true;
@@ -951,12 +974,13 @@ landlordtmngt.controller('TenantPaidReportctrl', function($scope,$http,$rootScop
 								 if ($scope.data.length==0)
 								 {
 									  $scope.showError=true;
+									   $scope.showData=false;
                                  
 								 }else{
 							      	  $scope.bigTotalItems= $scope.data.length;
 									   $scope.bigCurrentPage = 1;
                                         $scope.showData=true;
-
+                                          $scope.showError=false;
 										 $scope.$watch('bigCurrentPage', function() {
 										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
 											, end = begin + $scope.numPerPage;
@@ -997,12 +1021,13 @@ landlordtmngt.controller('TenantUnpaidReportctrl', function($scope,$http,$rootSc
 								 if ($scope.data.length==0)
 								 {
 									  $scope.showError=true;
+									     $scope.showData=false;
                                  
 								 }else{
 							      	  $scope.bigTotalItems= $scope.data.length;
 									   $scope.bigCurrentPage = 1;
                                         $scope.showData=true;
-
+                                          $scope.showError=false;
 										 $scope.$watch('bigCurrentPage', function() {
 										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
 											, end = begin + $scope.numPerPage;
@@ -1040,12 +1065,13 @@ landlordtmngt.controller('TenantListReportctrl', function($scope,$http,$rootScop
 								 if ($scope.data.length==0)
 								 {
 									  $scope.showError=true;
+									   $scope.showData=false;
                                  
 								 }else{
 							      	  $scope.bigTotalItems= $scope.data.length;
 									   $scope.bigCurrentPage = 1;
                                         $scope.showData=true;
-
+                                         $scope.showError=false;
 										 $scope.$watch('bigCurrentPage', function() {
 										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
 											, end = begin + $scope.numPerPage;
@@ -1063,7 +1089,94 @@ landlordtmngt.controller('TenantListReportctrl', function($scope,$http,$rootScop
 });
 
 
+landlordtmngt.controller('OccupiedHousectrl', function($scope,$http,$rootScope,$window) {
+	    $scope.landlordplots=$rootScope.plot;
+		   $scope.numPerPage=6;
+			$scope.showData=false;
+			$scope.showError=false;
+			$scope.reportData=[];
+		$scope.GetReportDetails=function(name){
+			    $scope.Plotname=name;
+				$scope.reportData={
+	                   "plot":name
+                    };
 
+
+               $http.post('/OccupiedHouseReport', $scope.reportData)
+						 .success(function(data) {
+								$scope.data=data;
+                               // console.log(data);
+								 if ($scope.data.length==0)
+								 {
+									   $scope.showError=true;
+									   $scope.showData=false;
+                                 
+								 }else{
+							      	  $scope.bigTotalItems= $scope.data.length;
+									   $scope.bigCurrentPage = 1;
+                                        $scope.showData=true;
+                                         $scope.showError=false;
+										 $scope.$watch('bigCurrentPage', function() {
+										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
+											, end = begin + $scope.numPerPage;
+										   $scope.reportData =$scope.data.slice(begin,end );
+											});
+								 }	
+							 }) 
+						 .error(function(data) {
+							//  console.log(data)
+								  $scope.showData=false;
+							 });
+
+
+
+
+
+
+
+         }
+});
+landlordtmngt.controller('VacantHousectrl', function($scope,$http,$rootScope,$window) {
+
+	  $scope.landlordplots=$rootScope.plot;
+		   $scope.numPerPage=6;
+			$scope.showData=false;
+			$scope.showError=false;
+			$scope.reportData=[];
+		$scope.GetReportDetails=function(name){
+			    $scope.Plotname=name;
+				$scope.reportData={
+	                   "plot":name
+                    };
+
+
+               $http.post('/vacantHouseReport', $scope.reportData)
+						 .success(function(data) {
+								$scope.data=data;
+                              //  console.log(data);
+								 if ($scope.data.length==0)
+								 {
+									   $scope.showError=true;
+									   $scope.showData=false;
+                                 
+								 }else{
+							      	  $scope.bigTotalItems= $scope.data.length;
+									   $scope.bigCurrentPage = 1;
+                                        $scope.showData=true;
+                                         $scope.showError=false;
+										 $scope.$watch('bigCurrentPage', function() {
+										var begin = (($scope.bigCurrentPage - 1) * $scope.numPerPage)
+											, end = begin + $scope.numPerPage;
+										   $scope.reportData =$scope.data.slice(begin,end );
+											});
+								 }	
+							 }) 
+						 .error(function(data) {
+							//  console.log(data)
+								  $scope.showData=false;
+							 });
+		}
+});
 
 
 //}
@@ -1129,7 +1242,7 @@ landlordtmngt.config(function($routeProvider,$locationProvider)	{
      controller: 'LandlordProfilectrl'
         })
 	.when('/ReportsPortal', {
-     templateUrl: 'views/partials/ReportsPortal.html',   
+     templateUrl: 'views/partials/ReportsViews/ReportsPortal.html',   
      controller: 'ReportsPortalctrl'
         })		
 	.when('/Dashboard', {
@@ -1153,7 +1266,14 @@ landlordtmngt.config(function($routeProvider,$locationProvider)	{
      templateUrl: 'views/partials/ReportsViews/TenantListReport.html',   
      controller: 'TenantListReportctrl'
         })
-			
+.when('/OccupiedHouseReport', {
+     templateUrl: 'views/partials/ReportsViews/OccupiedHouseReport.html',   
+     controller: 'OccupiedHousectrl'
+        })	
+  .when('/VacantHouseReport', {
+     templateUrl: 'views/partials/ReportsViews/VacantHouseReport.html',   
+     controller: 'VacantHousectrl'
+        })			
 		
 	.otherwise({
          redirectTo: '/plotmngt'

@@ -1,28 +1,31 @@
 var mongo = require('mongodb');
- var fs = require('fs');
+var fs = require('fs');
 var util     = require('util')
 var path     = require('path');
 var async =require('async');
 
-var Server = mongo.Server,
-Db = mongo.Db,
+var MongoClient = require('mongodb').MongoClient;
+var db;
 BSON = mongo.BSONPure;
- 
-var server = new Server('localhost', 27017, {auto_reconnect: true});
-db = new Db('RentalDB', server);
 
 
-db.open(function(err, db) {
-if(!err) {
-console.log("Connected to RentalDB database");
-db.collection('Tenant', {strict:true}, function(err, collection) {
-if (err) {
-console.log(err);
-console.log("The Rental Database doesn't exist.");
-}
+// Initialize connection once
+//When using db locally
+/*
+MongoClient.connect("mongodb://localhost:27017/RentalDB", function(err, database) {
+  if(err) throw err;
+  db = database;
+  console.log("Rental Database is Up ..");
 });
-}
+*/
+
+//When using db somewhere else
+MongoClient.connect("mongodb://robert:sebastian123!@proximus.modulusmongo.net:27017/h8oSorad", function(err, database) {
+  if(err) throw err;
+  db = database;
+  console.log("Rental Database is Up ..");
 });
+
 
 
 
@@ -573,19 +576,17 @@ exports.ChangePwd=function(req, res) {
 };
 
 
-
-
-exports.logout = function(req, res) {
-	     req.logout();
+    exports.logout = function(req, res) {
          res.send(200);
-
 	};
 
 exports.Findneighbours = function(req, res) {
-
+ // console.log("plot name is ..."+req.query.plot_name);
  db.collection('Tenant', function(err, collection) {
  collection.find({$and: [ {"plot.Plotname":req.query.plot_name},{"hsestatus" : 1}]},{name:1,housename:1,_id:1}).toArray( function(err, item){
-   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+   if (err) {
+	   //console.log(err);
+   res.json(500,{error: "database Error"});}
    else{res.send(item);}
 });
 });
@@ -603,7 +604,7 @@ exports.photoupload = function(req, res) {
 	  var dbpath='./images/Photos/'+req.files.file.name;
 	
 
-	  console.log("The Target path is "+target_path);
+	//  console.log("The Target path is "+target_path);
     // move the file from the temporary location to the intended location
     fs.rename(tmp_path, target_path, function(err) {
         if (err) throw err;
@@ -612,10 +613,11 @@ exports.photoupload = function(req, res) {
             if (err) throw err;
 
 
-                   console.log("Updating Tenant Photo Details for " +req.user.identifier.toString() );
+             //      console.log("Updating Tenant Photo Details for " +req.user.identifier.toString() );
 				   db.collection('Tenant', function(err, collection) {
 					collection.update({"_id" : req.user.identifier},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
-				   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+				   if (err) {//console.log(err);
+				   res.json(500,{error: "database Error"});}
 				   else{res.json(200,{imageUrl:dbpath});}
 				});
 				});
@@ -654,7 +656,9 @@ exports.Landlordphotoupload = function(req, res) {
               //     console.log("Updating Landlord Photo Details for " +req.user.identifier );
 				   db.collection('Landlord', function(err, collection) {
 					collection.update({"_id" : req.user.identifier},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
-				   if (err) {console.log(err);res.json(500,{error: "database Error"});}
+				   if (err) {
+					   //console.log(err);
+				   res.json(500,{error: "database Error"});}
 				   else{res.json(200,{imageUrl:dbpath});}
 				});
 				});
@@ -676,7 +680,9 @@ var plot=req.body.plot;
 //console.log("Start Date .. " + start  +"  End Date .." + end + "Report Type... " +reportType + "And the plot is .." + plot);
   db.collection('Transaction', function(err, collection) {
  collection.find({$and: [{transactiondate: {$gte: start, $lt: end}},{transactiontype:reportType}]}).toArray( function(err, item){
-  if(item){console.log(item);res.send(item);}
+  if(item){
+	//  console.log(item);
+	  res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
 });
@@ -688,18 +694,22 @@ exports.TenantPaidReport= function(req, res) {
   var plot=req.body.plot;
   db.collection('Tenant', function(err, collection) {
  collection.find({$and: [{"plot.Plotname": plot},{"balance":{$lte: 0}}]}).toArray( function(err, item){
-  if(item){console.log(item);res.send(item);}
+  if(item){
+	 // console.log(item);
+	  res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
 });
 });
-	};
+};
 
 exports.TenantUnpaidReport= function(req, res) {
   var plot=req.body.plot;
   db.collection('Tenant', function(err, collection) {
  collection.find({$and: [{"plot.Plotname": plot},{"balance":{$gte: 0}}]}).toArray( function(err, item){
-  if(item){console.log(item);res.send(item);}
+  if(item){
+	  //console.log(item);
+  res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
 });
@@ -710,7 +720,35 @@ exports.TenantListReport= function(req, res) {
   var plot=req.body.plot;
   db.collection('Tenant', function(err, collection) {
  collection.find({$and: [{"plot.Plotname": plot},{"hsestatus":1}]}).toArray( function(err, item){
-  if(item){console.log(item);res.send(item);}
+  if(item){
+	  //console.log(item);
+  res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+exports.OccupiedHouseReport= function(req, res) {
+  var plot=req.body.plot;
+  db.collection('House', function(err, collection) {
+ collection.find({$and: [{"plot.Plotname": plot},{"status":"rented"}]},{plot:0,status:0,_id:0}).toArray( function(err, item){
+  if(item){
+	 // console.log(item);
+	  res.send(item);}
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+exports.vacantHouseReport= function(req, res) {
+  var plot=req.body.plot;
+  db.collection('House', function(err, collection) {
+ collection.find({$and: [{"plot.Plotname": plot},{"status":"vacant"}]},{plot:0,status:0,_id:0}).toArray( function(err, item){
+  if(item){//console.log(item);
+	  res.send(item);
+	  }
   if (err) {res.json(500,{error: "database Error"});}
 
 });
@@ -720,13 +758,11 @@ exports.TenantListReport= function(req, res) {
 
 
 
-
-
 exports.MonthlyRentPosting= function(req, res) {
  
 var plotname =req.body.plotName;
 var month =req.body.Month;
-console.log("Posting Rent.... for "+plotname);
+//console.log("Posting Rent.... for "+plotname);
  db.collection('MonthlyPosting', function(err, collection) {
   collection.findOne({"plotname":plotname},function(err, item){
 
@@ -735,13 +771,13 @@ console.log("Posting Rent.... for "+plotname);
     // no errors but check for the month
 	  if(item.Month==month) {
 	     // Already Posted
-            console.log("Already Posted");
+           // console.log("Already Posted");
 			res.json(500,{error: "Rent Already Posted"});
 		  
 	  }
 	  else {
 	        // Not Posted
-              console.log("Not Posted");
+            //  console.log("Not Posted");
 						var ReceiptNo =req.body.ReceiptNo;
 						var PostDateTime  =req.body.PostDateTime;
 						var det={};
@@ -758,7 +794,7 @@ console.log("Posting Rent.... for "+plotname);
 				var cursor  =collection.find({$and:[{"plot.Plotname":plotname},{"status":"rented"}]},{amount:1,tenantid:1,_id:0,number:1});
 				 
 				 cursor.toArray(function (err,items){
-					  console.log("Cursor Length.." + items.length);  
+					//  console.log("Cursor Length.." + items.length);  
 					  length =items.length;
 
 
@@ -774,20 +810,20 @@ console.log("Posting Rent.... for "+plotname);
 								det._id=PostDateTime+ReceiptNo+month+i;
 								req1.body=det;	
 										i=i+1;
-										console.log("Record loop posted " + i +" for " + item.tenantid );
+									//	console.log("Record loop posted " + i +" for " + item.tenantid );
 								  
 									
 								  doPosting(req1,function(status,err){
-									  console.log("The status is .. " + status);		    
+									 // console.log("The status is .. " + status);		    
 											if (status){
-												console.log("Error from posting Transactions...");
+												//console.log("Error from posting Transactions...");
 												callback('error');
 												}
 											else {
 												
 												 if (i==length)
 													 {
-														console.log("Everything was posted");
+													//	console.log("Everything was posted");
 														callback('ok');                    
 													 }
 												   else{
@@ -801,11 +837,11 @@ console.log("Posting Rent.... for "+plotname);
 								 } ,
 							   function(err){
 								   if(err=='error'){
-									   console.log("Errrors ");
+									//   console.log("Errrors ");
 									   ErrorPostNotification(res);
 									   }
 									else{
-										console.log("Everything is ok ..responding to user");
+										//console.log("Everything is ok ..responding to user");
 										SuccessPostNotification(res)
 										}
 								 }
@@ -842,12 +878,14 @@ console.log("Posting Rent.... for "+plotname);
 
  function doPosting(req1,callback){
 
-	 console.log("Posting Transaction.. for "+req1.body.tenantid);
+	// console.log("Posting Transaction.. for "+req1.body.tenantid);
 
      postTran(req1,function(ok,err)
 			      {
 				    if(ok){callback(false,null);}
-					else{console.log("The Error is "+ err);callback(true,err);}
+					else{
+						console.log("The Error is "+ err);
+					callback(true,err);}
 	                });
 	             
  }
@@ -865,7 +903,7 @@ console.log("Posting Rent.... for "+plotname);
  function BatchPosting(req,callback1)
  {
   
-    console.log("Inserting Transaction for " +req.body.tenantid);
+  //  console.log("Inserting Transaction for " +req.body.tenantid);
     db.collection('Transaction', function(err, collection) {
     collection.insert(req.body,{safe:true}, function(err, item) {
          if (err) {return callback1(true,err);} 
@@ -899,11 +937,13 @@ collection.insert(req.body, function(err, item) {
 
 
 exports.ServiceListing=function(req, res) {
-	console.log("The Location " +req.body.location.name );
-	console.log("The Type " +req.body.type.name );
+//	console.log("The Location " +req.body.location.name );
+//	console.log("The Type " +req.body.type.name );
 db.collection('Services', function(err, collection) {
  collection.find({$and:[{"location.name":req.body.location.name},{"type.name":req.body.type.name}]}).toArray( function(err, item){
-  if(item){console.log("Querry Data "+ item);res.send(item);}
+  if(item){
+	  //console.log("Querry Data "+ item);
+  res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
     });
   });
@@ -921,7 +961,9 @@ collection.insert(req.body, function(err, item) {
 exports.PropertyListing=function(req, res) {
 db.collection('Property', function(err, collection) {
  collection.find({$and:[{"location.name":req.body.location.name},{"type.name":req.body.Propertytype.name}]}).toArray( function(err, item){
-  if(item){console.log("Querry Data "+ item);res.send(item);}
+  if(item){
+	  //console.log("Querry Data "+ item);
+  res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
     });
   });
@@ -931,8 +973,8 @@ exports.VacantRentalListing=function(req, res) {
 var min=parseInt(req.body.Amount.Min);
 var max=parseInt(req.body.Amount.Max);
 
-  console.log("Min Amount" + min);
-  console.log("Max Amount" + max);
+//  console.log("Min Amount" + min);
+ // console.log("Max Amount" + max);
 db.collection('House', function(err, collection) {
  collection.find({$and:[{"status":"vacant"},req.body.querry,{"amount":{$gte:min,$lte:max}}]}).toArray( function(err, item){
   if(item){res.send(item);}
@@ -943,3 +985,22 @@ db.collection('House', function(err, collection) {
 
 
 
+exports.LoginRedirect=function(req, res) {
+	  // console.log("The User Role is." +req.user.role );
+           
+			if(req.user.role=="tenant"){
+			    res.redirect('/Tenant.html');
+			 }
+
+            else if(req.user.role=="landlord"){
+			    res.redirect('/Landlord.html');
+			 }
+         
+             else if(req.user.role=="agent"){
+			    res.redirect('/Agent.html');
+			 }
+			  else if(req.user.role=="admin"){
+			    res.redirect('/Admin.html');
+	 }	
+
+};
