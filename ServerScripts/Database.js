@@ -20,6 +20,7 @@ MongoClient.connect("mongodb://localhost:27017/RentalDB", function(err, database
 */
 
 //When using db somewhere else
+
 MongoClient.connect("mongodb://robert:sebastian123!@proximus.modulusmongo.net:27017/h8oSorad", function(err, database) {
   if(err) throw err;
   db = database;
