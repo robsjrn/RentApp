@@ -55,7 +55,7 @@
                             
 					   </div>  
                       <div class="panel-footer">
-					   <button type="button" class="btn btn-info" ng-click="AddPayment()">Add</button>
+					   <button type="button" class="btn btn-info" ng-click="AddPayment()" ng-disabled=!disableComponents >Add</button>
 					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents ng-click="ClearPayment()">Clear</button>
 					    <button type="button" class="btn btn-success" ng-click="postPayment()" ng-disabled=disableComponents >Save</button>
 					   </div>

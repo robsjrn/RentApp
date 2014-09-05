@@ -6,11 +6,13 @@ var Rentmngt= angular.module('RentmngtApp', ['ngCookies','ngSanitize','ngResourc
  Rentmngt.controller('MainCtrl', function ($scope,$http,$window,$modal) {
 
 
-$scope.SearchItems=['Properties','Apartments','Town House','Others'];
+$scope.SearchItems=[{"name":"Property","url":"/Property.html"},{"name":"Rentals","url":"/SearchRentals.html"},{"name":"Services","url":"/Services.html"}];
 
 
   $scope.items = ['item1', 'item2', 'item3'];
   $scope.locations = ['Kahawa', 'Kiambu', 'Ruiru'];
+
+	
 $scope.selectLocation=function(loc){
 	
 }
@@ -19,8 +21,13 @@ $scope.selectSearch=function(itm){
 }
 
 	$scope.awesomeThings = ['HTML5 Boilerplate','AngularJS','Karma' ];
-
-     $scope.Userlogin=function(){
+  
+  $scope.SearchItem=function(){
+			 $window.location.href=$scope.choice.url;
+  };
+     
+	 
+	 $scope.Userlogin=function(){
     
         $http.post('/login',$scope.user)
 				 		 .success(function(data) {

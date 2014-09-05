@@ -35,7 +35,7 @@ Tenantmngt.config(function ($httpProvider) {
 
 
 Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope,$window) {
-  
+    $scope.pageClass = 'page-nyumbakumi';
   $scope.doc={"txt":"I {{TenantData.name}} Agree to Take House {{TenantData.housename}} And Maintain it Well"};
 
   $http.get('/tenantDetails').success(function (data){
@@ -94,7 +94,7 @@ $http.get('/Viewmail').success(function (data){
 }); 
 
 Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
- 
+  $scope.pageClass = 'page-nyumbakumi';
   $http.get('/tenantStatement')
 	   
                       .success(function(data) {
@@ -112,7 +112,7 @@ Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
 
 
 Tenantmngt.controller('Profilectrl', function($scope,$http,$window,$upload,$rootScope) {
- 
+   $scope.pageClass = 'page-nyumbakumi';
  $scope.details={};
  $scope.mstatus=[{"Status":"Single"},{"Status":"Married"}];
   $scope.Profileupdate=false;
@@ -181,8 +181,8 @@ $scope.onFileSelect = function($files) {
 
 
 Tenantmngt.controller('nyumbakumictrl', function($scope,$http,$window,$rootScope) {
- 
-
+   $scope.pageClass = 'page-nyumbakumi';
+  
 $scope.showNeighbour=function(tenant){
 
     $http.get('/TenantInfo/',{params:{tenant_id:tenant._id}})
@@ -218,19 +218,21 @@ $scope.showNeighbour=function(tenant){
 
 
 Tenantmngt.controller('Termsctrl', function($scope,$http,$window,$rootScope) {
+	  $scope.pageClass = 'page-nyumbakumi';
 
 });
 
 Tenantmngt.controller('Aboutctrl', function($scope,$http,$window,$rootScope) {
-
+  $scope.pageClass = 'page-nyumbakumi';
 });
 
 Tenantmngt.controller('Helpctrl', function($scope,$http,$window,$rootScope) {
-
+  $scope.pageClass = 'page-nyumbakumi';
 });
 
 Tenantmngt.controller('inboxsctrl', function($scope,$http, $rootScope) {
 
+$scope.pageClass = 'page-nyumbakumi';
 
 $scope.Mail={};
 $scope.UserMail={};
@@ -320,7 +322,7 @@ $scope.ShowSentMailpopUp=function(mailinbox){
 });
 
 Tenantmngt.controller('pwdchangectrl', function($scope,$http) {
-
+  $scope.pageClass = 'page-nyumbakumi';
 $scope.btnStatus=true;
 $scope.pwdchanged=false;
 $scope.pwderror=false;

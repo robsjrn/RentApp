@@ -3,38 +3,46 @@
 					  <h3 class="panel-title">Plot Management</h3>
 				     </div>
 					   <div class="panel-body">
+				 	
                              <div class="col-md-4">
+                              <form name="userForm"  novalidate>
                                    <label for="plotname">Plot Name</label>
-								   <input type="text" class="form-control" placeholder="Plot Name" id="plotname" ng-model="LandlordPlot.Plotname">
+								   <span ng-show="showSpinner"><i class="fa fa-refresh fa-spin"></i></span>
+								   <input type="text" class="form-control" placeholder="Plot Name" id="plotname" ng-model="LandlordPlot.Plotname" ng-blur="CheckplotExists()"  ng-disabled=disableComponents required>	<div ng-show="plotExist" class="alert alert-danger"><strong>Plot Name Already in Use</strong> </div>
 								   <label for="contact">Contact Name</label>
-								   <input type="text" class="form-control" placeholder="Contact Name" id="contact" ng-model="LandlordPlot.contact.name">
+								   <input type="text" class="form-control" placeholder="Contact Name" id="contact" ng-model="LandlordPlot.contact.name" ng-disabled=disableComponents required>
 								   <label for="contactphone">Contact Phone</label>
-								   <input type="text" class="form-control" placeholder="Contact Phone" id="contactphone" ng-model="LandlordPlot.contact.phone">
+								   <input type="text" class="form-control" placeholder="Contact Phone" id="contactphone" ng-model="LandlordPlot.contact.phone" ng-disabled=disableComponents required>
+								 
+								</form>
 							 </div>
 
 
 							  <div class="col-md-4">
+                             
 							         <label for="location">Location Name</label>
-									 <select class="form-control" placeholder="Location Name"  ng-model="LandlordPlot.location" ng-options="loca.name for loca in loc">
+									 <select class="form-control" placeholder="Location Name"  ng-model="LandlordPlot.location" ng-options="loca.name for loca in loc" ng-disabled=disableComponents >
 									 </select>
 									 <label >Location Latitude</label>
-								     <input type="text" class="form-control" placeholder="Location Latitude" id="location" ng-model="LandlordPlot.location.latitude">
+								
+								     <input type="text" class="form-control" placeholder="Location Latitude" id="location" ng-model="LandlordPlot.location.latitude" ng-disabled=disableComponents title="To Enable Map View">
 									 <label >Location Longitude</label>
-									  <input type="text" class="form-control" placeholder="Location Longitude" id="location" ng-model="LandlordPlot.location.longitude">
-                                     
+									  <input type="text" class="form-control" placeholder="Location Longitude" id="location" ng-model="LandlordPlot.location.longitude" ng-disabled=disableComponents title="To Enable Map View">
+                                    
 							 </div>
                                 <div class="col-md-4">
                                        <label for="plotdesc">Description</label>
-									  <textarea class="form-control" rows="3" id="plotdesc" ng-model="LandlordPlot.description"></textarea>
+									  <textarea class="form-control" rows="3" id="plotdesc" ng-model="LandlordPlot.description" ng-disabled=disableComponents title="Brief Plot Description"></textarea>
 							     </div>
-
+                          
 					   </div>  
                       <div class="panel-footer">
-					   <button type="button" class="btn btn-info">Add</button>
-					    <button type="button" class="btn btn-warning">Clear</button>
-					    <button type="button" class="btn btn-success" ng-click="Addplot()">Save</button>
+						   <button type="button" class="btn btn-info" ng-click="Addplot()" ng-disabled=!disableComponents>Add</button>
+							<button type="button" class="btn btn-warning" ng-disabled=disableComponents>Clear</button>
+							<button type="button" class="btn btn-success" ng-disabled="userForm.$invalid" ng-click="Saveplot()" >Save</button>
 					   </div>
-
+                  </div>
+           
 </div>
                
 <div ng-show="plotSuccess" class="alert alert-success"><strong>{{msg}} !!!</strong> Plot Added Successfully </div>

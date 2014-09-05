@@ -3,7 +3,7 @@ var express = require('express'),
 var DatabaseConn=require('./ServerScripts/Database.js');
 var passport = require('passport'),LocalStrategy = require('passport-local').Strategy;
 var jwt = require('jwt-simple');
-
+var am=require('./ServerScripts/Login_Configuration.js');
 
 
 var tokenSecret='1234567890QWERTY';
@@ -39,6 +39,24 @@ var pageNotFound= function(res){
 try
  {
     app.get('/', function(req, res){res.redirect('/index.html');});
+    
+	 /*app.post('/Login',   function(req, res) {
+			console.log("The username is.." + req.body.username);
+			console.log("The password is.." + req.body.password);
+				am.manualLogin(req.body.username,req.body.password, function(err, user) {
+				 if (err)  { console.log("error occured is .." + err); res.send(401);  }
+				 if (!user) {console.log("Incorrect username" );res.send(401); } 
+				 if (user.password !=req.body.password) { console.log("Incorrect password." ); res.send(401); }
+				 else {
+				   var token = jwt.encode({username: user.identifier}, tokenSecret);
+				   console.log("the user role is "+user.role);
+					 console.log("Sending Token"+user.identifier);
+					  res.json({token : token,role:user.role});	
+						 }
+					});
+				   
+			  });    
+*/
 
      app.post('/Login',   function(req, res) {
 			console.log("The username is.." + req.body.username);
@@ -46,14 +64,21 @@ try
 				DatabaseConn.getCredentials(req.body.username, function(err, user) {
 				 if (err)  { console.log("error occured is .." + err); res.send(401);  }
 				 if (!user) {console.log("Incorrect username" );res.send(401); } 
-				 if (user.password !=req.body.password) { console.log("Incorrect password." ); res.send(401); }
+				 if (user !==null)
+				 {
+					   if (user.password !=req.body.password) { console.log("Incorrect password." ); res.send(401); }
+				 else {
 				   var token = jwt.encode({username: user.identifier}, tokenSecret);
 				   console.log("the user role is "+user.role);
 					 console.log("Sending Token"+user.identifier);
-					res.json({token : token,role:user.role});	
-							});
+					  res.json({token : token,role:user.role});	
+						 }
+					
+				 }
+				
+				});
+				   
 			  });     
-
 		//app.post('/login', passport.authenticate('local'),  function(req, res) { res.send(200);});
         app.get('/logout',ensureAuthenticated,DatabaseConn.logout);
 
@@ -131,6 +156,13 @@ try
 		  app.post('/VacantRentalListing',DatabaseConn.VacantRentalListing);
 		  app.post('/CreateLandlord',DatabaseConn.CreateLandlord);
 
+          app.post('/sendmail',DatabaseConn.sendMail);
+		  app.post('/CheckTenantidExists',DatabaseConn.CheckTenantidExists);
+          app.post('/CheckLandlordidExists',DatabaseConn.CheckLandlordidExists);
+          app.post('/CheckPlotExist',DatabaseConn.CheckPlotExist);
+		   app.post('/CheckHseNoExists',DatabaseConn.CheckHseNoExists);
+		  
+
 		app.get('/mobileTest',DatabaseConn.TestMobile);	
 		app.post('/TestMobilePost', passport.authenticate('local'),  function(req, res) { res.send(200);});	
  }
@@ -139,7 +171,7 @@ try
  {
 
     console.error(e);
-    res.json(500,{error: "Server Error"});
+   
  }
 
 

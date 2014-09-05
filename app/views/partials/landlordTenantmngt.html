@@ -9,7 +9,9 @@
 								   <label for="tenantnames">Tenant Names</label>
 								   <input type="text" class="form-control" placeholder="Tenant Names" id="tenantnames" name="tenantnames" ng-model="Tenant.name" ng-disabled=disableComponents required>
 								   <label for="idno" >Id Number</label>
-								   <input type="text" class="form-control" placeholder="Id Number" id ="idno" ng-model="Tenant._id" ng-disabled=disableComponents required>
+								   <span ng-show="showSpinner"><i class="fa fa-refresh fa-spin"></i></span>
+								   <input type="text" class="form-control" placeholder="Id Number" id ="idno" ng-model="Tenant._id" ng-blur="CheckidExists()" ng-disabled=disableComponents required>
+								   <div ng-show="userExist" class="alert alert-danger"><strong>ID Already Used</strong> </div>
 								   <label for="occp">Occupation</label>
 								   <textarea class="form-control" rows="3" id="desc" ng-model="Tenant.occupation" ng-disabled=disableComponents></textarea>
 								</div>
@@ -17,7 +19,7 @@
 							     <label for="cont">Contacts</label>
 								   <input type="text" class="form-control" placeholder="Contact" id ="cont" ng-model="Tenant.contact" ng-disabled=disableComponents required>
 								  <label for="Email">Email</label>
-								   <input type="uEmail" class="form-control" name="uEmail" placeholder="Email" id ="uEmail" ng-model="Tenant.email" ng-disabled=disableComponents><div ng-show ="tform.uEmail.$dirty && tform.uEmail.$invalid" required>Invalid :<span ng-show="tform.uEmail.$error.email">Email not Valid<span>
+								   <input type="Email" class="form-control" name="uEmail" placeholder="Email" id ="uEmail" ng-model="Tenant.email" ng-disabled=disableComponents><div ng-show ="tform.uEmail.$dirty && tform.uEmail.$invalid" required>Invalid :<span ng-show="tform.uEmail.$error.email">Email not Valid<span>
 								   <span ng-show="tform.uEmail.$error.required">Email Required<span></div>
 							      <label for="plw">Location of Work</label>
 								   <input type="text" class="form-control" placeholder="Place of Work" id ="plw" ng-model="Tenant.location" ng-disabled=disableComponents>

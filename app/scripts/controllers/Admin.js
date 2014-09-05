@@ -83,7 +83,8 @@ $scope.GrantAccess=function(user){
      $scope.Access={"_id":user.housename,
 	              "password":"test",
 	              "role":"tenant",
-	              "identifier":user._id	 
+	              "identifier":user._id	,
+		          "email":user.email
  };
 
 

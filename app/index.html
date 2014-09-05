@@ -76,6 +76,103 @@
 
 <div class="col-md-3">
   <div class="well">
+         <div class="row">  <!-- first Row -->
+            <div class="col-sm-12">
+			   <div class="form-group">
+					    	<label>Location</label>
+					    	<input type="text" class="form-control" placeholder="Where do you want to live?">
+					  	</div>
+			</div>
+
+			<div class="row">   <!-- second Row -->
+			            <div class="col-sm-6">
+							<div class="form-group">
+							    	<label>Search Location:</label>
+									
+										<select class="form-control"  >
+											<option>Anywhere</option>
+											<option>Nairobi</option>
+											<option>Nakuru</option>
+											
+										</select>
+								</div>
+                         </div>
+				<div class="col-sm-6">
+				   <div class="form-group">
+							    	<label>Property type:</label>
+										<select class="form-control">
+											<option>Any</option>
+											<option>Houses</option>
+											<option>Flats/ Apartments</option>
+											<option>Bungalows</option>
+											<option>Land</option>
+											<option>Commercial property</option>
+											<option>Other</option>
+										</select>
+					 </div>
+				</div>
+            </div>
+
+			<div class="row">						  
+							<div class="col-sm-6">	
+
+								<div class="form-group">
+							    	<label >Bedrooms:</label>
+										<select class="form-control">
+											<option>Any</option>
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5+</option>
+										</select>
+								</div>
+
+							</div>
+							<div class="col-sm-6">	
+
+								<div class="form-group">
+							    	<label>Rent or Buy</label>
+										<select class="form-control">
+											<option>Any</option>
+											<option>Rent</option>
+											<option>Buy</option>
+										</select>
+								</div>
+
+							</div>		
+							
+						</div>	
+
+                   <div class="row">						  
+							<div class="col-sm-6">	
+
+								<div class="form-group">
+							    	<label >Minimum Price</label>
+										<input type="text" class="form-control" placeholder="Min">
+								</div>
+
+							</div>
+							<div class="col-sm-6">	
+
+								<div class="form-group">
+							    	<label>Maximum Price</label>
+										<input type="text" class="form-control" placeholder="Max">
+								</div>
+
+							</div>		
+							
+						</div>	
+                <div class="row">	
+						
+						<div class="col-sm-6 pull-right" style="margin-top: 10px;">
+							<button class="btn btn-primary pull-right" type="submit">Search</button>
+							
+						</div>
+					</div>	
+
+	 </div>
+
   </div>
 </div>
   <div class="col-md-6">
@@ -87,31 +184,24 @@
 						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Search For <span class="caret"></span></button>
 						<ul class="dropdown-menu" role="menu">
 						  <li ng-repeat="item in SearchItems">
-						      <a ng-click="selectSearch(item)"href="#">{{item}}</a>
+						      <a ng-click="selectSearch(item)" href="#">{{item.name}}</a>
 						</li>					  
 						</ul>
 					  </div><!-- /btn-group -->
-					  <input ng-model="choice" type="text" class="form-control"></input>
+					  <input ng-model="choice.name" type="text" class="form-control"></input>
 					   <span class="input-group-btn">
-						  <button class="btn btn-danger" type="button">Go!</button>
+						  <button class="btn btn-danger" type="button" ng-click="SearchItem()">Go!</button>
 						</span>
 					</div><!-- /input-group -->
 				  </div><!-- /.col-lg-6 -->
-				
+			
 	    </div>
   </div><!-- /.col-lg-8 -->
 	      <div  class="col-md-3">
-				 <div class="panel panel-default">
-				  <div class="panel-heading">
-				           Search
-					 </div>
-					  <div class="panel-body">
-						 <a data-toggle="modal" data-target="#myModal">Location</a>				 
-					  </div>
-					  <div class="panel-footer">
-					      <button type="button" class="btn btn-danger ">Action</button>
-					  </div>
-					</div>
+				
+				<h4 ><span class="hidden-xs">Customer service: </span>+254 763 626283</h4>
+				<h4><small>24 hours a day, 7 days a week</small></h4>
+			
 		 </div>
 		</div><!-- /.col-lg-4 -->
 	</div>
@@ -166,9 +256,19 @@
    
 </div>
 </div>
+<hr />	
 <div class="row cont">
-<p>Contacts</p>
-<p>About Us</p>
+<footer>
+	<p class="pull-right"><a href="#">Back to top</a></p>
+	<p>
+		<a href="index.html">Home</a> |
+		<a href="index.html">About</a> |
+		<a href="index.html">Typography</a> |
+		<a href="terms.html">Terms and Conditions</a> |
+		<a href="contact.html">Contact Us</a><br />
+		All content &copy; NanaTec 2014 | 
+	</p>
+</footer>
 
 </div>
 
@@ -202,27 +302,6 @@
 
 <!-- Modal -->
 
-<div data-ng-controller="MainCtrl" class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Search Location</h4>
-      </div>
-      <div class="modal-body">
-         <ul>
-                <li ng-repeat="item in locations">
-                    <a ng-click="selectLocation(item)">{{ item }}</a>
-                </li>
-            </ul>
-         
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 </body>

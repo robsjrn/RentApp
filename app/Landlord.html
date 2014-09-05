@@ -20,6 +20,7 @@
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/landlord.css">
+	<link rel="stylesheet" href="styles/ngProgress.css">
     <!-- endbuild -->
   </head>
   <body ng-app="LandlordmngtApp">
@@ -119,24 +120,29 @@
  
 <div class="container">
 
+    <ul class="nav nav-tabs tab-bar">
+		 <li> <a href="#!/Dashboard">Dashboard</a>    </li>
+		 <li><a href="#!/plotmngt">Plots</a></li>
+		<li><a href="#!/housemngt">House</a></li>
+		<li><a href="#!/tenantsmngt">Tenants</a></li>														
+		<li><a href="#!/rent">Check-in</a></li>
+		<li><a href="#!/vacate">Check-out</a></li>						
+        <li><a href="#!/trxnmngt">Transactions</a></li>
+		<li><a href="#!/expensemngt">Expenses</a></li>
+		<li><a href="#!/RentPosting">Post Rent</a></li>
+		<!--	<li><a href="#!/ReportsPortal">Transaction Reports</a></li>-->	
+		<!--		<li><a href="#!/summarymngt">Chart Summary</a></li>-->	
+		<li><a href="#!/documentmngt">Documents</a></li>
+		<li><a href="#!/inbox">Inbox</a></li>
+   </ul>
 
-  <ol class="breadcrumb">
-								<li> <a href="#!/Dashboard">Dashboard</a>    </li>
-								<li><a href="#!/plotmngt">Plots</a></li>
-								<li><a href="#!/housemngt">House</a></li>
-						       <li><a href="#!/tenantsmngt">Tenants</a></li>														
-								<li><a href="#!/rent">Check-in</a></li>
-								<li><a href="#!/vacate">Check-out</a></li>						
-								<li><a href="#!/trxnmngt">Transactions</a></li>
-								<li><a href="#!/expensemngt">Expenses</a></li>
-								<li><a href="#!/RentPosting">Post Rent</a></li>
-							 <!--	<li><a href="#!/ReportsPortal">Transaction Reports</a></li>-->	
-							 <!--		<li><a href="#!/summarymngt">Chart Summary</a></li>-->	
-								<li><a href="#!/documentmngt">Documents</a></li>
-								<li><a href="#!/inbox">Inbox</a></li>
-</ol>
+
 
          <div class="row">
+
+		           <div class="col-md-8">     
+						 <div data-ng-view ></div>
+					 </div>
   	        
 			<div class="col-md-4">
 			     <div class="row">
@@ -176,9 +182,7 @@
 </div>
 
   
-					 <div class="col-md-8">     
-						 <div data-ng-view ></div>
-					 </div>
+					
 
 
 
@@ -222,6 +226,7 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         	<script src="scripts/controllers/LandlordMngt.js"></script>
+			<script src="scripts/libs/ngProgress.min.js"></script>
         <!-- endbuild -->
  
 

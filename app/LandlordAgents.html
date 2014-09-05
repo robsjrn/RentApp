@@ -133,28 +133,36 @@
 								<h4 class="label label-primary">Landlord Registration</h4>
 							 </div>
 							  <div class="panel-body">
+						<form name="userForm"  novalidate>
 							    <label for="idnumber">ID Number</label>
-								<input type="text" class="form-control" placeholder="Identification Document" id="idnumber" ng-model="landlord.id" ng-disabled=disableComponents>
+								<span ng-show="showSpinner"><i class="fa fa-refresh fa-spin"></i></span>	
+								<input type="text" class="form-control" placeholder="Identification Document" name="idnumber" ng-blur="CheckidExists()" ng-model="landlord.id" 
+								 ng-disabled=disableComponents required >
+                              	<div ng-show="userExist" class="alert alert-danger"><strong>ID Already Used</strong> </div>
+											
 								<label for="Names">Names</label>
-								<input type="text" class="form-control" placeholder="Names" id="Names" ng-model="landlord.names" ng-disabled=disableComponents>
+								<input type="text" class="form-control" placeholder="Names" id="Names" ng-model="landlord.names" ng-disabled=disableComponents required>
 								<label for="Occupation">Occupation</label>
 								<input type="text" class="form-control" placeholder="Occupation" id="Occupation" ng-model="landlord.occupation" ng-disabled=disableComponents>
-								<label for="Home">Email</label>
-								<input type="text" class="form-control" placeholder="Email" id="email" ng-model="landlord.email" ng-disabled=disableComponents>
+								<label for="Email">Email</label>
+								<input type="email" name="email" class="form-control" ng-model="landlord.email" ng-disabled=disableComponents>
+								<p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block alert alert-danger">Enter a valid email.</p>
 								<label for="Home">Contacts</label>
-								<input type="text" class="form-control" placeholder="Contacts" id="Home" ng-model="landlord.contact" ng-disabled=disableComponents>
-											 
+								<input type="text" class="form-control" placeholder="Contacts" id="Home" ng-model="landlord.contact" ng-disabled=disableComponents required>
+						</form>				 
 							  </div>
 							   <div class="panel-footer">
-								 <button type="button" class="btn btn-primary " ng-click="SaveLandlord()">Save</button>
-								 <button type="button" class="btn btn-danger ">Clear</button>
-							 </div>
+									 <button type="button" class="btn btn-warning" ng-click="AddLandlord()">Add</button>
+									<button type="button" class="btn btn-primary " ng-click="SaveLandlord()" ng-disabled="userForm.$invalid"  >Save</button>
+							<button type="button" class="btn btn-danger" ng-click="Clear()" ng-disabled=disableComponents>Clear</button>
+									 </div>
 				
 							</div>
 							<div ng-show="ErrorStatus" class="alert alert-danger"><strong>Database Error</strong> </div>  
 							<div ng-show="SuccessStatus" class="alert alert-success"><strong>Landlord</strong> Successfully Saved</div>
-						</div> 
-						</div>  
+						</div>
+					
+					</div>  
                </div>  
 	     </SCRIPT> 
 

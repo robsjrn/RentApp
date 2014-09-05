@@ -25,4 +25,16 @@ var LoginMngt= angular.module('RentmngtAppLogin', ['ngResource'] );
 							 });	
       };
 
+
+      $scope.forgotPassword=function(){
+             $http.post('/sendmail',$scope.user)
+				 .success(function(data) {
+                         console.log("oogh Yea");
+					 })
+				.error(function(data) {
+                       console.log("oogh Snap");
+						  })
+	  }
+
+
 	   });

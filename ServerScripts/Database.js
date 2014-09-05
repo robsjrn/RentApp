@@ -1,8 +1,12 @@
 var mongo = require('mongodb');
+var mail=require('../ServerScripts/mail.js');
 var fs = require('fs');
 var util     = require('util')
 var path     = require('path');
 var async =require('async');
+
+var Db = require('mongodb').Db,
+ Server = require('mongodb').Server;
 
 var MongoClient = require('mongodb').MongoClient;
 var db;
@@ -10,23 +14,46 @@ BSON = mongo.BSONPure;
 
 
 // Initialize connection once
-//When using db locally
-/*
+// When using db locally
+
 MongoClient.connect("mongodb://localhost:27017/RentalDB", function(err, database) {
+  if(err) throw err;
+  
+  db=database;
+  console.log("Connected to Database..");
+   db.collection('Configuration',{strict:true}, function(err, collection) {
+   if (err) { 
+	   console.error('Configuration Collection Does not Exists: %s', err);
+	   configureDB();
+	   }
+   else{console.log("Everything Configured DB up..."); }
+      });
+
+   db.on('close', function(err) {
+    console.error('Connection to Mongo lost: %s', err);
+   });
+});
+
+
+/*
+MongoClient.connect("mongodb://robert:sebastian123!@proximus.modulusmongo.net:27017/h8oSorad", function(err, database) {
   if(err) throw err;
   db = database;
   console.log("Rental Database is Up ..");
 });
 */
 
-//When using db somewhere else
 
-MongoClient.connect("mongodb://robert:sebastian123!@proximus.modulusmongo.net:27017/h8oSorad", function(err, database) {
-  if(err) throw err;
-  db = database;
-  console.log("Rental Database is Up ..");
+exports.getCredentials=function(userid,fn){	
+ db.collection('Credential', function(err, collection) { 
+     collection.findOne({"_id":userid},function(err, item) {
+	   if(item){return fn(null,item);
+	   }else{return fn(null,null);}
 });
-
+	  
+ 
+});		
+};
 
 
 
@@ -34,7 +61,11 @@ exports.CreateTenant = function(req, res) {
 db.collection('Tenant', function(err, collection) {
 collection.insert(req.body, function(err, item) {
    if (err) {res.json(500,{error: "database Error"});}
-   else{res.json(200,{success: "Succesfull"});	}
+   else{
+	   
+	   res.json(200,{success: "Succesfull"});	
+	   
+	   }
 });
 });
 };
@@ -114,10 +145,6 @@ exports.listofVacantHouse = function(req, res) {
 });
 });
 };
-
-
-
-
 
 
 
@@ -265,21 +292,6 @@ updateHouse(houseupdate,details.number,function(ok,status){
 
 
 
-
-
-
-exports.getCredentials=function(userid,fn){
- db.collection('Credential', function(err, collection) {
-  collection.findOne({'_id':userid}, function(err, user) {
-	 console.log("Getting User Credentials.." + userid);
-	  if(user){ return fn(null, user); }
-	  else{ console.log("Error" + err); return fn(null, null); }
-});
-});
-};
-
-
-
 exports.LandLordDetails = function(req, res) {
     db.collection('Landlord', function(err, collection) {
      collection.findOne({"_id":req.user.identifier},function(err, item) {
@@ -308,7 +320,15 @@ exports.GrantAccess = function(req, res) {
  db.collection('Credential', function(err, collection) {
   collection.insert(req.body, function(err, item) {
    if (err) {res.json(500,{error: "database Error"});}
-   else{updateAccessStatus(req.body.identifier,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
+   else{updateAccessStatus(req.body.identifier,function(ok,status) {
+	   if (ok){
+		   mail.sendWelcomeMail(req.body.email,function(err,ok){
+			    if (err){console.log("Welcome email not sent ..."); }
+				else{console.log("Welcome email sent ...");}
+		   });
+		   res.json(200,{success: "Succesfull"});
+	   
+	   }	
    });}
 });
 });
@@ -866,18 +886,12 @@ var month =req.body.Month;
 
 });
 });
-
-
-
-
-
-
-
-
   }; 
 
 
- function doPosting(req1,callback){
+
+
+function doPosting(req1,callback){
 
 	// console.log("Posting Transaction.. for "+req1.body.tenantid);
 
@@ -974,10 +988,12 @@ exports.VacantRentalListing=function(req, res) {
 var min=parseInt(req.body.Amount.Min);
 var max=parseInt(req.body.Amount.Max);
 
-//  console.log("Min Amount" + min);
+  console.log("Min Amount" + min);
  // console.log("Max Amount" + max);
 db.collection('House', function(err, collection) {
  collection.find({$and:[{"status":"vacant"},req.body.querry,{"amount":{$gte:min,$lte:max}}]}).toArray( function(err, item){
+   
+    console.log("Checking rental listing ....");
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
     });
@@ -1005,3 +1021,150 @@ exports.LoginRedirect=function(req, res) {
 	 }	
 
 };
+
+exports.findEmail=function(id, hseno,callback) {
+	
+	if (id!=null)
+	{
+	
+		 console.log("Searching for Email using id..");
+		 	db.collection('Credential', function(err, collection) {
+			  collection.findOne({"identifier":id},function(err, item){
+			  if(item){;callback(null,item)}
+			  else  {callback(null,null);}
+	});
+	});
+	}
+	else if (hseno!=null )
+	{
+			db.collection('Credential', function(err, collection) {
+			  collection.findOne({"_id":hseno},function(err, item){
+			  if(item){callback(null,item)}
+			  else  {callback(null,null);}
+
+				});
+				});
+				}
+
+  
+};
+
+exports.CheckTenantidExists=function(req, res) {
+	console.log("Cheking id .."+req.body.idnumber)
+ db.collection('Tenant', function(err, collection) {
+  collection.findOne({"_id":req.body.idnumber},function(err, item){
+  if(item){ res.json(200,{exist: true}); }
+   else { res.json(200,{exist: false}); };
+  if (err) {res.json(500,{error: "database Error"});}
+});
+});
+};
+
+exports.CheckPlotExist=function(req, res) {
+	console.log("Cheking plotname .."+req.body.plotname)
+ db.collection('Landlord', function(err, collection) {
+  collection.findOne({"plots.Plotname":req.body.plotname},function(err, item){
+  if(item){ res.json(200,{exist: true}); }
+   else { res.json(200,{exist: false}); };
+  if (err) {res.json(500,{error: "database Error"});}
+});
+});
+};
+
+exports.CheckHseNoExists=function(req, res) {
+	console.log("Cheking Houseno.."+req.body.hseno)
+ db.collection('House', function(err, collection) {
+  collection.findOne({"number":req.body.hseno},function(err, item){
+  if(item){ res.json(200,{exist: true}); }
+   else { res.json(200,{exist: false}); };
+  if (err) {res.json(500,{error: "database Error"});}
+});
+});
+};
+
+
+
+
+
+exports.CheckLandlordidExists=function(req, res) {
+ db.collection('Landlord', function(err, collection) {
+  collection.findOne({"id":req.body.idnumber},function(err, item){
+  if(item){ res.json(200,{exist: true}); }
+   else { res.json(200,{exist: false}); };
+  if (err) {res.json(500,{error: "database Error"});}
+});
+});
+};
+
+
+
+exports.sendMail=function(req, res) {
+
+	mail.sendMail(req,res);
+}
+
+function configureDB(){
+	var rec={
+        "_id" : "RentalConfiguration",
+        "expenseType" : [{"_id" : "1","name" : "Deposit Refund" },
+                {"_id" : "2","name" : "Damages"},
+                {"_id" : "3","name" : "Materials" },
+                {"_id" : "4","name" : "Others" }
+                         ],
+        "hsetype" : [
+                {
+                        "name" : "One Bedroom"
+                },
+                {
+                        "name" : "Two Bedroom"
+                },
+                {
+                        "name" : "BedSitter"
+                },
+                {
+                        "name" : "Three Bedroom"
+                }
+        ],
+        "paymentmethod" : [
+                {
+                        "_id" : "1",
+                        "name" : "Cash"
+                },
+                {
+                        "_id" : "2",
+                        "name" : "Mpesa"
+                },
+                {
+                        "_id" : "3",
+                        "name" : "Bank Deposit"
+                }
+        ],
+        "transactiontype" : [
+                {
+                        "_id" : "1",
+                        "name" : "Rent Payment"
+                },
+                {
+                        "_id" : "2",
+                        "name" : "Deposit Payment"
+                },
+                {
+                        "_id" : "3",
+                        "name" : "Arrears Payment"
+                },
+                {
+                        "_id" : "3",
+                        "name" : "Damage Payment"
+                },
+                {
+                        "name" : "Posting"
+                }
+        ]
+};
+	db.collection('Configuration', function(err, collection) {
+ collection.insert(rec, function(err, item) {
+   if (err) {console.log("Error Configuring db...");}
+   else{console.log("Database Configured...");}
+  });
+  });
+}; 

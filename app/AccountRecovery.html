@@ -21,33 +21,29 @@
     <!-- endbuild -->
   </head>
 
- <body ng-app="RentmngtAppLogin" background="images/Assets/index_background.jpg">
+ <body ng-app="RentmngtAppRecoverpwd" background="images/Assets/index_background.jpg">
+ <div data-ng-controller="recoverPwd" class="wrapper">
 
-<div data-ng-controller="loginCtrl" class="wrapper">
-
-    <form class="form-signin">
-	     <h3 class="form-signin-heading"> <span class="fa fa-sign-in">Login</h3>
+ 
+	  <form class="form-signin">
+	     <h3 class="form-signin-heading"> Forgot your Password?</h3>
 	  <a class="pull-right" href="/index.html"><span class="glyphicon glyphicon-home"></span><strong>   
 	   Home</strong></a>
-      <input type="text" class="form-control" name="username" placeholder="Identification No." required="" ng-model="user.username" autofocus="" />
-      <input type="password" class="form-control" name="password" placeholder="Password" ng-model="user.password" required=""/>      
-      <label class="checkbox">
-        <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
-      </label>
-      <button ng-disabled="login.$invalid" ng-click="Userlogin()" class="btn btn-lg btn-primary btn-block" type="submit">Login</button> 
+	   <input type="text" class="form-control" name="idnumber" placeholder="Identification No." required="" ng-model="user.id" autofocus="" />
+	   <hr>
+	   <h4>OR</h4>
+	   <hr>
+      <input type="text" class="form-control" name="housenumber" placeholder="House No." required="" ng-model="user.hseno" autofocus="" />
+
 	  <hr>
-      <p> By Signing in, you confirm that you've reviewed & accepted the <a href="/Terms.html">Terms & Conditions.</a></p>
-       <a  href="/AccountRecovery.html">Forgot Password</a>
-    </form>
+	  <button ng-disabled="login.$invalid"  ng-click="RecoverPassword()" class="btn btn-lg btn-warning btn-block" type="submit">Recover </button> 
+	  </form>
+         
+     <div ng-show="pwdRecovered" class="alert alert-danger"><strong>Password Sent to Email you Provided</strong></div>
+	 <div ng-show="ErrorpwdRecovered" class="alert alert-danger"><strong>Error Occurred Kindly Try Later....</strong> </div> </div> 
 
-	<div ng-show="invalidcredential" class="alert alert-danger"><strong>Invalid Credential !!!</strong> </div>  
-           
-  </div>
-
-  
-
-
-  <!--[if lt IE 9]>
+</div>
+   <!--[if lt IE 9]>
     <script src="public/es5-shim/es5-shim.js"></script>
     <script src="public/json3/lib/json3.min.js"></script>
     <![endif]-->
@@ -64,7 +60,7 @@
     <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        	<script src="scripts/controllers/login.js"></script>
+        	<script src="scripts/controllers/recoverPwd.js"></script>
         <!-- endbuild -->
    </body>
 </html>
