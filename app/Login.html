@@ -27,6 +27,7 @@
 
     <form class="form-signin">
 	     <h3 class="form-signin-heading"> <span class="fa fa-sign-in">Login</h3>
+		 <span ng-show="showSpinner"><i class="fa fa-refresh fa-spin"></i></span>
 	  <a class="pull-right" href="/index.html"><span class="glyphicon glyphicon-home"></span><strong>   
 	   Home</strong></a>
       <input type="text" class="form-control" name="username" placeholder="Identification No." required="" ng-model="user.username" autofocus="" />

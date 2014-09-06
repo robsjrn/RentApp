@@ -1,7 +1,6 @@
 {
   "name": "rentmngtapp",
   "version": "0.0.0",
-  
   "dependencies": {
     "express": "3.x",
     "mongodb": "latest",
@@ -9,10 +8,12 @@
     "passport-local": "latest",
     "async": "latest",
     "jwt-simple": "latest",
-    "crypto":"latest",
-    "moment":"latest",
-    "ejs":"latest",
-    "emailjs":"latest"
+    "crypto": "latest",
+    "moment": "latest",
+    "ejs": "latest",
+    "emailjs": "latest",
+    "twilio": "~1.7.0",
+    "string": "~2.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

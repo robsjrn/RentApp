@@ -3,9 +3,9 @@
 var LoginMngt= angular.module('RentmngtAppLogin', ['ngResource'] ); 
 
  LoginMngt.controller('loginCtrl', function ($scope,$http,$window) {
-   
+    $scope.showSpinner=false;
        $scope.Userlogin=function(){
-    
+            $scope.showSpinner=true;
                 $http.post('/Login',$scope.user)
 				 		 .success(function(data) {
 								     $scope.invalidcredential=false;
@@ -21,6 +21,7 @@ var LoginMngt= angular.module('RentmngtAppLogin', ['ngResource'] );
 							 }) 
 						 .error(function(data) {
 							   $scope.invalidcredential=true;
+							    $scope.showSpinner=false;
 							    delete $window.sessionStorage.token;
 							 });	
       };
@@ -29,10 +30,8 @@ var LoginMngt= angular.module('RentmngtAppLogin', ['ngResource'] );
       $scope.forgotPassword=function(){
              $http.post('/sendmail',$scope.user)
 				 .success(function(data) {
-                         console.log("oogh Yea");
 					 })
 				.error(function(data) {
-                       console.log("oogh Snap");
 						  })
 	  }
 

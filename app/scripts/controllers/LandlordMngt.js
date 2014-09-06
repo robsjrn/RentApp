@@ -149,7 +149,6 @@ $scope.CheckidExists=function(){
 				    $scope.tenantcreated=false;
 					$scope.tenanterror=false;
                     $scope.disableComponents=false;
-					$scope.Tenant.hsestatus=0;
                     $scope.Tenant.Owner={};
 					$scope.Tenant.Owner.id=$rootScope.landlordDetails._id;
 					$scope.Tenant.Owner.name=$rootScope.landlordDetails.names;
@@ -160,6 +159,7 @@ $scope.CheckidExists=function(){
                   $scope.Tenant="";
 				  $scope.userExist=false; 
 				  $scope.Tenant.Owner={};
+				    
 					$scope.Tenant.Owner.id=$rootScope.landlordDetails._id;
 					$scope.Tenant.Owner.name=$rootScope.landlordDetails.names;
 		   };
@@ -167,6 +167,7 @@ $scope.CheckidExists=function(){
 		   
               $scope.saveTenant=function(){
 				   $scope.disableComponents=true;
+				   $scope.Tenant.hsestatus=0;
 				   ngProgress.start();
                    $http.post('/createTenant', $scope.Tenant)
 						 .success(function(data) {

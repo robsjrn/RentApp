@@ -67,12 +67,28 @@ $locationProvider.hashPrefix("!");
 
 
 
+Adminmngt.controller('Mainctrl', function ($scope,$http,$window) {
+  
+    $scope.Logout=function(){
+            $http.get('/logout')
+              .success(function(data) {
+			    	delete $window.sessionStorage.token;
+					$window.location.href = "/";
+					}) 
+				 .error(function(data) {
+				   delete $window.sessionStorage.token;
+					$window.location.href = "/";
+					});	
 
+       } 
+	   	});
 
 Adminmngt.controller('Usersctrl', function ($scope,$http) {
 
 	$scope.AccessGranted=false;
 	$scope.Acesserror=false;
+
+	
   
  $http.get('/AccessRequest').success(function (data){$scope.users=data });
 
@@ -160,7 +176,10 @@ $scope.SaveExpenseType=function(){
 
 	});
 
+	
+Adminmngt.controller('Dashboardctrl', function ($scope,$http) {
 
+});
 Adminmngt.controller('CreateLandlordctrl', function ($scope,$http) {
 
 	$scope.SaveLandlord=function(){

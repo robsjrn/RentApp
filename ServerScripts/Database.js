@@ -1,5 +1,6 @@
 var mongo = require('mongodb');
 var mail=require('../ServerScripts/mail.js');
+var sms=require('../Sms/Sendsms.js');
 var fs = require('fs');
 var util     = require('util')
 var path     = require('path');
@@ -326,6 +327,17 @@ exports.GrantAccess = function(req, res) {
 			    if (err){console.log("Welcome email not sent ..."); }
 				else{console.log("Welcome email sent ...");}
 		   });
+           getTenantDetails(req.body.identifier,function(no,tenant){
+                  if (no)
+                  {
+                       var msg ="Hi "+ tenant.name +"Welcome to Nanatec visit our site at http://104.131.30.17:4000/ and login using your idnumebr and password as idnumber.. enjoy "
+					   sms.SendWelcomeSMS(tenant.contact,msg,function(ok,status){
+			           if (ok){console.log("Welcome sms not sent ..."); }
+				         else{console.log("Welcome sms sent ...");}
+		                  });
+                  }
+		   });
+		   
 		   res.json(200,{success: "Succesfull"});
 	   
 	   }	
@@ -1096,6 +1108,17 @@ exports.CheckLandlordidExists=function(req, res) {
 });
 };
 
+
+var getTenantDetails=function(tid,callback){
+
+ db.collection('Tenant', function(err, collection) {
+  collection.findOne({"_id":tid},function(err, item){
+  if(item){ callback( "ok",item); }
+   else { callback( null,null); };
+  if (err) {callback( null,null);}
+});
+});
+}
 
 
 exports.sendMail=function(req, res) {
