@@ -1,6 +1,10 @@
+          <h5>Transaction Management</h5>         
 <div class="panel panel-default">
 					<div class="panel-heading">
-					  <h3 class="panel-title">Transaction Management <label class="pull-right">Bal c/f {{crit.balance-Transaction.amount}}</label></h3>
+					 <button type="button" class="btn btn-info" ng-click="AddPayment()" ng-disabled=!disableComponents >Add</button>
+					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents ng-click="ClearPayment()">Clear</button>
+					    
+					   <label class="pull-right">Bal c/f {{crit.balance-Transaction.amount}}</label>
 					 
 					  </div>
 					   <div class="panel-body">
@@ -9,7 +13,7 @@
 									<div class="input-group">
 									  <span class="input-group-addon">Plot</span>
 									  <select class="form-control"  ng-model="Tenant.plot"  ng-options="c.Plotname for c in landlordplots"	ng-disabled=disableComponents>  
-											   </select>
+								    </select>
 									  <span class="input-group-btn">
 										<button class="btn btn-danger" type="button" ng-click="GetDetails()" ng-disabled=disableComponents >Get!</button>
 									  </span>
@@ -52,13 +56,13 @@
 							   <input type="text" class="form-control" placeholder="Receipt Number" id="rcpt" ng-model="Transaction.receiptno" ng-disabled=disableComponents> 
 
 						 </div>
+						
                             
 					   </div>  
-                      <div class="panel-footer">
-					   <button type="button" class="btn btn-info" ng-click="AddPayment()" ng-disabled=!disableComponents >Add</button>
-					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents ng-click="ClearPayment()">Clear</button>
-					    <button type="button" class="btn btn-success" ng-click="postPayment()" ng-disabled=disableComponents >Save</button>
-					   </div>
+					    <div class="panel-footer">
+						 <button type="button" class="btn btn-success" ng-click="postPayment()" ng-disabled=disableComponents >Save</button>
+						 </div>
+                    
 
 </div>
 

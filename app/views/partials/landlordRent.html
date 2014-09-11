@@ -1,6 +1,8 @@
+<h5>House Rental Management...Check In</h5>
 <div class="panel panel-default">
        <div class="panel-heading">
-			<h3 class="panel-title">House Rental Management...Check In</h3>
+			<button type="button" class="btn btn-primary" ng-click="Add()" ng-disabled=!disableComponents>Add</button>
+         
 		</div>
 
 
@@ -44,13 +46,14 @@
         
               
 		 </tabset>
+
+		
  </div>
 
-
-    <div class="panel-footer">
-	         <button type="button" class="btn btn-primary" ng-click="Add()" ng-disabled=!disableComponents>Add</button>
-         	<button type="button" class="btn btn-success" ng-click="save()" ng-disabled=disableComponents>Save</button>
-	</div>
+        <div class="panel-footer">
+		  	<button type="button" class="btn btn-success" ng-click="save()" ng-disabled=disableComponents>Save</button>
+		  </div>
+   
 		        
 	        <div ng-show="housetaken" class="alert alert-success"><strong>{{msg}} !!!</strong> Tenant {{Tenant.name.name}} Successfully Occupied House Number {{House.housename.number}}</div>
 			<div ng-show="housetakenerror" class="alert alert-danger"><strong>Error Occurred !!!</strong> {{msg}}</div>		

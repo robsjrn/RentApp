@@ -1,6 +1,8 @@
+<h5>Plot Management</h5>
 <div class="panel panel-default">
 					<div class="panel-heading">
-					  <h3 class="panel-title">Plot Management</h3>
+					   <button type="button" class="btn btn-info" ng-click="Addplot()" ng-disabled=!disableComponents>Add</button>
+							<button type="button" class="btn btn-warning" ng-disabled=disableComponents>Clear</button>
 				     </div>
 					   <div class="panel-body">
 				 	
@@ -35,13 +37,13 @@
 									  <textarea class="form-control" rows="3" id="plotdesc" ng-model="LandlordPlot.description" ng-disabled=disableComponents title="Brief Plot Description"></textarea>
 							     </div>
                           
-					   </div>  
-                      <div class="panel-footer">
-						   <button type="button" class="btn btn-info" ng-click="Addplot()" ng-disabled=!disableComponents>Add</button>
-							<button type="button" class="btn btn-warning" ng-disabled=disableComponents>Clear</button>
-							<button type="button" class="btn btn-success" ng-disabled="userForm.$invalid" ng-click="Saveplot()" >Save</button>
 					   </div>
+					   <div class="panel-footer">
+					<button type="button" class="btn btn-success" ng-disabled="userForm.$invalid" ng-click="Saveplot()" >Save</button>
+						 </div>
+                     
                   </div>
+				   
            
 </div>
                

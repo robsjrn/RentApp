@@ -59,18 +59,16 @@ try
 */
 
      app.post('/Login',   function(req, res) {
-			console.log("The username is.." + req.body.username);
-			console.log("The password is.." + req.body.password);
 				DatabaseConn.getCredentials(req.body.username, function(err, user) {
-				 if (err)  { console.log("error occured is .." + err); res.send(401);  }
-				 if (!user) {console.log("Incorrect username" );res.send(401); } 
+				 if (err)  {  res.send(401);  }
+				 if (!user) {res.send(401); } 
 				 if (user !==null)
 				 {
-					   if (user.password !=req.body.password) { console.log("Incorrect password." ); res.send(401); }
+					   if (user.password !=req.body.password) {  res.send(401); }
 				 else {
 				   var token = jwt.encode({username: user.identifier}, tokenSecret);
-				   console.log("the user role is "+user.role);
-					 console.log("Sending Token"+user.identifier);
+				  // console.log("the user role is "+user.role);
+					// console.log("Sending Token"+user.identifier);
 					  res.json({token : token,role:user.role});	
 						 }
 					
@@ -137,14 +135,18 @@ try
 
         app.get('/TenantInfo',ensureAuthenticated,DatabaseConn.TenantInfo);
         app.post('/updateTenantData',ensureAuthenticated,DatabaseConn.updateTenantData); 
-        app.post('/MonthlyRentPosting',ensureAuthenticated,DatabaseConn.MonthlyRentPosting); 
+        app.post('/MonthlyRentPosting',ensureAuthenticated,DatabaseConn.MonthlyRentPosting);
+
+		app.post('/SaveDocument',ensureAuthenticated,DatabaseConn.Documents);
+		app.get('/GetDocument',ensureAuthenticated,DatabaseConn.GetDocument);
+
 
  //Reports
 		app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
 	    app.post('/TenantPaidReport',ensureAuthenticated,DatabaseConn.TenantPaidReport); 
         app.post('/TenantUnpaidReport',ensureAuthenticated,DatabaseConn.TenantUnpaidReport); 
 
-		 app.post('/TenantListReport',ensureAuthenticated,DatabaseConn.TenantListReport); 
+		  app.post('/TenantListReport',ensureAuthenticated,DatabaseConn.TenantListReport); 
 		  app.post('/OccupiedHouseReport',ensureAuthenticated,DatabaseConn.OccupiedHouseReport); 
 		  app.post('/vacantHouseReport',ensureAuthenticated,DatabaseConn.vacantHouseReport); 
 

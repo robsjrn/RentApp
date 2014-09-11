@@ -19,6 +19,7 @@
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/Tenant.css">
+	<link rel="stylesheet" href="styles/ngProgress.css">
     <!-- endbuild -->
   </head>
 
@@ -66,15 +67,18 @@
       </div>
         </header>
 
-<ol class="breadcrumb">
-  <li><a href="#!/statements">Statement </a></li>
-  <li><a href="#!/inbox">Notifications </a></li>
 
-   <li class="dropdown pull-right">
+
+    <ul class="nav nav-tabs tab-bar">
+      <li><a href="#!/statements">Statement </a></li>
+      <li><a href="#!/inbox">Notifications </a></li>
+	  <li><a href="#!/Document">Documents </a></li>
+       <li ><a href="#!/vacateNotice"><i class="fa fa-edit fa-fw"></i>Vacate Notice</a></li>
+       <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-messages">
+                       <ul class="dropdown-menu dropdown-messages">
                         <li ng-repeat="message in emails.messages  | limitTo :4" >
                             <a href="#">
                                 <div>
@@ -93,11 +97,13 @@
                                 <strong><a href="#!/inbox">Read All Messages</a></strong>
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        </li>
-</ol>
+                       </li>
+    				 </ul>
+				</li>
+    </ul>
 <div class="container">
       <div class="row">
-  	        <div class="col-md-8">
+	  	        <div class="col-md-8">
 			 	
                    <div class="{{ pageClass }}" data-ng-view >
 			     </div> 
@@ -150,17 +156,6 @@
        </div>
 	
 
-<modal-dialog show='dialogShown' dialog-title='Tenant Agreement' width='500px'>
-  <p>{{doc.txt}} </p>
-   <hr>
-    <button type="button" class="btn btn-info" ng-click="AgreeTerms()" >Agree</button>
-    <button type="button" class="btn btn-warning" ng-click="CancelTerms()" >DisAgree</button>		 			  
-</modal-dialog>
-
-
-
-	
-	 
 			
    
 
@@ -183,8 +178,8 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="public/jquery/jquery.js"></script>
+	<script src="public/angular/angular.js"></script>
 	<script src="public/ng-file-upload-shim/angular-file-upload-shim.min.js"></script> 
-    <script src="public/angular/angular.js"></script>
 	<script src="public/ng-file-upload/angular-file-upload.min.js"></script>
     <script src="public/bootstrap/dist/js/bootstrap.js"></script>
     <script src="public/angular-resource/angular-resource.js"></script>
@@ -200,8 +195,20 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/controllers/TenantMngt.js"></script>
+		<script src="scripts/libs/ngProgress.min.js"></script>
         <!-- endbuild -->
-			
+	<script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Tenant Agreement Doc</h3>
+        </div>
+        <div class="modal-body">
+          <p>{{doc.txt}} </p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!/Document" class="btn btn-primary" ng-click="ok()">OK..Show me</a>
+            <button class="btn btn-warning" ng-click="cancel()">No..Later</button>
+        </div>
+    </script>		
 			
   </body>
 </html>

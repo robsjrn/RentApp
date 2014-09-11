@@ -1,10 +1,7 @@
 <ul class="nav nav-tabs">
   <li class="active"><a href="#received" data-toggle="tab">Received Notifications</a></li>
   <li><a href="#sent" data-toggle="tab">Sent Notifications</a></li>
-  <li class="pull-right"><button class="btn btn-primary btn-sm" ng-click="ComposeMailpopup()" >
-				  <span class="glyphicon glyphicon-pencil"> Compose</span> 
-				</button>
-  </li>
+  <li class="pull-right"><a href="#compose" data-toggle="tab"><span class="glyphicon glyphicon-pencil"> Compose</span> </a></li>
 </ul>
 
 
@@ -34,6 +31,29 @@
    </div> 
    </div>
   </div>
+
+
+<div class="tab-pane" id="compose">
+<div class="panel panel-default">
+ <div class="panel-body">
+  
+      <div class="col-xs-12" >
+		<div class="table-responsive">
+			<select class="form-control"  ng-model="Mail.to"  ng-options="c.name for c in MailTo"	>  
+			</select>
+             <br/>
+	         <input class="form-control" type="text" ng-model="Mail.subject"  placeholder="Subject" ><br/>
+			 
+			 <br/>
+             <textarea  class="form-control" ng-model="Mail.msg" rows="10"></textarea>
+
+        <hr>
+        <button type="button" class="btn btn-primary" ng-click="SendMail()">Send</button>
+		</div>
+	</div>
+   </div> 
+  </div>
+ </div>
 
   <div class="tab-pane" id="sent">
 	 <div class="tab-pane active" id="received">
@@ -65,22 +85,6 @@
 
 </div>
 
-
- 
-<!--Compose  Modal -->
-<modal-dialog show='ComposeMail' dialog-title='Compose Mail' width='300px'>
-            <select class="form-control"  ng-model="Mail.to"  ng-options="c.name for c in MailTo"	>  
-			</select>
-             <br/>
-	         <input class="form-control" type="text" ng-model="Mail.subject"  placeholder="Subject" ><br/>
-			 
-			 <br/>
-             <textarea  class="form-control" ng-model="Mail.msg" rows="10"></textarea>
-
-<hr>
-        <button type="button" class="btn btn-default" ng-click="CloseComposeMailpopup()">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="SendMail()">Send</button>
-</modal-dialog>
 
 
 

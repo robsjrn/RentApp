@@ -1,9 +1,11 @@
 <div>
-
-
+ <h5 >House Management</h5>
  <div class="panel panel-default">
 					<div class="panel-heading">
-					  <h3 class="panel-title">House Management</h3>
+					 <button type="button" class="btn btn-info" ng-click="addHouse()" ng-disabled=!disableComponents>Add</button>
+				
+					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents>Clear</button>
+					  
 				   </div>
 					   <div class="panel-body">
                 
@@ -32,15 +34,10 @@
 							</form>
 						
                        </div>
- 
-                       <div class="panel-footer">
-					   <button type="button" class="btn btn-success" ng-click="addHouse()" ng-disabled=!disableComponents>Add</button>
-				
-					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents>Clear</button>
-					    <button type="button" class="btn btn-success" ng-disabled="userForm.$invalid" ng-click="saveHouse()" ng-disabled=disableComponents>Save</button>
-					   </div>
-
-
+            <div class="panel-footer">
+		<button type="button" class="btn btn-success" ng-disabled="userForm.$invalid" ng-click="saveHouse()" ng-disabled=disableComponents>Save</button>
+						 </div>
+                   
 					      </div>
             <div ng-show="housecreated" class="alert alert-success"><strong>{{msg}} !!!</strong> House Successfully Maintained</div>
 			<div ng-show="houseterror" class="alert alert-success"><strong>Error Occurred !!!</strong> {{msg}}</div>

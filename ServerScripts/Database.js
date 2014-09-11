@@ -21,18 +21,25 @@ MongoClient.connect("mongodb://localhost:27017/RentalDB", function(err, database
   if(err) throw err;
   
   db=database;
-  console.log("Connected to Database..");
-   db.collection('Configuration',{strict:true}, function(err, collection) {
-   if (err) { 
-	   console.error('Configuration Collection Does not Exists: %s', err);
-	   configureDB();
+  
+  
+	 db.collection('counters',{strict:true}, function(err, collection) {
+      if (err) { 
+		   console.error('counters Collection Does not Exists: %s', err);
+		   configureCounters();
 	   }
-   else{console.log("Everything Configured DB up..."); }
-      });
+	   });
+	   db.collection('Configuration',{strict:true}, function(err, collection) {
+	   if (err) { 
+		   console.error('Configuration Collection Does not Exists: %s', err);
+		   configureDB();
+		   }
+	   else{
+		   console.log("Everything Configured DB up..."); 
+		       }
 
-   db.on('close', function(err) {
-    console.error('Connection to Mongo lost: %s', err);
-   });
+		  });
+
 });
 
 
@@ -227,15 +234,35 @@ exports.postTransaction = function(req, res) {
 };
 
 var postTran=function(req,callback){
- console.log("Inserting Transaction for " +req.body.tenantid);
-db.collection('Transaction', function(err, collection) {
-collection.save(req.body,{safe:true}, function(err, item) {
-   if (err) {return callback(false,err);}
-   else{console.log("Transaction Inserted proceeding to Update bal");
-       updateTenantBal(req.body.tranAmount,req.body.tenantid,function(ok,status) {if (ok){console.log("Successfull Updated Tenant Balance");return callback(true,null); }	
-   });}
-});
-});
+
+if (req.body.receiptno==null)
+{  //no receipt so get receipt
+	getNextSequenceValue("transactionid",function(err,receiptnumber){
+	 if(receiptnumber){
+       req.body.receiptno=receiptnumber;
+		db.collection('Transaction', function(err, collection) {
+		collection.save(req.body,{safe:true}, function(err, item) {
+		   if (err) {return callback(false,err);}
+		   else{
+			   updateTenantBal(req.body.tranAmount,req.body.tenantid,function(ok,status) {if (ok){return callback(true,null); }	
+		   });}
+		   });
+		   });
+	     }
+      });
+}else{
+
+	db.collection('Transaction', function(err, collection) {
+		collection.save(req.body,{safe:true}, function(err, item) {
+		   if (err) {return callback(false,err);}
+		   else{
+			   updateTenantBal(req.body.tranAmount,req.body.tenantid,function(ok,status) {if (ok){return callback(true,null); }	
+	 });}
+	});
+	});
+
+}
+ 
 };
 
 var updateTenantBal=function (tenantbal,tenantid ,callback){
@@ -317,7 +344,7 @@ exports.Accessrequest = function(req, res) {
 };
 
 exports.GrantAccess = function(req, res) {
-	console.log("Giving Acces to Sytem to .." + req.body.identifier);
+	//console.log("Giving Acces to Sytem to .." + req.body.identifier);
  db.collection('Credential', function(err, collection) {
   collection.insert(req.body, function(err, item) {
    if (err) {res.json(500,{error: "database Error"});}
@@ -330,7 +357,7 @@ exports.GrantAccess = function(req, res) {
            getTenantDetails(req.body.identifier,function(no,tenant){
                   if (no)
                   {
-                       var msg ="Hi "+ tenant.name +"Welcome to Nanatec visit our site at http://104.131.30.17:4000/ and login using your idnumebr and password as idnumber.. enjoy "
+                       var msg ="Hi "+tenant.name +" Welcome to Nanatec visit our site at http://104.131.30.17:4000/ use your Id number and .. enjoy "
 					   sms.SendWelcomeSMS(tenant.contact,msg,function(ok,status){
 			           if (ok){console.log("Welcome sms not sent ..."); }
 				         else{console.log("Welcome sms sent ...");}
@@ -431,7 +458,19 @@ var GrantLandlordAccess=function (CredentialDet ,callback){
    db.collection('Credential', function(err, collection) {
     collection.insert(CredentialDet,{safe:true}, function(err, item) {
      if(err){return callback(false,err);}
-	  else{ return callback(true,null);}
+	  else{
+		  // send welcome sms to landlord
+		  getLandlordDetails(CredentialDet.identifier,function(no,landlord){
+                  if (no)
+                  {
+		               var msg ="Hi "+landlord.names +" Welcome to Nana use Your id as your Username and Password Change after Login.. enjoy "
+					   sms.LandlordWelcmeSMS(landlord.contact,msg,function(ok,status){
+			           if (ok){console.log("Landlord Welcome sms not sent ..."); }
+				         else{console.log("Landlord Welcome sms sent ...");}
+		                  });
+				  }
+				  });
+		  return callback(true,null);}
       });
    });
 };
@@ -462,7 +501,7 @@ exports.UpdateTenantAgreement=function (req, res){
 
 exports.updateTenantData=function (req, res){
    db.collection('Tenant', function(err, collection) {
-    collection.update({"_id" : req.user.identifier},{$set:{"Details" : req.body.details}}, { upsert: true }, function(err, item) {
+    collection.update({"_id" : req.user.identifier},{$set:{"Details" : req.body.details}}, {}, function(err, item) {
    if (err) {console.log(err);res.json(500,{error: "database Error"});}
    else{res.json(200);}
 });
@@ -485,15 +524,15 @@ exports.TestMobilePost=function(req, res) {
  //console.log("Params is " +req.params); 
 console.log("Request Body id " +req.body.id );
  console.log("Received Request" );
-	 res.json(200,{status:"OOgh Yeag"});
+	 res.json(200,{status:"well done"});
 };
 
 
 exports.TenantInfo=function(req, res) {
 
  db.collection('Tenant', function(err, collection) {
-  collection.findOne({"_id":req.query.tenant_id},{Details:1},function(err, item){
-  if(item){res.send(item); console.log(item);}
+  collection.findOne({"_id":req.query.tenant_id},{Details:1,name:1,email:1,contact:1,occupation:1},function(err, item){
+  if(item){res.send(item); }
   if (err) {res.json(500,{error: "database Error"});}
 
 });
@@ -541,8 +580,6 @@ var UpdateSenderInbox=function (id,SenderDet,callback){
 
 
 exports.Viewmail=function(req, res) {
-
-console.log("User details is "+req.user.identifier)
  db.collection('Inbox', function(err, collection) {
   collection.findOne({"_id":req.user.identifier},function(err, item){
   if(item){res.send(item);}
@@ -560,7 +597,7 @@ console.log("User details is "+req.user.identifier)
 
 exports.LandlordTenants=function(req, res) {
  db.collection('Tenant', function(err, collection) {
- collection.find({"Owner.id":req.user.identifier},{name:1}).toArray( function(err, item){
+ collection.find({"Landlordid":req.user.identifier},{name:1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -618,7 +655,6 @@ exports.Findneighbours = function(req, res) {
  db.collection('Tenant', function(err, collection) {
  collection.find({$and: [ {"plot.Plotname":req.query.plot_name},{"hsestatus" : 1}]},{name:1,housename:1,_id:1}).toArray( function(err, item){
    if (err) {
-	   //console.log(err);
    res.json(500,{error: "database Error"});}
    else{res.send(item);}
 });
@@ -905,8 +941,6 @@ var month =req.body.Month;
 
 function doPosting(req1,callback){
 
-	// console.log("Posting Transaction.. for "+req1.body.tenantid);
-
      postTran(req1,function(ok,err)
 			      {
 				    if(ok){callback(false,null);}
@@ -1109,6 +1143,30 @@ exports.CheckLandlordidExists=function(req, res) {
 };
 
 
+exports.Documents=function(req, res) {
+ db.collection('Documents', function(err, collection) {
+collection.insert(req.body, function(err, item) {
+     if(err){res.json(500,{error: "database Error"});}
+	  else{ res.json(200,{Success: "Success"});}
+      });
+   }); 
+};
+
+
+exports.GetDocument=function(req, res) {
+ db.collection('Documents', function(err, collection) {
+ collection.find({"plotName": req.query.plot_name}).toArray( function(err, item){
+  if(item){//console.log(item);
+	  res.send(item);
+	  }
+  if (err) {res.json(500,{error: "database Error"});}
+
+});
+});
+};
+
+
+
 var getTenantDetails=function(tid,callback){
 
  db.collection('Tenant', function(err, collection) {
@@ -1120,12 +1178,49 @@ var getTenantDetails=function(tid,callback){
 });
 }
 
+var getLandlordDetails=function(lid,callback){
+
+ db.collection('Landlord', function(err, collection) {
+  collection.findOne({"id":lid},function(err, item){
+  if(item){ callback( "ok",item); }
+   else { callback( null,null); };
+  if (err) {callback( null,null);}
+});
+});
+}
+
 
 exports.sendMail=function(req, res) {
-
 	mail.sendMail(req,res);
 }
 
+var getNextSequenceValue=function (sequenceName,callback){
+
+        db.collection('counters', function(err, collection) {
+		  collection.findAndModify( {"_id": sequenceName },{},{$inc:{"sequence_value":1}},{new:true, upsert:true}, function(err, item) {
+		   if (err) {
+			   console.log("Error getting Sequence db..."+err);
+		       callback(null,null);
+		   }
+		   else{
+			   console.log("The sequence is .."+item.sequence_value );
+			   callback(null,item.sequence_value);
+			   }
+		  });
+		  });  
+};
+
+ 
+
+function configureCounters(){
+ var rec={"_id":"transactionid","sequence_value":0};
+  db.collection('counters', function(err, collection) {
+  collection.insert(rec, function(err, item) {
+   if (err) {console.log("Error in Counter Configuratio");}
+   else{console.log("Counter Collection Created..");}
+  });
+  });
+};
 function configureDB(){
 	var rec={
         "_id" : "RentalConfiguration",
@@ -1187,7 +1282,7 @@ function configureDB(){
 	db.collection('Configuration', function(err, collection) {
  collection.insert(rec, function(err, item) {
    if (err) {console.log("Error Configuring db...");}
-   else{console.log("Database Configured...");}
+   else{console.log("Configuration collection Created...");}
   });
   });
 }; 

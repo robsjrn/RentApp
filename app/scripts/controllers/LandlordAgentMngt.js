@@ -75,10 +75,14 @@ $scope.SaveLandlord=function(){
          var data={"update":{ "LandlordDet":$scope.landlord, "CredentialDet":{"_id":$scope.landlord.id,"password":$scope.landlord.id,"role":"landlord","identifier" : $scope.landlord.id,"email":$scope.landlord.email} }};
              	$http.post('/CreateLandlord',data)
 				 		 .success(function(data) {
-								   $scope.SuccessStatus=true;							   
+								   $scope.SuccessStatus=true;
+								   $scope.disableComponents=true;
+								   $scope.landlord.id="";
 							 }) 
 						 .error(function(data) {
 							   $scope.ErrorStatus=true;
+							   $scope.disableComponents=true;
+							     $scope.landlord.id="";
 							 });	
 	}
 	

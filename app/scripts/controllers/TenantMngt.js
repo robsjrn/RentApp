@@ -1,4 +1,4 @@
-var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute','ui.bootstrap','ngAnimate' ,'angularFileUpload'] ); 
+var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute','ui.bootstrap','ngAnimate' ,'angularFileUpload','ngSanitize','ngProgress'] ); 
 
 		Tenantmngt.factory('authInterceptor', function ($rootScope, $q, $window) {
 		  return {
@@ -26,56 +26,81 @@ var Tenantmngt= angular.module('TenantmngtApp', ['ngResource','ngRoute','ui.boot
 		});
 
 
+
 Tenantmngt.config(function ($httpProvider) {
   $httpProvider.interceptors.push('authInterceptor');
 });
 
 
+var ModalInstanceCtrl = function ($scope, $modalInstance, doc) {
+
+  $scope.doc = doc;
 
 
+  $scope.ok = function () {
+	   $modalInstance.dismiss('cancel');
+        console.log("Closing ..")
+  };
 
-Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope,$window) {
-    $scope.pageClass = 'page-nyumbakumi';
-  $scope.doc={"txt":"I {{TenantData.name}} Agree to Take House {{TenantData.housename}} And Maintain it Well"};
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+};
 
+Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope,$window,$modal,ngProgress) {
+    		
+  $scope.pageClass = 'page-nyumbakumi';
+  ngProgress.start();
   $http.get('/tenantDetails').success(function (data){
 
 
 	  $rootScope.Tenant=data
+      $scope.TenantData={};
+            if (typeof $rootScope.Tenant.Details!="undefined")
+			{
+					  //tenant has details already setup
+			} else{
+
+				$rootScope.Tenant.Details={};
+				console.log("I have not setup details yet..");
+			}	 
+
 	  $scope.TenantData= $rootScope.Tenant; 
-	//  console.log($scope.TenantData.Details.imageUrl);
-	  $scope.dialogShown=$scope.TenantData.AgreementStatus;
+	
+  ngProgress.complete();
+            if ($scope.TenantData.AgreementStatus)
+            {
+				 $scope.doc1={"txt":"Welcome to Your New House Before you Proceed you Need to Agree With the Landlord Terms and Condition"};
+				var modalInstance = $modal.open({
+					  templateUrl: 'myModalContent.html',
+					  controller: ModalInstanceCtrl,
+					  resolve: {
+						doc: function () {
+						  return $scope.doc1;
+						}
+					  }
+					});
+
+					modalInstance.result.then(function (selectedItem) {
+					  $scope.selected = selectedItem;
+					}, function () {
+					  console.info('Modal dismissed at: ' + new Date());
+					});
+				 
+	
+            }
+
+
 	  });
 
    $scope.emails = {};
    
-$http.get('/Viewmail').success(function (data){
+$http.get('/Viewmail',{ cache: true }).success(function (data){
 	$scope.UserMail=data;
 	$scope.emails.messages=$scope.UserMail.Received;
 });
 
 
-
-
-  $scope.CancelTerms=function(){
-	   
-	   alert("You need to Agree to the Terms");
-
-  }
-
-  $scope.AgreeTerms=function(){
-            
-			 $http.get('/UpdateTenantAgreement')
-	   
-                      .success(function(data) {
-							 $scope.dialogShown=false;
-							 }) 
-						 .error(function(data) {
-
-							 });	
-
-			
-  }
   
   $scope.Logout=function(){
 	 
@@ -93,14 +118,17 @@ $http.get('/Viewmail').success(function (data){
 
 }); 
 
-Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
+Tenantmngt.controller('statementsctrl', function($scope,$http,$window,ngProgress) {
   $scope.pageClass = 'page-nyumbakumi';
-  $http.get('/tenantStatement')
+  ngProgress.start();
+  $http.get('/tenantStatement',{ cache: true })
 	   
                       .success(function(data) {
 							   $scope.statement=data;
+							   ngProgress.complete();
 							 }) 
 						 .error(function(data) {
+								 ngProgress.complete();
 							 });	
 
 
@@ -111,29 +139,34 @@ Tenantmngt.controller('statementsctrl', function($scope,$http,$window) {
 
 
 
-Tenantmngt.controller('Profilectrl', function($scope,$http,$window,$upload,$rootScope) {
+Tenantmngt.controller('Profilectrl', function($scope,$http,$window,$upload,$rootScope,ngProgress) {
    $scope.pageClass = 'page-nyumbakumi';
- $scope.details={};
- $scope.mstatus=[{"Status":"Single"},{"Status":"Married"}];
+   $scope.det={};
+ $scope.det.details=$rootScope.Tenant.Details;
   $scope.Profileupdate=false;
-
- $scope.details.Marital=$scope.mstatus[0];
+$scope.btnsave=true;
 $scope.showChild=false;
  $scope.showme=function(status){
 	
       $scope.showChild=status;
  };
+ $scope.add=function(){
+	 $scope.btnsave=false;
+ };
 
 $scope.updateUserDetails=function(){
-
- 
+	 $scope.btnsave=true;
+	ngProgress.start();
+  $scope.det.details.imageUrl= $rootScope.Tenant.Details.imageUrl
  $http.post('/updateTenantData',$scope.det )
 		   .success(function(data) {
               $scope.Profileupdate=true;
-		    
+		       ngProgress.complete();
+			   $scope.btnsave=true;
 		     }) 
 			.error(function(data) {
-
+				 ngProgress.complete();
+                 $scope.btnsave=true;
 				});
 	
 
@@ -145,6 +178,7 @@ $scope.uploadFiles= function($files) {
 
 $scope.onFileSelect = function($files) {
     //$files: an array of files selected, each file has name, size, and type.
+	ngProgress.start();
     for (var i = 0; i < $files.length; i++) {
       var file = $files[i];
       $scope.upload = $upload.upload({
@@ -162,13 +196,14 @@ $scope.onFileSelect = function($files) {
        // console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
-
+       ngProgress.complete();
 		$rootScope.Tenant.Details.imageUrl=data.imageUrl;
  
       });
       //.error(...)
       //.then(success, error, progress); 
       //.xhr(function(xhr){xhr.upload.addEventListener(...)})// access and attach any event listener to XMLHttpRequest.
+	  ngProgress.complete();
     }
     /* alternative way of uploading, send the file binary with the file's content-type.
        Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed. 
@@ -180,57 +215,101 @@ $scope.onFileSelect = function($files) {
 });
 
 
-Tenantmngt.controller('nyumbakumictrl', function($scope,$http,$window,$rootScope) {
+Tenantmngt.controller('nyumbakumictrl', function($scope,$http,$window,$rootScope,ngProgress) {
    $scope.pageClass = 'page-nyumbakumi';
-  
-$scope.showNeighbour=function(tenant){
-
-    $http.get('/TenantInfo/',{params:{tenant_id:tenant._id}})
-	   
+          ngProgress.start();
+				 $http.get('/Findneighbours',{params:{plot_name:$rootScope.Tenant.plot.Plotname}},{ cache: true })   
                       .success(function(data) {
-						//	console.log(data);
-								$scope.details=data;
-									 // if ($scope.details.Details.view=="undefined"){$scope.details.Details.view=false;}
-									 try{
-								           $scope.isInfoPublic=$scope.details.Details.view;
-									 }
-								 catch(e){$scope.isInfoPublic=false;}
-							 }) 
-						 .error(function(data) {
-					        	//console.log(data)
-							 });	
-
-
-
-	$scope.viewTenantDetails=true;
-
-}
-
-				 $http.get('/Findneighbours',{params:{plot_name:$rootScope.Tenant.plot.Plotname}})   
-                      .success(function(data) {
-					      //   console.log(data);
 							    $scope.Neighbours=data;
+								ngProgress.complete();
 							 }) 
 						 .error(function(data) {
+								 ngProgress.complete();
 							 });	
  });
 
 
 
-Tenantmngt.controller('Termsctrl', function($scope,$http,$window,$rootScope) {
+Tenantmngt.controller('vacateNoticectrl', function($scope,$http,$window,$rootScope,ngProgress) {
 	  $scope.pageClass = 'page-nyumbakumi';
 
 });
 
-Tenantmngt.controller('Aboutctrl', function($scope,$http,$window,$rootScope) {
+Tenantmngt.controller('Termsctrl', function($scope,$http,$window,$rootScope,ngProgress) {
+	  $scope.pageClass = 'page-nyumbakumi';
+
+});
+
+Tenantmngt.controller('Aboutctrl', function($scope,$http,$window,$rootScope,ngProgress) {
   $scope.pageClass = 'page-nyumbakumi';
 });
 
-Tenantmngt.controller('Helpctrl', function($scope,$http,$window,$rootScope) {
+Tenantmngt.controller('Helpctrl', function($scope,$http,$window,$rootScope,ngProgress) {
   $scope.pageClass = 'page-nyumbakumi';
 });
 
-Tenantmngt.controller('inboxsctrl', function($scope,$http, $rootScope) {
+Tenantmngt.controller('ViewDetailsctrl', function($scope,$http,$window,$rootScope,ngProgress,$routeParams) {
+  $scope.pageClass = 'page-nyumbakumi';
+      
+  ngProgress.start();
+  $http.get('/TenantInfo/',{params:{tenant_id:$routeParams.neighbourid}},{ cache: true })
+                .success(function(data) {
+								$scope.tenant=data;
+								  ngProgress.complete();
+									
+							 }) 
+						 .error(function(data) {
+								  ngProgress.complete();
+							 });	
+	$scope.viewTenantDetails=true;
+
+
+});
+
+
+
+Tenantmngt.controller('Documentctrl', function($scope,$http,$window,$rootScope,ngProgress) {
+ $scope.btndisabled=$rootScope.Tenant.AgreementStatus;
+ ngProgress.start();
+  $http.get('/GetDocument',{params:{plot_name:$rootScope.Tenant.plot.Plotname}},{ cache: true })
+	  .success(function (data){
+	  $scope.documents=data;
+	    ngProgress.complete();
+	  })
+   .error(function(data) {
+	 ngProgress.complete();
+   });
+
+
+$scope.showdoc=false;
+
+  $scope.CancelTerms=function(){
+	   
+	   alert("You need to Agree to the Terms");
+
+  }
+  $scope.AgreeTerms=function(){ 
+	  ngProgress.start();
+	  $scope.btndisabled=false;
+			 $http.get('/UpdateTenantAgreement')
+	                  .success(function(data) {
+						 ngProgress.complete();
+							 }) 
+						 .error(function(data) {
+						ngProgress.complete();
+							 });			
+  }
+           
+ $scope.selectdocType=function(item){
+	 $scope.showdoc=true;
+	 $scope.docname=item.DocumentType;
+	 $scope.docDate=item.DocumentDate;
+     $scope.Document = item.DocumentText;
+    };
+				  
+});
+
+Tenantmngt.controller('inboxsctrl', function($scope,$http, $rootScope,ngProgress) {
 
 $scope.pageClass = 'page-nyumbakumi';
 
@@ -239,7 +318,6 @@ $scope.UserMail={};
 $scope.Sentemails={};
 
  $scope.viewMail=false;
- $scope.ComposeMail=false;
  $scope.viewSentMail=false;
 
  $scope.MailTo=[{"name":"Landlord"}];
@@ -266,19 +344,12 @@ $scope.ShowSentMailpopUp=function(mailinbox){
         $scope.viewMail=false;
  }
 
- $scope.ComposeMailpopup=function(){
-        $scope.ComposeMail=true;
- }
 
-  $scope.CloseComposeMailpopup=function(){
-       $scope.ComposeMail=false;
- }
-
-  $http.get('/Viewmail').success(function (data){$scope.UserMail=data; $scope.emails = $scope.UserMail.Received; $scope.Sentemails= $scope.UserMail.Sent;});
+  $http.get('/Viewmail',{ cache: true }).success(function (data){$scope.UserMail=data; $scope.emails = $scope.UserMail.Received; $scope.Sentemails= $scope.UserMail.Sent;});
 
 
  $scope.SendMail=function(){
-
+ngProgress.start();
     var mail ={"update":{
 		"senderDetails":{         
 		 "to": $rootScope.Tenant.Owner.name,
@@ -300,13 +371,14 @@ $scope.ShowSentMailpopUp=function(mailinbox){
                   $http.post('/Mail',mail )
 				 		 .success(function(data) {
 								   $scope.SuccessStatus=true;
-								   $scope.ComposeMail=false;
-								   $scope.Sentemails.push(mail.update.senderDetails );							 
+								   $scope.Sentemails.push(mail.update.senderDetails );	
+								   ngProgress.complete();
 								 
 							 }) 
 						 .error(function(data) {
 							   $scope.ErrorStatus=true;
 							  // console.log("Erororro" + data);
+							  ngProgress.complete();
 							 });	
 
 	 
@@ -321,27 +393,32 @@ $scope.ShowSentMailpopUp=function(mailinbox){
 
 });
 
-Tenantmngt.controller('pwdchangectrl', function($scope,$http) {
+Tenantmngt.controller('pwdchangectrl', function($scope,$http,ngProgress) {
   $scope.pageClass = 'page-nyumbakumi';
 $scope.btnStatus=true;
 $scope.pwdchanged=false;
 $scope.pwderror=false;
 $scope.SubmitPwd=function(){
+ngProgress.start();
     $http.post('/ChangePwd',$scope.pwd )
 		   .success(function(data) {
 		  //  console.log(data.success)
 		    $scope.pwdchanged=true;
+			ngProgress.complete();
 		     }) 
 			.error(function(data) {
-				 $scope.pwderror=true;	 
+				 $scope.pwderror=true;
+				 ngProgress.complete();
 				});	
 }
 
 
 $scope.CheckPwd=function(){
+	ngProgress.start();
 	$scope.busy=true;
      $http.post('/CheckPwd',$scope.pwd )
 		   .success(function(data) {
+		 ngProgress.complete();
 		     if (data.success)
 		     {
 				 $scope.busy=false; 
@@ -355,6 +432,7 @@ $scope.CheckPwd=function(){
 			.error(function(data) {
 					  $scope.invalidcredential=true;
 					  $scope.msg=data.error
+						  ngProgress.complete();
 				});	
 }
      
@@ -424,14 +502,27 @@ $locationProvider.hashPrefix("!");
 .when('/about', {
      templateUrl: 'views/partials/About.html',   
      controller: 'Aboutctrl'
-        }) 	
+        }) 
+.when('/Document', {
+     templateUrl: 'views/partials/Document.html',   
+     controller: 'Documentctrl'
+        }) 			
 			
 .when('/help', {
      templateUrl: 'views/partials/Help.html',   
      controller: 'Helpctrl'
         }) 
 
-  
+  .when('/viewDetails/:neighbourid', {
+     templateUrl: 'views/partials/ViewTanantProfile.html',   
+     controller: 'ViewDetailsctrl'
+        }) 
+ .when('/vacateNotice', {
+     templateUrl: 'views/partials/vacateNotice.html',   
+     controller: 'vacateNoticectrl'
+        }) 
+			
+
 		.otherwise({
          redirectTo: '/statements'
       });
