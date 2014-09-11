@@ -581,7 +581,7 @@ var UpdateSenderInbox=function (id,SenderDet,callback){
 
 exports.Viewmail=function(req, res) {
  db.collection('Inbox', function(err, collection) {
-  collection.findOne({"_id":req.user.identifier},function(err, item){
+  collection.find({"_id":req.user.identifier}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -1148,6 +1148,34 @@ exports.Documents=function(req, res) {
 collection.insert(req.body, function(err, item) {
      if(err){res.json(500,{error: "database Error"});}
 	  else{ res.json(200,{Success: "Success"});}
+      });
+   }); 
+};
+
+exports.VacateNotice=function(req, res) {
+ db.collection('VacateNotice', function(err, collection) {
+collection.insert(req.body, function(err, item) {
+     if(err){res.json(500,{error: "database Error"});}
+	  else{ res.json(200,{Success: "Success"});}
+      });
+   }); 
+};
+
+
+exports.GetLandlordNotice=function(req, res) {
+ db.collection('VacateNotice', function(err, collection) {
+collection.find({$and: [ {"Landlordid":req.user.identifier},{"LandlordProcessed" : 0}]}).toArray(function(err, item) {
+     if(err){res.json(500,{error: "database Error"});}
+	  else{ res.send(item);}
+      });
+   }); 
+};
+
+exports.LandlordNoticeUpdate=function(req, res) {
+ db.collection('VacateNotice', function(err, collection) {
+ collection.update({"Tenantid" : req.body.tenantid},{$set:{"LandlordProcessed":1}},{safe:true},function(err, item) {
+     if(err){res.json(500,{error: "database Error"});}
+	  else{ res.json(200,{success: "success"});}
       });
    }); 
 };

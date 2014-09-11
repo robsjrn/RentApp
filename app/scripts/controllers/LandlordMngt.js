@@ -88,6 +88,50 @@ $http.get('/Viewmail',{ cache: true })
 });
 
 
+landlordtmngt.controller('Noticectrl', function($scope,$rootScope,$http,ngProgress) {
+       $scope.noticeSent=false;
+		$scope.noticeSentError=false;
+		$scope.btndisable=false;
+$scope.noticelist=[];
+
+		$http.get(' /GetLandlordNotice')
+			.success(function (data){
+					$scope.noticelist=data;
+				   //  $scope.notice=$scope.noticelist[0];
+				ngProgress.complete();
+			   })
+		   .error(function(data) {
+			   ngProgress.complete();
+		   });
+
+ $scope.selectnotice=function(not){
+	 $scope.noticeSent=false;
+	 $scope.noticeSentError=false;
+      $scope.notice=not;
+ };
+
+  $scope.updateNotificationStatus=function(index){
+     
+$scope.btndisable=true;
+	  
+		    var dt={"tenantid":$scope.notice.Tenantid};
+          $http.post('/LandlordNoticeUpdate',dt)
+				 		 .success(function(data) {
+			                    $scope.btndisable=false;
+			                    $scope.noticeSent=true;
+								$scope.noticelist.splice(index, 1);
+								$scope.notice="";
+							 }) 
+						 .error(function(data) {
+								    $scope.btndisable=false;
+								 	$scope.noticeSentError=true;
+							   
+			});
+ };
+   
+
+});
+
 
 landlordtmngt.controller('editTenantCtrl', function modalController ($scope, $modalInstance, Tenant) {
     $scope.Tenant = Tenant;
@@ -867,7 +911,7 @@ $scope.Tenant={};
 
    $scope.GetDetails=function(){
  ngProgress.start();
-     $http.get('/bookedtenantList/'+$scope.Tenant.plot.name,{ cache: true }).success(function (data){$scope.tenantdata=data;ngProgress.complete(); }); 
+     $http.get('/bookedtenantList/'+$scope.Tenant.plot.Plotname,{ cache: true }).success(function (data){$scope.tenantdata=data;ngProgress.complete(); }); 
 }
 
 
@@ -1460,7 +1504,13 @@ landlordtmngt.config(function($routeProvider,$locationProvider)	{
   .when('/VacantHouseReport', {
      templateUrl: 'views/partials/ReportsViews/VacantHouseReport.html',   
      controller: 'VacantHousectrl'
-        })			
+        })
+.when('/Notice', {
+     templateUrl: 'views/partials/LandlordNotice.html',   
+     controller: 'Noticectrl'
+        })
+			
+		
 		
 	.otherwise({
          redirectTo: '/plotmngt'

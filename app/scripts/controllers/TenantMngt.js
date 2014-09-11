@@ -70,7 +70,7 @@ Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope,$windo
   ngProgress.complete();
             if ($scope.TenantData.AgreementStatus)
             {
-				 $scope.doc1={"txt":"Welcome to Your New House Before you Proceed you Need to Agree With the Landlord Terms and Condition"};
+				 $scope.doc1={"txt":"Dear "+$rootScope.Tenant.name+",Welcome to your new home. Please take a few moments to read the following information about living here"};
 				var modalInstance = $modal.open({
 					  templateUrl: 'myModalContent.html',
 					  controller: ModalInstanceCtrl,
@@ -232,6 +232,48 @@ Tenantmngt.controller('nyumbakumictrl', function($scope,$http,$window,$rootScope
 
 Tenantmngt.controller('vacateNoticectrl', function($scope,$http,$window,$rootScope,ngProgress) {
 	  $scope.pageClass = 'page-nyumbakumi';
+	  $scope.notice={};
+	   $scope.btndisable=false;
+	   $scope.noticeSent=false;
+		$scope.noticeSentError=false;
+	  $scope.notice.text="<br>"+$rootScope.Tenant.name+"<br><br>"+new Date().toISOString()+"<br>"+
+		                 "<br><strong>RE :Notice Of Intent to Vacate</strong><br><br>Dear Landlord <p><br>" + 
+	                     "This is a Notice that i will Vacate the Premise Located at <u>"+
+		                   $rootScope.Tenant.plot.Plotname + " </p>"  +
+		                 "<p>This letter constitutes my  notice as required by our rental agreement and the Landlord/Tenant Act</p>"+
+		                  "<br>Sincerely,"+
+		                  "<br>"+$rootScope.Tenant.name;
+	 $scope.sendNotice =function(){
+
+		    if (typeof $scope.notice.period!="undefined")
+			{         
+				       $scope.notice.processed=0;
+                       $scope.notice.plot=$rootScope.Tenant.plot.Plotname;
+                       $scope.notice.hse=$rootScope.Tenant.housename;
+                       $scope.notice.Tenantid=$rootScope.Tenant._id;
+					   $scope.notice.Landlordid=$rootScope.Tenant.Landlordid;
+					   $scope.notice.LandlordProcessed=0;
+                       $scope.notice.loc=$rootScope.Tenant.location;
+
+
+					   $http.post('/VacateNotice',$scope.notice )
+						   .success(function(data) {
+							   ngProgress.complete();
+							   $scope.btndisable=false;
+							    $scope.noticeSent=true;
+	
+							 }) 
+							.error(function(data) {
+								 ngProgress.complete();
+								 $scope.btndisable=true;
+								 	$scope.noticeSentError=true;
+								});
+			} else{
+
+				alert("Kindly Select The Notice Period");
+			}
+
+	 }
 
 });
 

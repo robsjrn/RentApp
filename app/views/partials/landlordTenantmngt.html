@@ -9,10 +9,7 @@
                       <div class="btn-group">
 					    <button type="button" class="btn btn-warning" ng-disabled=disableComponents ng-click="clearTenant()">Clear</button>
                      </div>
-				      <div class="btn-group">
-						<button type="button" class="btn btn-success" ng-click="saveTenant()" ng-disabled="tform.$invalid" >Save</button>
-					</div>
-                     
+				                         
                    </div>
  </div>
   <div class="panel-body">
@@ -45,7 +42,11 @@
 							   </div>
                   </div>
          
-
+                <div class="panel-footer">
+                       <div class="btn-group">
+						<button type="button" class="btn btn-success" ng-click="saveTenant()" ng-disabled="tform.$invalid" >Save</button>
+					</div>
+                  </div>
                </div>
             <div ng-show="tenantcreated" class="alert alert-success"><strong>{{msg}} !!!</strong> Tenant Successfully Saved</div>
 			<div ng-show="tenanterror" class="alert alert-warning"><strong>Error Occurred !!!</strong> {{msg}}</div>

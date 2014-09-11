@@ -141,6 +141,11 @@ try
 		app.get('/GetDocument',ensureAuthenticated,DatabaseConn.GetDocument);
 
 
+		app.post('/VacateNotice',ensureAuthenticated,DatabaseConn.VacateNotice);
+		app.get('/GetLandlordNotice',ensureAuthenticated,DatabaseConn.GetLandlordNotice);
+		app.post('/LandlordNoticeUpdate',ensureAuthenticated,DatabaseConn.LandlordNoticeUpdate);
+
+
  //Reports
 		app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
 	    app.post('/TenantPaidReport',ensureAuthenticated,DatabaseConn.TenantPaidReport); 
