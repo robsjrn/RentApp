@@ -3,18 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "express": "3.x",
-    "mongodb": "latest",
-    "passport": "latest",
-    "passport-local": "latest",
     "async": "latest",
-    "jwt-simple": "latest",
+    "bcrypt": "^0.8.0",
     "crypto": "latest",
-    "moment": "latest",
     "ejs": "latest",
     "emailjs": "latest",
-    "twilio": "~1.7.0",
-    "string": "~2.0.0"
+    "express": "3.x",
+    "jwt-simple": "latest",
+    "moment": "latest",
+    "mongodb": "latest",
+    "nodemailer": "^1.3.0",
+    "passport": "latest",
+    "passport-local": "latest",
+    "string": "~2.0.0",
+    "twilio": "~1.7.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

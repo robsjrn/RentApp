@@ -5,6 +5,7 @@ var fs = require('fs');
 var util     = require('util')
 var path     = require('path');
 var async =require('async');
+var bcrypt = require('bcrypt');
 
 var Db = require('mongodb').Db,
  Server = require('mongodb').Server;
@@ -52,10 +53,14 @@ MongoClient.connect("mongodb://robert:sebastian123!@proximus.modulusmongo.net:27
 */
 
 
-exports.getCredentials=function(userid,fn){	
- db.collection('Credential', function(err, collection) { 
-     collection.findOne({"_id":userid},function(err, item) {
-	   if(item){return fn(null,item);
+exports.getCredentials=function(userid,pwd,fn){	
+ db.collection('user', function(err, collection) { 
+     collection.findOne({$and: [ {"_id":userid},{"AccessStatus" : 1}]},function(err, item) {
+	   if(item){
+		 bcrypt.compare(pwd, item.password, function(err, res) {
+              if (res) { return fn(null,item); }
+			  else{return fn(null,null);}
+         });  	   
 	   }else{return fn(null,null);}
 });
 	  
@@ -66,7 +71,8 @@ exports.getCredentials=function(userid,fn){
 
 
 exports.CreateTenant = function(req, res) {
-db.collection('Tenant', function(err, collection) {
+req.body.contact="+254"+req.body.contact;
+db.collection('user', function(err, collection) {
 collection.insert(req.body, function(err, item) {
    if (err) {res.json(500,{error: "database Error"});}
    else{
@@ -80,12 +86,11 @@ collection.insert(req.body, function(err, item) {
 
 
 exports.CreateHouse = function(req, res) {
- console.log("The Hse Amount is .."+req.body.amount);
-
+// console.log("The Hse Amount is .."+req.body.amount);
 db.collection('House', function(err, collection) {
 collection.insert(req.body, function(err, item) {
    if (err) {res.json(500,{error: "database Error"});}
-   else{updatenohse(req.user.identifier,1,req.body.amount,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
+   else{updatenohse(req.user._id,1,req.body.amount,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
    });}
 
 });
@@ -97,7 +102,7 @@ collection.insert(req.body, function(err, item) {
 
 exports.listoftenant = function(req, res) {
 
- db.collection('Tenant', function(err, collection) {
+ db.collection('user', function(err, collection) {
  collection.find({"plot.Plotname":req.params.plot}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
@@ -120,9 +125,9 @@ exports.listofHouse = function(req, res) {
 
 
 exports.listofUnbookedtenant = function(req, res) {
-	 console.log("The Parameter for listofUnbookedtenant  is.."+req.params.plot);
- db.collection('Tenant', function(err, collection) {
- collection.find({"plot.Plotname":req.params.plot,"hsestatus":0},{name:1}).toArray( function(err, item){
+	
+ db.collection('user', function(err, collection) {
+ collection.find({"plot.Plotname":req.params.plot,"hsestatus":0},{names:1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -132,7 +137,7 @@ exports.listofUnbookedtenant = function(req, res) {
 
 
 exports.listofbookedtenant = function(req, res) {
- db.collection('Tenant', function(err, collection) {
+ db.collection('user', function(err, collection) {
  collection.find({"plot.Plotname":req.params.plot,"hsestatus":1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
@@ -186,8 +191,8 @@ var updateHouse=function (housedetails ,hsenumber,callback){
 };
 
 var updateTenant=function (tenantdetails,tenantid ,callback){
-	console.log("Tenants");
-   db.collection('Tenant', function(err, collection) {
+
+   db.collection('user', function(err, collection) {
     collection.update({"_id" : tenantid},{$set:tenantdetails},{safe:true}, function(err, item) {
      if(err){return callback(false,err);}
 	  else{ return callback(true,null);}
@@ -200,11 +205,9 @@ var updateTenant=function (tenantdetails,tenantid ,callback){
 
 
 
-var updateAccessStatus=function (tenantid ,callback){
-	  console.log("Acess Status for  " +tenantid );
-
-   db.collection('Tenant', function(err, collection) {
-    collection.update({"_id" : tenantid},{$set:{"AccessStatus" : 1}},{safe:true}, function(err, item) {
+var updateAccessStatus=function (userid ,callback){
+   db.collection('user', function(err, collection) {
+    collection.update({"_id" : userid},{$set:{"AccessStatus" : 1}},{safe:true}, function(err, item) {
      if(err){return callback(false,err);}
 	  else{ return callback(true,null);}
       });
@@ -266,11 +269,10 @@ if (req.body.receiptno==null)
 };
 
 var updateTenantBal=function (tenantbal,tenantid ,callback){
-	console.log("Updating Balance");
-   db.collection('Tenant', function(err, collection) {
+   db.collection('user', function(err, collection) {
     collection.update({"_id" : tenantid},{$inc:{balance:-tenantbal}},{safe:true}, function(err, item) {
      if(err){return callback(false,err);}
-	  else{ console.log("Tenant balance updated for " +tenantid );return callback(true,null);}
+	  else{ return callback(true,null);}
       });
    });
 };
@@ -282,7 +284,7 @@ var updateTenantBal=function (tenantbal,tenantid ,callback){
 
 exports.tenantStatement = function(req, res) {
  db.collection('Transaction', function(err, collection) {
- collection.find({"tenantid":req.user.identifier}).toArray( function(err, item){
+ collection.find({"tenantid":req.user._id}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -293,8 +295,8 @@ exports.tenantStatement = function(req, res) {
 
 
 exports.tenantDetails = function(req, res) {
-    db.collection('Tenant', function(err, collection) {
-     collection.findOne({"_id":req.user.identifier},function(err, item) {
+    db.collection('user', function(err, collection) {
+     collection.findOne({"_id":req.user._id},function(err, item) {
 	   if(item){res.send(item);
 	   }else{res.send(401);}
 });
@@ -321,8 +323,8 @@ updateHouse(houseupdate,details.number,function(ok,status){
 
 
 exports.LandLordDetails = function(req, res) {
-    db.collection('Landlord', function(err, collection) {
-     collection.findOne({"_id":req.user.identifier},function(err, item) {
+    db.collection('user', function(err, collection) {
+     collection.findOne({"_id":req.user._id},function(err, item) {
 	   if(item){res.send(item);
 	   }else{res.send(401);}
 });
@@ -334,8 +336,8 @@ exports.LandLordDetails = function(req, res) {
 
 
 exports.Accessrequest = function(req, res) {
- db.collection('Tenant', function(err, collection) {
- collection.find({"AccessStatus":0}).toArray( function(err, item){
+ db.collection('user', function(err, collection) {
+ collection.find({"AccessStatus":0},{names:1,email:1,contact:1,_id:1,housename:1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -344,40 +346,34 @@ exports.Accessrequest = function(req, res) {
 };
 
 exports.GrantAccess = function(req, res) {
-	//console.log("Giving Acces to Sytem to .." + req.body.identifier);
- db.collection('Credential', function(err, collection) {
-  collection.insert(req.body, function(err, item) {
-   if (err) {res.json(500,{error: "database Error"});}
-   else{updateAccessStatus(req.body.identifier,function(ok,status) {
-	   if (ok){
+
+    updateAccessStatus(req.body._id,function(ok,status) {
+      if (ok){
 		   mail.sendWelcomeMail(req.body.email,function(err,ok){
 			    if (err){console.log("Welcome email not sent ..."); }
 				else{console.log("Welcome email sent ...");}
 		   });
-           getTenantDetails(req.body.identifier,function(no,tenant){
-                  if (no)
-                  {
-                       var msg ="Hi "+tenant.name +" Welcome to Nanatec visit our site at http://104.131.30.17:4000/ use your Id number and .. enjoy "
-					   sms.SendWelcomeSMS(tenant.contact,msg,function(ok,status){
-			           if (ok){console.log("Welcome sms not sent ..."); }
-				         else{console.log("Welcome sms sent ...");}
-		                  });
-                  }
+     var msg ="Hi "+req.body.names +" Welcome to Nanatec visit our site at http://104.131.30.17:4000/ use your Id number as your Username and Password .. enjoy "
+			sms.SendWelcomeSMS(req.body.contact,msg,function(ok,status){
+			     if (!ok){console.log("Welcome sms not sent ..."); }
+				  else{console.log("Welcome sms sent ...");}
 		   });
+                    
 		   
 		   res.json(200,{success: "Succesfull"});
 	   
 	   }	
-   });}
-});
-});
+
+ 
+
+	});
 };
 
 
 exports.LandLordConfiguration = function(req, res) {
  db.collection('Configuration', function(err, collection) {
  collection.findOne({"_id":"RentalConfiguration"},function(err, item) {
-  if(item){console.log("Items ..." + item);res.send(item);}
+  if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
 });
@@ -424,8 +420,8 @@ exports.ExpenseTypeConfiguration = function(req, res) {
 
 
 exports.LandlordAddPlots = function(req, res) {
- db.collection('Landlord', function(err, collection) {
- collection.update({"_id":req.user.identifier},{$addToSet:{plots : req.body},  $inc:{noplots:1}},{safe:true}, function(err, item) {
+ db.collection('user', function(err, collection) {
+ collection.update({"_id":req.user._id},{$addToSet:{plots : req.body},  $inc:{noplots:1}},{safe:true}, function(err, item) {
    if (err) {console.log(err);res.json(500,{error: "database Error"});}
    else{res.json(200);}
 });
@@ -437,18 +433,25 @@ exports.LandlordAddPlots = function(req, res) {
 
 
 exports.CreateLandlord = function(req, res) {
-    var update=req.body.update;
-	var LandlordDet=update.LandlordDet;
-	var CredentialDet= update.CredentialDet;
-
- db.collection('Landlord', function(err, collection) {
- collection.insert(LandlordDet,{safe:true}, function(err, item) {
+   req.body.LandlordDet.contact="+254"+req.body.LandlordDet.contact;
+   bcrypt.hash(req.body.LandlordDet.password, 10, function(err, hash) {
+	req.body.LandlordDet.password=hash;
+    db.collection('user', function(err, collection) {
+    collection.insert(req.body.LandlordDet,{safe:true}, function(err, item) {
    if (err) {res.json(500,{error: "database Error"});}
-   else{GrantLandlordAccess(CredentialDet,function(ok,status) {if (ok){res.json(200,{success: "Succesfull"}); }	
-   });}
+   else{
+	     var msg ="Hi "+req.body.LandlordDet.names +" Welcome to Nanatec visit our site at http://104.131.30.17:4000/login.html use your Id number as your Username ... enjoy "
+			sms.SendWelcomeSMS(req.body.LandlordDet.contact,msg,function(ok,status){
+			     if (!ok){console.log("Welcome sms not sent ..."); }
+				  else{console.log("Welcome sms sent ...");}
+		   });
+	   res.json(200,{success: "Succesfull"});   
+	   }	
+   });
+  }); 
+});
 
-});
-});
+ 
 };
 
 
@@ -460,7 +463,7 @@ var GrantLandlordAccess=function (CredentialDet ,callback){
      if(err){return callback(false,err);}
 	  else{
 		  // send welcome sms to landlord
-		  getLandlordDetails(CredentialDet.identifier,function(no,landlord){
+		  getUser(CredentialDet.identifier,function(no,landlord){
                   if (no)
                   {
 		               var msg ="Hi "+landlord.names +" Welcome to Nana use Your id as your Username and Password Change after Login.. enjoy "
@@ -478,7 +481,7 @@ var GrantLandlordAccess=function (CredentialDet ,callback){
 
 
 var updatenohse=function (landlordid,no,Amount ,callback){
-   db.collection('Landlord', function(err, collection) {
+   db.collection('user', function(err, collection) {
     collection.update({"_id" : landlordid},{ $inc:{expcMonthlyIncome:Amount,nohse:no}},{safe:true}, function(err, item) {
      if(err){console.log(err);return callback(false,err);}
 	  else{ return callback(true,null);}
@@ -489,8 +492,8 @@ var updatenohse=function (landlordid,no,Amount ,callback){
 
 
 exports.UpdateTenantAgreement=function (req, res){
-   db.collection('Tenant', function(err, collection) {
-    collection.update({"_id" : req.user.identifier},{$set:{"AgreementStatus" : false}},{safe:true}, function(err, item) {
+   db.collection('user', function(err, collection) {
+    collection.update({"_id" : req.user._id},{$set:{"AgreementStatus" : false}},{safe:true}, function(err, item) {
    if (err) {console.log(err);res.json(500,{error: "database Error"});}
    else{res.json(200);}
 });
@@ -500,8 +503,8 @@ exports.UpdateTenantAgreement=function (req, res){
 
 
 exports.updateTenantData=function (req, res){
-   db.collection('Tenant', function(err, collection) {
-    collection.update({"_id" : req.user.identifier},{$set:{"Details" : req.body.details}}, {}, function(err, item) {
+   db.collection('user', function(err, collection) {
+    collection.update({"_id" : req.user._id},{$set:{"Details" : req.body.details}}, {}, function(err, item) {
    if (err) {console.log(err);res.json(500,{error: "database Error"});}
    else{res.json(200);}
 });
@@ -530,7 +533,7 @@ console.log("Request Body id " +req.body.id );
 
 exports.TenantInfo=function(req, res) {
 
- db.collection('Tenant', function(err, collection) {
+ db.collection('user', function(err, collection) {
   collection.findOne({"_id":req.query.tenant_id},{Details:1,name:1,email:1,contact:1,occupation:1},function(err, item){
   if(item){res.send(item); }
   if (err) {res.json(500,{error: "database Error"});}
@@ -546,7 +549,7 @@ exports.CreateMail=function(req, res) {
 	   var ReceiverDetails =update.ReceiverDetails;
 	   var ReceiverID =update.ReceiverId;
 
-     UpdateSenderInbox(req.user.identifier ,senderDetails,function(ok,status){
+     UpdateSenderInbox(req.user._id ,senderDetails,function(ok,status){
              if (ok){
 				 	 UpdateReceiverInbox(ReceiverID,ReceiverDetails,function(ok,status){
                           if (ok){res.json(200,{success: "Succesfull"})}; 		
@@ -581,7 +584,7 @@ var UpdateSenderInbox=function (id,SenderDet,callback){
 
 exports.Viewmail=function(req, res) {
  db.collection('Inbox', function(err, collection) {
-  collection.find({"_id":req.user.identifier}).toArray( function(err, item){
+  collection.find({"_id":req.user._id}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -596,8 +599,8 @@ exports.Viewmail=function(req, res) {
 
 
 exports.LandlordTenants=function(req, res) {
- db.collection('Tenant', function(err, collection) {
- collection.find({"Landlordid":req.user.identifier},{name:1}).toArray( function(err, item){
+ db.collection('user', function(err, collection) {
+ collection.find({"Landlordid":req.user._id},{name:1}).toArray( function(err, item){
   if(item){res.send(item);}
   if (err) {res.json(500,{error: "database Error"});}
 
@@ -609,8 +612,8 @@ exports.LandlordTenants=function(req, res) {
 
 
 exports.CheckPwd= function(req, res) {
-    db.collection('Credential', function(err, collection) {
-     collection.findOne({"identifier":req.user.identifier},function(err, item) {
+    db.collection('user', function(err, collection) {
+     collection.findOne({"_id":req.user._id},function(err, item) {
 	   if(item){
 		     
 			 if (item.password==req.body.oldpwd)
@@ -630,8 +633,8 @@ exports.CheckPwd= function(req, res) {
 
 
 exports.ChangePwd=function(req, res) {
-    db.collection('Credential', function(err, collection) {
-   collection.update({"identifier":req.user.identifier},{$set:{"password" : req.body.password}},{safe:true}, function(err, item) {
+    db.collection('user', function(err, collection) {
+   collection.update({"_id":req.user._id},{$set:{"password" : req.body.password}},{safe:true}, function(err, item) {
    if (err) {
 	   console.log(err);res.json(500,{error: "database Error"});
 	   }
@@ -652,7 +655,7 @@ exports.ChangePwd=function(req, res) {
 
 exports.Findneighbours = function(req, res) {
  // console.log("plot name is ..."+req.query.plot_name);
- db.collection('Tenant', function(err, collection) {
+ db.collection('user', function(err, collection) {
  collection.find({$and: [ {"plot.Plotname":req.query.plot_name},{"hsestatus" : 1}]},{name:1,housename:1,_id:1}).toArray( function(err, item){
    if (err) {
    res.json(500,{error: "database Error"});}
@@ -683,8 +686,8 @@ exports.photoupload = function(req, res) {
 
 
              //      console.log("Updating Tenant Photo Details for " +req.user.identifier.toString() );
-				   db.collection('Tenant', function(err, collection) {
-					collection.update({"_id" : req.user.identifier},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
+				   db.collection('user', function(err, collection) {
+					collection.update({"_id" : req.user._id},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
 				   if (err) {//console.log(err);
 				   res.json(500,{error: "database Error"});}
 				   else{res.json(200,{imageUrl:dbpath});}
@@ -723,8 +726,8 @@ exports.Landlordphotoupload = function(req, res) {
 
 
               //     console.log("Updating Landlord Photo Details for " +req.user.identifier );
-				   db.collection('Landlord', function(err, collection) {
-					collection.update({"_id" : req.user.identifier},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
+				   db.collection('user', function(err, collection) {
+					collection.update({"_id" : req.user._id},{$set:{"Details.imageUrl" : dbpath}}, { upsert: true }, function(err, item) {
 				   if (err) {
 					   //console.log(err);
 				   res.json(500,{error: "database Error"});}
@@ -761,7 +764,7 @@ var plot=req.body.plot;
 
 exports.TenantPaidReport= function(req, res) {
   var plot=req.body.plot;
-  db.collection('Tenant', function(err, collection) {
+  db.collection('user', function(err, collection) {
  collection.find({$and: [{"plot.Plotname": plot},{"balance":{$lte: 0}}]}).toArray( function(err, item){
   if(item){
 	 // console.log(item);
@@ -774,7 +777,7 @@ exports.TenantPaidReport= function(req, res) {
 
 exports.TenantUnpaidReport= function(req, res) {
   var plot=req.body.plot;
-  db.collection('Tenant', function(err, collection) {
+  db.collection('user', function(err, collection) {
  collection.find({$and: [{"plot.Plotname": plot},{"balance":{$gte: 0}}]}).toArray( function(err, item){
   if(item){
 	  //console.log(item);
@@ -787,7 +790,7 @@ exports.TenantUnpaidReport= function(req, res) {
 
 exports.TenantListReport= function(req, res) {
   var plot=req.body.plot;
-  db.collection('Tenant', function(err, collection) {
+  db.collection('user', function(err, collection) {
  collection.find({$and: [{"plot.Plotname": plot},{"hsestatus":1}]}).toArray( function(err, item){
   if(item){
 	  //console.log(item);
@@ -1068,47 +1071,22 @@ exports.LoginRedirect=function(req, res) {
 
 };
 
-exports.findEmail=function(id, hseno,callback) {
-	
-	if (id!=null)
-	{
-	
-		 console.log("Searching for Email using id..");
-		 	db.collection('Credential', function(err, collection) {
+exports.findEmail=function(id,callback) {
+	db.collection('Credential', function(err, collection) {
 			  collection.findOne({"identifier":id},function(err, item){
-			  if(item){;callback(null,item)}
-			  else  {callback(null,null);}
-	});
-	});
-	}
-	else if (hseno!=null )
-	{
-			db.collection('Credential', function(err, collection) {
-			  collection.findOne({"_id":hseno},function(err, item){
 			  if(item){callback(null,item)}
 			  else  {callback(null,null);}
-
-				});
-				});
-				}
-
+	});
+	});
+	
   
 };
 
-exports.CheckTenantidExists=function(req, res) {
-	console.log("Cheking id .."+req.body.idnumber)
- db.collection('Tenant', function(err, collection) {
-  collection.findOne({"_id":req.body.idnumber},function(err, item){
-  if(item){ res.json(200,{exist: true}); }
-   else { res.json(200,{exist: false}); };
-  if (err) {res.json(500,{error: "database Error"});}
-});
-});
-};
+
 
 exports.CheckPlotExist=function(req, res) {
-	console.log("Cheking plotname .."+req.body.plotname)
- db.collection('Landlord', function(err, collection) {
+	//console.log("Cheking plotname .."+req.body.plotname)
+ db.collection('user', function(err, collection) {
   collection.findOne({"plots.Plotname":req.body.plotname},function(err, item){
   if(item){ res.json(200,{exist: true}); }
    else { res.json(200,{exist: false}); };
@@ -1118,9 +1096,9 @@ exports.CheckPlotExist=function(req, res) {
 };
 
 exports.CheckHseNoExists=function(req, res) {
-	console.log("Cheking Houseno.."+req.body.hseno)
+//	console.log("Cheking Houseno.."+req.body.hseno)
  db.collection('House', function(err, collection) {
-  collection.findOne({"number":req.body.hseno},function(err, item){
+  collection.findOne({$and: [ {"number":req.body.hseno},{"plot.Plotname" : req.body.plotname}]},function(err, item){
   if(item){ res.json(200,{exist: true}); }
    else { res.json(200,{exist: false}); };
   if (err) {res.json(500,{error: "database Error"});}
@@ -1129,12 +1107,20 @@ exports.CheckHseNoExists=function(req, res) {
 };
 
 
-
-
-
-exports.CheckLandlordidExists=function(req, res) {
- db.collection('Landlord', function(err, collection) {
+exports.idExists=function(req, res) {
+ db.collection('user', function(err, collection) {
   collection.findOne({"id":req.body.idnumber},function(err, item){
+  if(item){ res.json(200,{exist: true}); }
+   else { res.json(200,{exist: false}); };
+  if (err) {res.json(500,{error: "database Error"});}
+});
+});
+};
+
+
+exports.phonenumber=function(req, res) {
+ db.collection('user', function(err, collection) {
+  collection.findOne({"contact":req.body.phonenumber},function(err, item){
   if(item){ res.json(200,{exist: true}); }
    else { res.json(200,{exist: false}); };
   if (err) {res.json(500,{error: "database Error"});}
@@ -1164,7 +1150,7 @@ collection.insert(req.body, function(err, item) {
 
 exports.GetLandlordNotice=function(req, res) {
  db.collection('VacateNotice', function(err, collection) {
-collection.find({$and: [ {"Landlordid":req.user.identifier},{"LandlordProcessed" : 0}]}).toArray(function(err, item) {
+collection.find({$and: [ {"Landlordid":req.user._id},{"LandlordProcessed" : 0}]}).toArray(function(err, item) {
      if(err){res.json(500,{error: "database Error"});}
 	  else{ res.send(item);}
       });
@@ -1195,9 +1181,10 @@ exports.GetDocument=function(req, res) {
 
 
 
+
 var getTenantDetails=function(tid,callback){
 
- db.collection('Tenant', function(err, collection) {
+ db.collection('user', function(err, collection) {
   collection.findOne({"_id":tid},function(err, item){
   if(item){ callback( "ok",item); }
    else { callback( null,null); };
@@ -1206,10 +1193,10 @@ var getTenantDetails=function(tid,callback){
 });
 }
 
-var getLandlordDetails=function(lid,callback){
+var getUser=function(lid,callback){
 
- db.collection('Landlord', function(err, collection) {
-  collection.findOne({"id":lid},function(err, item){
+ db.collection('user', function(err, collection) {
+  collection.findOne({"_id":lid},function(err, item){
   if(item){ callback( "ok",item); }
    else { callback( null,null); };
   if (err) {callback( null,null);}
@@ -1217,10 +1204,34 @@ var getLandlordDetails=function(lid,callback){
 });
 }
 
-
-exports.sendMail=function(req, res) {
-	mail.sendMail(req,res);
+exports.findPhoneNumber=function(phonenumber,callback) {
+   db.collection('user', function(err, collection) {
+  collection.findOne({"contact":phonenumber},function(err, item){
+     if(item){ callback( "ok",item); }
+       else { callback( null,null); };
+      });
+   });
 }
+
+
+exports.Recoverpwd=function(req, res) {
+// generate new password here
+     getUser(req.body.id,function(no,user){
+                  if (no)
+                  {
+		               var msg ="Hi "+user.names +" Your Password has Been Reset Use Test. Change after Login  "
+					   sms.sendPassword(user.contact,msg,function(ok,status){
+			           if (ok){ console.log("Pwd Sms Sent"); }
+				         else{console.log("Pwd Sms Not Sent");}
+		                  });
+				  }
+				  });
+
+				  {res.json(200,{success: "Request Received"})};
+	
+}
+
+
 
 var getNextSequenceValue=function (sequenceName,callback){
 
@@ -1311,6 +1322,22 @@ function configureDB(){
  collection.insert(rec, function(err, item) {
    if (err) {console.log("Error Configuring db...");}
    else{console.log("Configuration collection Created...");}
+  });
+  });
+
+  //configure admin
+var det={
+	     "_id" : "roba",
+	     "name" : "roba",
+        "AccessStatus" : 1,
+        "email" : "nanatec@gmail.com",
+        "password" : "roba",
+        "role" : "admin"
+}
+    db.collection('user', function(err, collection) {
+ collection.insert(det, function(err, item) {
+   if (err) {console.log("Error Configuring Admin...");}
+   else{console.log("Admin Configured..");}
   });
   });
 }; 

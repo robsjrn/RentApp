@@ -5,9 +5,9 @@
 							<button type="button" class="btn btn-warning" ng-disabled=disableComponents>Clear</button>
 				     </div>
 					   <div class="panel-body">
-				 	
-                             <div class="col-md-4">
-                              <form name="userForm"  novalidate>
+				 	            <form name="userForm"  novalidate>
+                                 <div class="col-md-4">
+                           
                                    <label for="plotname">Plot Name</label>
 								   <span ng-show="showSpinner"><i class="fa fa-refresh fa-spin"></i></span>
 								   <input type="text" class="form-control" placeholder="Plot Name" id="plotname" ng-model="LandlordPlot.Plotname" ng-blur="CheckplotExists()"  ng-disabled=disableComponents required>	<div ng-show="plotExist" class="alert alert-danger"><strong>Plot Name Already in Use</strong> </div>
@@ -16,7 +16,7 @@
 								   <label for="contactphone">Contact Phone</label>
 								   <input type="text" class="form-control" placeholder="Contact Phone" id="contactphone" ng-model="LandlordPlot.contact.phone" ng-disabled=disableComponents required>
 								 
-								</form>
+								
 							 </div>
 
 
@@ -25,19 +25,36 @@
 							         <label for="location">Location Name</label>
 									 <select class="form-control" placeholder="Location Name"  ng-model="LandlordPlot.location" ng-options="loca.name for loca in loc" ng-disabled=disableComponents >
 									 </select>
-									 <label >Location Latitude</label>
-								
-								     <input type="text" class="form-control" placeholder="Location Latitude" id="location" ng-model="LandlordPlot.location.latitude" ng-disabled=disableComponents title="To Enable Map View">
-									 <label >Location Longitude</label>
-									  <input type="text" class="form-control" placeholder="Location Longitude" id="location" ng-model="LandlordPlot.location.longitude" ng-disabled=disableComponents title="To Enable Map View">
+									  
+									  <label class="control-label">Location</label>
+									  <input type="text" ng-blur="codeAddress()" class="form-control" ng-model="LandlordPlot.address" ng-disabled=disableComponents >
+									 
+
+									
+									  <button class="btn btn-default" ng-click="showmap()" ng-disabled=enablemap>Show Location on map!</button>
                                     
 							 </div>
                                 <div class="col-md-4">
                                        <label for="plotdesc">Description</label>
 									  <textarea class="form-control" rows="3" id="plotdesc" ng-model="LandlordPlot.description" ng-disabled=disableComponents title="Brief Plot Description"></textarea>
-							     </div>
+
+                                           <label >Location Latitude</label>
+											<input type="number" class="form-control" placeholder="Location Latitude" id="location" ng-model="LandlordPlot.location.latitude" ng-disabled=true title="To Enable Map View">
+											<label >Location Longitude</label>
+											<input type="number" class="form-control" placeholder="Location Longitude" id="location" ng-model="LandlordPlot.location.longitude" ng-disabled=true title="To Enable Map View">
+                                          <div ng-show="false">
+											<google-map center="map.center" 
+												zoom="map.zoom" 
+												options="map.options"
+												control="map.control">
+												<marker idKey="1" coords="map.marker">
+												</marker>
+											</google-map>
+                                         </div>  
+										 </div>
                           
-					   </div>
+									</div>
+					   </form>
 					   <div class="panel-footer">
 					<button type="button" class="btn btn-success" ng-disabled="userForm.$invalid" ng-click="Saveplot()" >Save</button>
 						 </div>

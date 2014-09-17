@@ -3,6 +3,7 @@
 var LoginMngt= angular.module('RentmngtAppLogin', ['ngResource'] ); 
 
  LoginMngt.controller('loginCtrl', function ($scope,$http,$window) {
+	 $scope.noFullyConfigured=false;
     $scope.showSpinner=false;
        $scope.Userlogin=function(){
             $scope.showSpinner=true;
@@ -17,7 +18,8 @@ var LoginMngt= angular.module('RentmngtAppLogin', ['ngResource'] );
 									  if (data.role=="admin")
 									  { $window.location.href='/Admin.html';}
 									   if (data.role=="agent")
-									  { $window.location.href='/Agent.html';}						   
+									  { $window.location.href='/Agent.html';}
+									   
 							 }) 
 						 .error(function(data) {
 							   $scope.invalidcredential=true;

@@ -1,4 +1,4 @@
-var landlordtmngt= angular.module('LandlordmngtApp', ['ngResource','ngRoute','ui.bootstrap','angularCharts','angularFileUpload','ngProgress','textAngular'] ); 
+var landlordtmngt= angular.module('LandlordmngtApp', ['ngResource','ngRoute','ui.bootstrap','angularCharts','angularFileUpload','ngProgress','textAngular','google-maps'] ); 
 
 
 
@@ -31,11 +31,45 @@ landlordtmngt.config(function ($httpProvider) {
   $httpProvider.interceptors.push('authInterceptor');
 });
 
+var ModalInstanceCtrl = function ($scope, $modalInstance, lat, lng, $timeout) {
+
+  $scope.map = {
+    center: {
+        latitude: lat,
+        longitude: lng
+    },
+    zoom: 8,
+	control: {},
+    marker: {
+		 latitude: lat,
+          longitude: lng
+		}
+};
+
+
+
+  $scope.ok = function () {
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+
+$scope.$watch("visible", function(newvalue) {
+        $timeout(function() {
+             var map = $scope.map.control.refresh();
+        }, 0);
+    });
+                                                   
+
+};
 
 
 landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope,$window,ngProgress) {
+$scope.firsttimelogin=true;
 
- 
+
  $http.get('/LandLordDetails',{ cache: true })
 	 .success(function (data){
 			ngProgress.start();
@@ -44,6 +78,8 @@ landlordtmngt.controller('MainLandlordctrl', function($scope,$http,$rootScope,$w
 			{
 					  $rootScope.plot=data.plots;	
 			} else{
+
+              
 				$rootScope.plot=[];
 			}	 
 	 });
@@ -153,7 +189,7 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
  $scope.tenanterror=false;
  $scope.plots=$rootScope.plot;
  $scope.showSpinner=false;
- 
+ $scope.ContactSpinner=false;
  $scope.Tenant={};
   $scope.Tnt={};
  $scope.Tnt.plot=$scope.plots[0];
@@ -163,7 +199,7 @@ landlordtmngt.controller('tenantctrl', function($scope,$modal,$rootScope,$http,t
 $scope.CheckidExists=function(){
  $scope.showSpinner=true;
           var dt={"idnumber":$scope.Tenant._id};
-          $http.post('/CheckTenantidExists',dt)
+          $http.post('/CheckidExists',dt)
 				 		 .success(function(data) {
 			                  if (data.exist)
 			                     { $scope.userExist=true;
@@ -182,15 +218,27 @@ $scope.CheckidExists=function(){
 };
 
 
-   $scope.GetDetails=function(){
-	   ngProgress.start();
- // have this in a nested Promise
-     $http.get('/tenantList/'+$scope.Tenant.plot.name)
-		 .success(function (data){
-		 $scope.tenantdata=data
-		ngProgress.complete();	 
-		 }); 
-}
+$scope.CheckPhonenumberExists=function(){
+$scope.ContactSpinner=true;
+var qerr={"phonenumber":"+254"+$scope.Tenant.contact};
+$http.post('/CheckPhonenumberExists',qerr)
+				 		 .success(function(data) {
+			                  if (data.exist)
+			                     { $scope.contactExist=true;
+							        $scope.disableComponents=true;
+									$scope.Tenant.contact="";
+							      }
+							   else{ $scope.contactExist=false; 
+								      $scope.disableComponents=false;
+							   }
+							   $scope.ContactSpinner=false;
+							 }) 
+						 .error(function(data) {
+							   $scope.ErrorStatus=true;
+							    $scope.ContactSpinner=false;
+			});
+};
+
 
 
 
@@ -208,12 +256,20 @@ $scope.CheckidExists=function(){
 		   };
 
 		   
-              $scope.saveTenant=function(){
-			     $scope.Tenant.plot={};
-				  $scope.Tenant.Landlordid=$rootScope.landlordDetails._id;
-				  $scope.Tenant.plot.Plotname =$scope.Tnt.plot.Plotname;
+            $scope.saveTenant=function(){
+         
+			       $scope.Tenant.plot={};
+				   $scope.Tenant.Landlordid=$rootScope.landlordDetails._id;
+				   $scope.Tenant.plot.Plotname =$scope.Tnt.plot.Plotname;
 				   $scope.disableComponents=true;
+				   $scope.Tenant.AccessStatus=0;
 				   $scope.Tenant.hsestatus=0;
+				   $scope.Tenant.role="tenant";
+				   $scope.Tenant.AgreementStatus=false;
+				   $scope.Tenant.datecreated=new Date().toISOString();
+ //change this later
+            $scope.Tenant.password= $scope.Tenant._id;
+
 				   ngProgress.start();
                    $http.post('/createTenant', $scope.Tenant)
 						 .success(function(data) {
@@ -255,7 +311,7 @@ landlordtmngt.controller('housemngtctrl', function($scope,$rootScope,$http,ngPro
 	 $scope.houseterror=false;
 	  $scope.disableComponents=true;
 	   $scope.showSpinner=false;
-  // console.log($rootScope.plot);
+ 
     $scope.House.status="vacant";
 	$scope.plot=$rootScope.plot;
  
@@ -277,7 +333,7 @@ landlordtmngt.controller('housemngtctrl', function($scope,$rootScope,$http,ngPro
 $scope.CheckHseNoExists=function(){
            
       $scope.showSpinner=true;
-          var dt={"hseno":$scope.House.number};
+          var dt={"hseno":$scope.House.number,"plotname":$scope.House.plot.Plotname};
           $http.post('/CheckHseNoExists',dt)
 				 		 .success(function(data) {
 			                  if (data.exist)
@@ -304,13 +360,22 @@ $scope.CheckHseNoExists=function(){
           $scope.saveHouse=function(){
 			     $scope.disableComponents=true;
 				 ngProgress.start();
+				 $scope.House.landlordid=$rootScope.landlordDetails._id;
                    $http.post('/createHouse', $scope.House)
 						 .success(function(data) {
 							    $scope.housecreated=true;
 								$scope.msg=data.success;
+
+                               if (typeof $rootScope.landlordDetails.nohse=="undefined")
+							   {$rootScope.landlordDetails.nohse=1; $rootScope.landlordDetails.expcMonthlyIncome=1;}
+							   else{
 								$rootScope.landlordDetails.nohse =$rootScope.landlordDetails.nohse + 1;
                                 $rootScope.landlordDetails.expcMonthlyIncome=$rootScope.landlordDetails.expcMonthlyIncome+ $scope.House.amount;
-							    ngProgress.complete();
+								   }
+
+								
+							   
+								ngProgress.complete();
 							 }) 
 						 .error(function(data) {
 							 $scope.houseterror=true;
@@ -325,12 +390,69 @@ $scope.CheckHseNoExists=function(){
 
   
 });
-landlordtmngt.controller('plotmngtctrl', function($scope,$http,$rootScope,ngProgress) {
+landlordtmngt.controller('plotmngtctrl', function($scope,$http,$rootScope,ngProgress,$modal) {
 	$scope.LandlordPlot={};
+ $scope.enablemap=true;
+ $scope.map = {
+    center: {
+        latitude: 10,
+        longitude: -20
+    },
+    zoom: 8,
+	control: {},
+    marker: {}
+};
+
+
+ $scope.codeAddress = function () {
+    geocoder = new google.maps.Geocoder();
+    geocoder.geocode( { 'address': $scope.LandlordPlot.address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        $scope.map.control.getGMap().setCenter(results[0].geometry.location);
+        $scope.map.marker.latitude = results[0].geometry.location.lat();
+        $scope.map.marker.longitude = results[0].geometry.location.lng();
+
+		$scope.LandlordPlot.location.longitude=results[0].geometry.location.lng();
+        $scope.LandlordPlot.location.latitude=results[0].geometry.location.lat();
+		$scope.enablemap=false;
+      } else {
+		  $scope.enablemap=true;
+       console.log("geo code not Successfull..")
+      }
+    });
+    return;
+  };
+
+	
 
 	$scope.disableComponents=true;
- $scope.LandlordPlot.location={};
+   $scope.LandlordPlot.location={};
   $scope.showSpinner=false;
+   $scope.showmap=function(){
+	  var modalInstance = $modal.open({
+      templateUrl: 'map.html',
+      controller: ModalInstanceCtrl,
+      resolve: {
+        lat: function () {
+          return $scope.LandlordPlot.location.latitude;
+        },
+        lng: function () {
+          return $scope.LandlordPlot.location.longitude;
+        }
+      }
+
+
+    });
+
+    modalInstance.result.then(function (selectedItem) {
+    }, function () {
+     // $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+
+
+
+
 $scope.CheckplotExists=function(){ 
   
    $scope.showSpinner=true;
@@ -374,7 +496,9 @@ $scope.CheckplotExists=function(){
 						 .success(function(data) {
 							  ngProgress.start();
 							   $scope.plotSuccess=true; 
-								$rootScope.landlordDetails.noplots =$rootScope.landlordDetails.noplots+ 1;
+							   if (typeof $rootScope.landlordDetails.noplots=="undefined")
+							   {$rootScope.landlordDetails.noplots=1; }
+							   else{$rootScope.landlordDetails.noplots =$rootScope.landlordDetails.noplots+ 1;}
                                 $rootScope.plot.push($scope.LandlordPlot);
 								ngProgress.complete();
 								 $scope.disableComponents=true;
@@ -408,7 +532,7 @@ $scope.Tenant={};
    $scope.GetDetails=function(){
  // have this in a nested Promise
  ngProgress.start();
-     $http.get('/tenantList/'+$scope.Tenant.plot.Plotname,{ cache: true }).success(function (data){$scope.Tenants=data ;ngProgress.complete();}); 
+     $http.get('/tenantList/'+$scope.Tenant.plot.Plotname).success(function (data){$scope.Tenants=data ;ngProgress.complete();}); 
 }
 
 
@@ -823,15 +947,21 @@ ngProgress.start();
 
 landlordtmngt.controller('inboxctrl', function($scope,$http,$rootScope,ngProgress) {
 
+$scope.Sentemails=[];
+
 $http.get('/LandlordTenants',{ cache: true }).success(function (data){ $scope.MailTo=data});
 
-$http.get('/Viewmail',{ cache: true }).success(function (data){$scope.UserMail=data; $scope.emails = $scope.UserMail.Received; $scope.Sentemails= $scope.UserMail.Sent;});
+$http.get('/Viewmail',{ cache: true }).success(function (data){
+	$scope.UserMail=data; 
+	$scope.emails = $scope.UserMail.Received;
+	$scope.Sentemails= $scope.UserMail.Sent;
+	});
 
 
 
 $scope.Mail={};
 $scope.UserMail={};
-$scope.Sentemails={};
+
 
  $scope.viewMail=false;
  $scope.viewSentMail=false;
@@ -1010,7 +1140,7 @@ $scope.GetDetails=function(){
  // have this in a nested Promise
 ngProgress.start();
 
-   $http.get('/UnbookedtenantList/'+ $scope.Tenant.plot.Plotname).success(function (data){$scope.tenantdata=data ;$scope.Tenant.name=$scope.tenantdata[0];});
+   $http.get('/UnbookedtenantList/'+ $scope.Tenant.plot.Plotname).success(function (data){$scope.tenantdata=data ;$scope.Tenant.names=$scope.tenantdata[0];});
    $http.get('/VacanthouseList/'+$scope.Tenant.plot.Plotname).success(function (data){$scope.housedata=data;$scope.Tenant.housename=$scope.housedata[0]; ngProgress.complete();});
  
 }
@@ -1025,12 +1155,12 @@ ngProgress.start();
 
 	  data={"update":{
 		 "tenantupdate":{"AgreementStatus":true,"AccessStatus":0,"hsestatus":1,"housename":$scope.House.housename.number,"balance":($scope.House.housename.amount * 2)},
-		 "houseUpdate":{"status":"rented","tenantid":$scope.Tenant.name._id},
-         "Trxn":{"tenantid":$scope.Tenant.name._id, "housenumber":$scope.House.housename.number,
+		 "houseUpdate":{"status":"rented","tenantid":$scope.Tenant.names._id},
+         "Trxn":{"tenantid":$scope.Tenant.names._id, "housenumber":$scope.House.housename.number,
 	             "plotnumber":$scope.Tenant.plot.name,"transactiondate":new Date(),
 	              "transactiontype":"Posting", "Description":"Rent And Deposit",
 	              "tranAmount":($scope.House.housename.amount * 2)},
-		 "details":{"_id":$scope.Tenant.name._id,"number":$scope.House.housename.number}
+		 "details":{"_id":$scope.Tenant.names._id,"number":$scope.House.housename.number}
                }
 		  };
 

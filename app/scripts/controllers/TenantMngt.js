@@ -62,7 +62,7 @@ Tenantmngt.controller('MainTenantsctrl', function($scope,$http,$rootScope,$windo
 			} else{
 
 				$rootScope.Tenant.Details={};
-				console.log("I have not setup details yet..");
+				
 			}	 
 
 	  $scope.TenantData= $rootScope.Tenant; 

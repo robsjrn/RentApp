@@ -25,6 +25,7 @@
 	
 	<script src="public/jquery/jquery.js"></script>
     <script src="public/angular/angular.js"></script>
+	<script src='//maps.googleapis.com/maps/api/js?key=AIzaSyBEZrkDl1LuGxjnnI4WXC7U5nx41NOmxy8'></script>
     <!-- endbuild -->
   </head>
   <body ng-app="LandlordmngtApp">
@@ -122,7 +123,7 @@
 		</nav>
 
  
-<div class="container">
+<div  class="container">
 
     <ul class="nav nav-tabs tab-bar">
 		 <li> <a href="#!/Dashboard">Dashboard</a>    </li>
@@ -137,18 +138,19 @@
 		<!--	<li><a href="#!/ReportsPortal">Transaction Reports</a></li>-->	
 		<!--		<li><a href="#!/summarymngt">Chart Summary</a></li>-->	
 		<li><a href="#!/documentmngt">Documents</a></li>
-		 <li ><a href="#!/Notice"><i class="fa fa-edit fa-fw"></i>Notice</a></li>
+		 <li ><a href="#!/Notice">Notice</a></li>
+		  <li ><a href="#!/Notice"><i class="fa fa-edit fa-fw"></i>Vacate Notice</a></li>
 		<li><a href="#!/inbox">Inbox</a></li>
    </ul>
 
 
 
-         <div class="row">
+         <div  class="row">
 
 		           <div class="col-md-8">     
 						 <div data-ng-view ></div>
 					 </div>
-  	        
+  	   
 			<div class="col-md-4">
 			     <div class="row">
 					<div class="panel panel-default">
@@ -186,8 +188,8 @@
            </div>
 </div>
 
-  
-			
+    
+		 
 
 
 
@@ -226,6 +228,9 @@
 	<script src="public/angular-charts/dist/angular-charts.min.js"></script> 
     <script src="public/TextEditor/textAngular.min.js"></script>
 	<script src="public/TextEditor/textAngular-sanitize.min.js"></script>
+	<script src="public/angular-google-maps/dist/lodash.js"></script>
+	<script src="public/angular-google-maps/dist/angular-google-maps.min.js"></script>
+	
 
     <!-- endbower -->
     <!-- endbuild -->
@@ -246,6 +251,26 @@
 </script>
            
 
+
+  <script type="text/ng-template" id="map.html">
+       <div class="modal-header">
+            <h3 class="modal-title">Your Location in a Map</h3>
+		    	
+        </div>
+        <div class="modal-body">
+            <google-map center="map.center" 
+				zoom="map.zoom" 
+				options="map.options"
+				control="map.control">
+				<marker idKey="1" coords="map.marker">
+				</marker>
+			</google-map>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>	
 
 			
   </body>

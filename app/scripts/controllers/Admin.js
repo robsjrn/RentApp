@@ -87,38 +87,28 @@ Adminmngt.controller('Usersctrl', function ($scope,$http) {
 
 	$scope.AccessGranted=false;
 	$scope.Acesserror=false;
-
+    $scope.req={};
 	
   
- $http.get('/AccessRequest').success(function (data){$scope.users=data });
+ $http.get('/AccessRequest').success(function (data){
+	           $scope.users=data
+		 });
 
-$scope.GrantAccess=function(user){
-
-
-
-     $scope.Access={"_id":user.housename,
-	              "password":"test",
-	              "role":"tenant",
-	              "identifier":user._id	,
-		          "email":user.email
- };
-
-
-	 $http.post('/GrantAccess', $scope.Access)
+$scope.GrantAccess=function(user,index){
+		 
+	 $http.post('/GrantAccess', user)
 						 .success(function(data) {
 							   $scope.AccessGranted=true; 
+							   $scope.users.splice(index, 1);
 							 }) 
 						 .error(function(data) {
 
 							  $scope.Acesserror=true;
 							 });
-}
+      };
 
 	
-  
-
-
-	});
+ 	});
 
 Adminmngt.controller('SystemSettingsctrl', function ($scope,$http) {
 

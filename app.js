@@ -1,7 +1,6 @@
 var express = require('express'),
     app = express.createServer();
 var DatabaseConn=require('./ServerScripts/Database.js');
-var passport = require('passport'),LocalStrategy = require('passport-local').Strategy;
 var jwt = require('jwt-simple');
 var am=require('./ServerScripts/Login_Configuration.js');
 
@@ -13,7 +12,7 @@ var tokenSecret='1234567890QWERTY';
 		  {
 			var decoded = jwt.decode(req.headers.token, tokenSecret);
 			  req.user={};
-			  req.user.identifier=decoded.username;
+			  req.user._id=decoded.username;
 			  return next();
 		  }
 		  catch (e)
@@ -59,20 +58,15 @@ try
 */
 
      app.post('/Login',   function(req, res) {
-				DatabaseConn.getCredentials(req.body.username, function(err, user) {
+				DatabaseConn.getCredentials(req.body.username,req.body.password, function(err, user) {
 				 if (err)  {  res.send(401);  }
 				 if (!user) {res.send(401); } 
 				 if (user !==null)
 				 {
-					   if (user.password !=req.body.password) {  res.send(401); }
-				 else {
-				   var token = jwt.encode({username: user.identifier}, tokenSecret);
-				  // console.log("the user role is "+user.role);
-					// console.log("Sending Token"+user.identifier);
+				
+				   var token = jwt.encode({username: user._id}, tokenSecret);
 					  res.json({token : token,role:user.role});	
 						 }
-					
-				 }
 				
 				});
 				   
@@ -150,7 +144,6 @@ try
 		app.post('/Report',ensureAuthenticated,DatabaseConn.Report); 
 	    app.post('/TenantPaidReport',ensureAuthenticated,DatabaseConn.TenantPaidReport); 
         app.post('/TenantUnpaidReport',ensureAuthenticated,DatabaseConn.TenantUnpaidReport); 
-
 		  app.post('/TenantListReport',ensureAuthenticated,DatabaseConn.TenantListReport); 
 		  app.post('/OccupiedHouseReport',ensureAuthenticated,DatabaseConn.OccupiedHouseReport); 
 		  app.post('/vacantHouseReport',ensureAuthenticated,DatabaseConn.vacantHouseReport); 
@@ -162,16 +155,17 @@ try
           app.post('/PropertyListing',DatabaseConn.PropertyListing); 
 		  app.post('/VacantRentalListing',DatabaseConn.VacantRentalListing);
 		  app.post('/CreateLandlord',DatabaseConn.CreateLandlord);
-
-          app.post('/sendmail',DatabaseConn.sendMail);
-		  app.post('/CheckTenantidExists',DatabaseConn.CheckTenantidExists);
-          app.post('/CheckLandlordidExists',DatabaseConn.CheckLandlordidExists);
+          app.post('/Recoverpwd',DatabaseConn.Recoverpwd);
+          app.post('/CheckidExists',DatabaseConn.idExists);
           app.post('/CheckPlotExist',DatabaseConn.CheckPlotExist);
-		   app.post('/CheckHseNoExists',DatabaseConn.CheckHseNoExists);
+		  app.post('/CheckHseNoExists',DatabaseConn.CheckHseNoExists);
+         app.post('/CheckPhonenumberExists',DatabaseConn.phonenumber);
 		  
 
-		app.get('/mobileTest',DatabaseConn.TestMobile);	
-		app.post('/TestMobilePost', passport.authenticate('local'),  function(req, res) { res.send(200);});	
+  
+
+
+
  }
  
  catch (e)

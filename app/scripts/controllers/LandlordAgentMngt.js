@@ -23,12 +23,29 @@ $locationProvider.hashPrefix("!");
 
 });
 
+LandlordAgentMngt.directive('pwCheck', function() {
+        return {
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ctrl) {
+                var firstPassword = '#' + attrs.pwCheck;
+                $(elem).add(firstPassword).on('keyup', function () {
+                    scope.$apply(function () {
+                        var v = elem.val()===$(firstPassword).val();
+                        ctrl.$setValidity('pwcheck', v);
+                    });
+                });
+            }
+        }
+    });
+
+
 
 
 LandlordAgentMngt.controller('landlordctrl', function ($scope,$http) {
 $scope.landlord={};
  $scope.showSpinner=false;
  $scope.disableComponents=true;
+$scope.ContactSpinner=false;
 
 $scope.AddLandlord=function(){
    $scope.disableComponents=false;
@@ -50,7 +67,7 @@ $scope.Clear=function(){
 $scope.CheckidExists=function(){
  $scope.showSpinner=true;
           var dt={"idnumber":$scope.landlord.id};
-          $http.post('/CheckLandlordidExists',dt)
+          $http.post('/CheckidExists',dt)
 				 		 .success(function(data) {
 			                  if (data.exist)
 			                     { $scope.userExist=true;
@@ -68,11 +85,34 @@ $scope.CheckidExists=function(){
 			});
 };
 
-
+$scope.CheckPhonenumberExists=function(){
+$scope.ContactSpinner=true;
+var qerr={"phonenumber":"+254"+$scope.landlord.contact};
+$http.post('/CheckPhonenumberExists',qerr)
+				 		 .success(function(data) {
+			                  if (data.exist)
+			                     { $scope.contactExist=true;
+							        $scope.disableComponents=true;
+									$scope.landlord.contact="";
+							      }
+							   else{ $scope.contactExist=false; 
+								      $scope.disableComponents=false;
+							   }
+							   $scope.ContactSpinner=false;
+							 }) 
+						 .error(function(data) {
+							   $scope.ErrorStatus=true;
+							    $scope.ContactSpinner=false;
+			});
+};
 
 $scope.SaveLandlord=function(){
-      $scope.landlord._id= $scope.landlord.id
-         var data={"update":{ "LandlordDet":$scope.landlord, "CredentialDet":{"_id":$scope.landlord.id,"password":$scope.landlord.id,"role":"landlord","identifier" : $scope.landlord.id,"email":$scope.landlord.email} }};
+      $scope.landlord._id= $scope.landlord.id;
+	  $scope.landlord.role="landlord";
+	  $scope.landlord.AccessStatus=1;
+      $scope.landlord.datecreated=new Date().toISOString();
+
+         var data={"LandlordDet":$scope.landlord};
              	$http.post('/CreateLandlord',data)
 				 		 .success(function(data) {
 								   $scope.SuccessStatus=true;

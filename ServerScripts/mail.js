@@ -21,32 +21,29 @@ var server  = email.server.connect({
 
 exports.sendMail = function(req, res) {
 var id=null;
-var hseno=null;
+
 if (typeof req.body.id!="undefined")
 {
 	id= req.body.id;
 }
-else if (typeof req.body.hseno!="undefined")
-{
-    hseno=req.body.hseno;
-}
 
-DatabaseConn.findEmail(id,hseno,function(err, message) { 
+DatabaseConn.findEmail(id,function(err, message) { 
 
 
-	if (err)
+	if (!message)
 	{
 		res.json(500,{error: "User Not Found"});
 	}
 	else
 	{  
+           console.log("User Found..........");
 		   console.log("Sending Mail to ...."+message.email);
          var  message=getMessage(message.email);
-          server.send(message, function(err, message) { 
-			console.log(err || message); 
+     server.send(message, function(err, message) { 
+			
 	     if (err)
-	     {
-			  res.json(500,{error: "Mail Server Error"});
+	     {     console.log(err || message); 
+			 res.json(500,{err: "Mail Server Error"});
 	     }
 		 else{
              res.json(200,{success: "Success"});

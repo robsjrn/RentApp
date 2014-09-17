@@ -30,16 +30,13 @@
 	  <a class="pull-right" href="/index.html"><span class="glyphicon glyphicon-home"></span><strong>   
 	   Home</strong></a>
 	   <input type="text" class="form-control" name="idnumber" placeholder="Identification No." required="" ng-model="user.id" autofocus="" />
-	   <hr>
-	   <h4>OR</h4>
-	   <hr>
-      <input type="text" class="form-control" name="housenumber" placeholder="House No." required="" ng-model="user.hseno" autofocus="" />
+	  
 
 	  <hr>
 	  <button ng-disabled="login.$invalid"  ng-click="RecoverPassword()" class="btn btn-lg btn-warning btn-block" type="submit">Recover </button> 
 	  </form>
          
-     <div ng-show="pwdRecovered" class="alert alert-danger"><strong>Password Sent to Email you Provided</strong></div>
+     <div ng-show="pwdRecovered" class="alert alert-danger"><strong>Password Sent to Phone Number you Provided   </strong></div>
 	 <div ng-show="ErrorpwdRecovered" class="alert alert-danger"><strong>Error Occurred Kindly Try Later....</strong> </div> </div> 
 
 </div>
