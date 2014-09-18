@@ -72,16 +72,19 @@ exports.getCredentials=function(userid,pwd,fn){
 
 exports.CreateTenant = function(req, res) {
 req.body.contact="+254"+req.body.contact;
-db.collection('user', function(err, collection) {
-collection.insert(req.body, function(err, item) {
-   if (err) {res.json(500,{error: "database Error"});}
-   else{
-	   
-	   res.json(200,{success: "Succesfull"});	
-	   
-	   }
-});
-});
+ bcrypt.hash(req.body._id, 10, function(err, hash) {
+	req.body.password=hash;
+		db.collection('user', function(err, collection) {
+		collection.insert(req.body, function(err, item) {
+		   if (err) {res.json(500,{error: "database Error"});}
+		   else{	   
+			   res.json(200,{success: "Succesfull"});	   
+			   }
+			});
+			});
+
+ });
+
 };
 
 
@@ -1331,7 +1334,7 @@ var det={
 	     "name" : "roba",
         "AccessStatus" : 1,
         "email" : "nanatec@gmail.com",
-        "password" : "roba",
+        "password": "$2a$10$IaQpkGxJpWxjyoi7wgp5ku.0.xlG8Gw.EmSjDhEA1O83Dxtkjogqa",
         "role" : "admin"
 }
     db.collection('user', function(err, collection) {

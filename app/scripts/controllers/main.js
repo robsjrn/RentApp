@@ -1,10 +1,24 @@
 'use strict';
 
-var Rentmngt= angular.module('RentmngtApp', ['ngCookies','ngSanitize','ngResource','ngRoute','ui.bootstrap'] ); 
+var Rentmngt= angular.module('RentmngtApp', ['ngCookies','ngSanitize','ngResource','ngRoute','ui.bootstrap','google-maps'] ); 
 
 
  Rentmngt.controller('MainCtrl', function ($scope,$http,$window,$modal) {
+  $scope.showSearch=false;
 
+ $scope.map = {
+    center: {
+        latitude: 10,
+        longitude: -20
+    },
+    zoom: 8,
+	control: {},
+    marker: {}
+};
+
+$scope.showResult=function(){
+	$scope.showSearch=true;
+};
 
 $scope.SearchItems=[{"name":"Property","url":"/Property.html"},{"name":"Rentals","url":"/SearchRentals.html"},{"name":"Services","url":"/Services.html"}];
 

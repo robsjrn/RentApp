@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="RentmngtApp" background="images/Assets/index_background.jpg">
+  <body ng-app="RentmngtApp" background="images/Assets/bg.png">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -51,6 +51,7 @@
         <li class="active"><a href="#">Home</a></li>
         <li><a href="/SearchRentals.html">To Rent</a></li>
 		<li><a href="/LandlordAgents.html">Landlords/Agents</a></li>
+
 		
 		 <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Property <span class="caret"></span></a>
@@ -63,8 +64,9 @@
        	<li><a href="/News.html">News</a></li>
 		<li><a href="/Services.html">Services</a></li>
       </ul>
-      
+	    
       <ul class="nav navbar-nav navbar-right">
+
 	      <li><a href="/Login.html">Login</a></li>
 		<li><a href="#"></a></li>
       </ul>
@@ -74,31 +76,82 @@
 
 <div data-ng-controller="MainCtrl" class="row cont">
 
-<div class="col-md-3">
-  <div class="well">
-         <div class="row">  <!-- first Row -->
-            <div class="col-sm-12">
-			   <div class="form-group">
-					    	<label>Location</label>
-					    	<input type="text" class="form-control" placeholder="Where do you want to live?">
-					  	</div>
-			</div>
+ <div class="container-fluid">
 
-			<div class="row">   <!-- second Row -->
-			            <div class="col-sm-6">
-							<div class="form-group">
+   <div class="col-md-3">
+    
+               <a href="#" class="list-group-item active">
+				  Property Types
+				</a>
+				<a href="#" class="list-group-item">Apartment</a>
+				<a href="#" class="list-group-item">Villa</a>
+				<a href="#" class="list-group-item">Loft</a>
+				<a href="#" class="list-group-item">Condos</a>
+
+               <br>
+
+
+				 <div class="list-group">
+				   <a href="#" class="list-group-item active">
+					  <h4 class="list-group-item-heading">
+						 Featured Listings 
+					  </h4>
+				   </a>
+				   <a href="#" class="list-group-item">
+					  <h4 class="list-group-item-heading">
+						 Free Domain Name Registration
+					  </h4>
+					  <p class="list-group-item-text">
+						 You will get a free domain registration with website pages.
+					  </p>
+				   </a>
+				   <a href="#" class="list-group-item">
+					  <h4 class="list-group-item-heading">24*7 support</h4>
+					  <p class="list-group-item-text">We provide 24*7 support.</p>
+
+				   </a>
+				   <a href="#" class="list-group-item">
+					  <h4 class="list-group-item-heading">24*7 support</h4>
+					  <p class="list-group-item-text">We provide 24*7 support.</p>
+
+				   </a>
+				   <a href="#" class="list-group-item">
+					  <h4 class="list-group-item-heading">24*7 support</h4>
+					  <p class="list-group-item-text">We provide 24*7 support.</p>
+
+				   </a>
+
+				</div>
+
+		
+  </div><!-- /.col-lg-3 -->
+
+
+    <div class="col-md-6">
+       <div class="well">
+				   <div class="row">
+						<div class="col-sm-12">
+						   <div class="form-group">
+								 <label>Location</label>
+								 <input type="text" class="form-control" placeholder="Where do you want to live?">
+							</div>
+						</div>
+					</div>
+
+					 <div class="row"> 
+						   <div class="col-sm-6">
+							  <div class="form-group">
 							    	<label>Search Location:</label>
-									
 										<select class="form-control"  >
 											<option>Anywhere</option>
 											<option>Nairobi</option>
-											<option>Nakuru</option>
-											
+											<option>Nakuru</option>										
 										</select>
 								</div>
-                         </div>
-				<div class="col-sm-6">
-				   <div class="form-group">
+                             </div>
+
+                              <div class="col-sm-6">
+				                  <div class="form-group">
 							    	<label>Property type:</label>
 										<select class="form-control">
 											<option>Any</option>
@@ -109,13 +162,12 @@
 											<option>Commercial property</option>
 											<option>Other</option>
 										</select>
-					 </div>
-				</div>
-            </div>
+					                 </div>
+				                 </div>
 
-			<div class="row">						  
-							<div class="col-sm-6">	
-
+					   </div>
+                   <div class="row">						  
+						   <div class="col-sm-6">	
 								<div class="form-group">
 							    	<label >Bedrooms:</label>
 										<select class="form-control">
@@ -126,11 +178,11 @@
 											<option>4</option>
 											<option>5+</option>
 										</select>
-								</div>
-
+								 </div>
 							</div>
-							<div class="col-sm-6">	
 
+
+                           <div class="col-sm-6">	
 								<div class="form-group">
 							    	<label>Rent or Buy</label>
 										<select class="form-control">
@@ -139,134 +191,72 @@
 											<option>Buy</option>
 										</select>
 								</div>
+							</div>
 
-							</div>		
-							
-						</div>	
-
-                   <div class="row">						  
-							<div class="col-sm-6">	
-
+					</div>		
+                    <div class="row">						  
+						    <div class="col-sm-6">	
 								<div class="form-group">
 							    	<label >Minimum Price</label>
-										<input type="text" class="form-control" placeholder="Min">
+								<input type="text" class="form-control" placeholder="Min">
 								</div>
-
 							</div>
-							<div class="col-sm-6">	
-
+                           
+						   <div class="col-sm-6">	
 								<div class="form-group">
 							    	<label>Maximum Price</label>
-										<input type="text" class="form-control" placeholder="Max">
-								</div>
-
-							</div>		
-							
-						</div>	
-                <div class="row">	
-						
+							      <input type="text" class="form-control" placeholder="Max">
+						         </div>
+							</div>
+					</div>
+                   <div class="row">					
 						<div class="col-sm-6 pull-right" style="margin-top: 10px;">
-							<button class="btn btn-primary pull-right" type="submit">Search</button>
-							
+							<button class="btn btn-primary pull-right" ng-click="showResult()" >Search</button>					
 						</div>
-					</div>	
+					</div>       
+            </div>
 
-	 </div>
-
-  </div>
-</div>
-  <div class="col-md-6">
-    <div class="jumbotron hegt">
-      
-		  <div class="col-sm-6 col-md-6 col-lg-6 col-md-offset-3 trans">
-					<div class="input-group">
-					  <div class="input-group-btn">
-						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Search For <span class="caret"></span></button>
-						<ul class="dropdown-menu" role="menu">
-						  <li ng-repeat="item in SearchItems">
-						      <a ng-click="selectSearch(item)" href="#">{{item.name}}</a>
-					    	</li>					  
-						</ul>
-					  </div><!-- /btn-group -->
-					  <input ng-model="choice.name" type="text" class="form-control"></input>
-					   <span class="input-group-btn">
-						  <button class="btn btn-danger" type="button" ng-click="SearchItem()">Go!</button>
-						</span>
-					</div><!-- /input-group -->
-				  </div><!-- /.col-lg-6 -->
-			
-	    </div>
-  </div><!-- /.col-lg-8 -->
-	      <div  class="col-md-3">
-				
+			 <div class="row">
+                     <div ng-show="showSearch" class="col-md-12">  
+					    <h5>Search Result</h5>
+						 <div data-ng-view ></div>
+					 </div>
+                    </div>
+  
+  </div><!-- /.col-lg-6 -->
+	<div  class="col-md-3">
+    	<div class="panel panel-primary">
+         	<div class="panel-heading">Contact Us</div>
+         	<div class="panel-body">
 				<h4 ><span class="hidden-xs">Customer service: </span>+254 763 626283</h4>
 				<h4><small>24 hours a day, 7 days a week</small></h4>
+			</div>
+         </div>
+        <hr>
+        <div class="panel panel-primary">
+         	<div class="panel-heading">Social Networks</div>
+         	<div class="panel-body">
+			 
+			</div>
+        </div>
+	</div>
+				
 			
 		 </div>
 		</div><!-- /.col-lg-4 -->
 	</div>
-<div class="row cont">
-	 <div class="col-md-12" >
-		 <div class="well well-sm">
-			<h3 class="label label-primary">Welcome</h3>
-			<p>
-            If you've got a property that needs a tenant, or if you're a renter who needs a place to live, you've come to the right place! We makes it quick and easy for tenants to search for rental homes, which is why thousands of them use our comprehensive database every day to find their perfect home for rent. This is the best place for renters, property owners and property managers to connect online.</p>
-            <p>
-            With Us, you can take your time finding your next residence -- search as much as you want when it's convenient for you, and it's all free! We've got thousands of available houses, apartments, condos and duplexes all over the country and in your area.</p>
-           <p>
-           Whether you're looking for a house, apartment or other type of rental property, We makes it easy to find a home that you'll love. You can even narrow your search to specific types of rentals, such as rent-to-own properties and lease option rentals. Right from the comfort of your own home or office, you can take a tour of any of our rental properties. It's all right there for you - without any cost or hassle
-
-			</p>
-		 </div>
-	</div>
-</div>
-   <div class="row cont">
-      <div class="col-md-4" >
-	     <div class="well well-sm">
-		   <h4 class="label label-primary">For Renters</h4>
-            <p>Search thousands of listings -- around the block or across the country -- anytime for FREE. No limitations and no membership required.</p>
-		 </div>
-	  </div>
- 
-	     <div class="col-md-4" >
-		  <div class="well well-sm">
-		  <h4 class="label label-primary">Landlords / Agents /Property Management</h4>
-            <p>Reach qualified renters at the best time during the rental search.
-				List on a site that focuses on rental advertising for homes and apartments.
-				Save time and money by getting new tenants as soon as possible after someone moves out.
-				Get reliable, accurate reports.
-				Close vacancies faster.
-			</p>
-		 </div>
-		 
-         </div>
- 
-	     <div class="col-md-4" >
-		  <div class="well well-sm">
-		  <h4 class="label label-primary">For Service Provider</h4>
-            <p>Search thousands of listings -- around the block or across the country -- anytime for FREE. No limitations and no membership required.</p>
-        </div>
-      </div>
-      
-   </div>
-	
-	  
-	</div>
-  <div data-ng-view ></div>
-   
-</div>
 </div>
 <hr />	
 <div class="row cont">
 <footer>
-	<p class="pull-right"><a href="#">Back to top</a></p>
+	<p class="pull-right"><a href="#">All content &copy; NanaTec 2014 </a></p>
 	<p>
 		<a href="index.html">Home</a> |
 		<a href="index.html">About</a> |
 		<a href="index.html">Typography</a> |
 		<a href="terms.html">Terms and Conditions</a> |
 		<a href="contact.html">Contact Us</a><br />
-		All content &copy; NanaTec 2014 | 
+		 
 	</p>
 </footer>
 
@@ -290,7 +280,8 @@
     <script src="public/angular-animate/angular-animate.js"></script>
 	<script src="public/angular-bootstrap/ui-bootstrap-tpls.min.js"></script> 
     <script src="public/angular-touch/angular-touch.js"></script>
-
+    <script src="public/angular-google-maps/dist/lodash.js"></script>
+	<script src="public/angular-google-maps/dist/angular-google-maps.min.js"></script>
 
     <!-- endbower -->
     <!-- endbuild -->

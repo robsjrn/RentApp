@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="styles/LandlordAgentMngt.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="RentmngtAppLandlordAgent" background="images/Assets/index_background.jpg">
+  <body ng-app="RentmngtAppLandlordAgent" background="images/Assets/bg.png">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -167,7 +167,7 @@
                                 </div>
 
 								<label for="ConfirmPassword">Confirm Password</label>
-								<input type="password"  class="form-control" id="Confirmpwd" name="Confirmpwd" ng-model="landlord.confirmpwd" placeholder="Confirm Password" ng-disabled=disableComponents required pw-check="pwd"/>
+								<input type="password"  class="form-control" id="Confirmpwd" name="Confirmpwd" ng-model="confirmpwd" placeholder="Confirm Password" ng-disabled=disableComponents required pw-check="pwd"/>
 								<div ng-show="userForm.Confirmpwd.$dirty">
 								<p ng-show="userForm.Confirmpwd.$error.required" class="help-block alert alert-danger">Please Confirm your password</p>
 								<p ng-show="userForm.Confirmpwd.$error.pwcheck" class="help-block alert alert-danger">Passwords do not match </p>

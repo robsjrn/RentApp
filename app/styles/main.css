@@ -49,3 +49,26 @@ li a {
 
 
 
+#foot-sec{
+	margin-top:-40px;
+	margin-bottom:0px;
+	color:#fff;
+
+}
+#foot-sec a{
+	color: rgba(250,250,250, 0.7);
+}
+#foot-sec .panel{
+	margin-bottom:0px;
+}
+#foot-sec .social a{
+	font-size:30px;
+}
+#foot-sec  h1,
+#foot-sec  h2,
+#foot-sec  h3,
+#foot-sec  h4,
+#foot-sec  h5,
+#foot-sec  h6{
+	color:#fff !important;
+}

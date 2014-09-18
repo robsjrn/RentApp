@@ -13,12 +13,6 @@ var server  = email.server.connect({
    ssl:     true
 });
 
-
-
-// send the message and get a callback with an error or details of the message that was sent
-
-
-
 exports.sendMail = function(req, res) {
 var id=null;
 

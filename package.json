@@ -7,6 +7,7 @@
     "bcrypt": "^0.8.0",
     "crypto": "latest",
     "ejs": "latest",
+    "email-templates": "^1.1.2",
     "emailjs": "latest",
     "express": "3.x",
     "jwt-simple": "latest",

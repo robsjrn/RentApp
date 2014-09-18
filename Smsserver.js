@@ -33,7 +33,7 @@ app.post('/inboundSMS', function(request, response) {
     db.findPhoneNumber(request.param('From'),function(err,status){
 		if (status){
 
-			if (status.role="tenant")
+			if (status.role=="tenant")
 			{
 				 console.log("balance is  "+status.balance);
 		          var msg="<Response><Sms>Hello "+status.names+" Your House Balance is "+ status.balance +"</Sms></Response>";

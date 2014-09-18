@@ -3,7 +3,7 @@ var express = require('express'),
 var DatabaseConn=require('./ServerScripts/Database.js');
 var jwt = require('jwt-simple');
 var am=require('./ServerScripts/Login_Configuration.js');
-
+var Mail=require('./MailServer/Mail.js');
 
 var tokenSecret='1234567890QWERTY';
 
@@ -159,9 +159,11 @@ try
           app.post('/CheckidExists',DatabaseConn.idExists);
           app.post('/CheckPlotExist',DatabaseConn.CheckPlotExist);
 		  app.post('/CheckHseNoExists',DatabaseConn.CheckHseNoExists);
-         app.post('/CheckPhonenumberExists',DatabaseConn.phonenumber);
+          app.post('/CheckPhonenumberExists',DatabaseConn.phonenumber);
 		  
-
+//test	
+        app.get('/sendmail',Mail.WelcomeMail);
+   
   
 
 
